@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>婚禮籌備及當日工具 Wedding Day Hub</title>
+<style>
+  :root {
+    --bg: #f6f4f0;
+    --card: #ffffff;
+    --ink: #1e1e1e;
+    --muted: #6b6760;
+    --accent: #8c5e3c;
+    --accent-soft: #f2e8df;
+    --ok: #2e7d5b;
+    --ok-bg: #e7f5ee;
+    --line: #e5e0d8;
+    --tab-h: 64px;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang HK", "Noto Sans TC", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    padding-bottom: calc(var(--tab-h) + 20px);
+    line-height: 1.45;
+  }
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+    padding: 12px 16px 10px;
+  }
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+  header h1 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .badge {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .sync-bar {
+    margin-top: 8px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .sync-bar input {
+    flex: 1;
+    min-width: 0;
+    padding: 7px 10px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    font-size: 12px;
+    background: var(--bg);
+    color: var(--ink);
+  }
+  .btn {
+    border: none;
+    border-radius: 10px;
+    padding: 9px 13px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn:active { opacity: 0.85; }
+  .btn-secondary {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  .btn-sm {
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 8px;
+  }
+
+  main {
+    padding: 14px 14px 0;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  }
+  .card h2 {
+    margin: 0 0 10px;
+    font-size: 15px;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .phase-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 2px 8px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+  }
+  .rundown-item {
+    display: flex;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+    align-items: flex-start;
+  }
+  .rundown-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .rd-time {
+    width: 96px;
+    flex-shrink: 0;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    padding-top: 2px;
+  }
+  .rd-body { flex: 1; font-size: 13.5px; }
+  .rd-owner {
+    display: inline-block;
+    margin-top: 5px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 2px 8px;
+    border-radius: 6px;
+  }
+  .ios-check {
+    width: 24px;
+    height: 24px;
+    border-radius: 7px;
+    border: 1.5px solid #b8b0a4;
+    background: #fff;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1px;
+  }
+  .ios-check.checked {
+    background: var(--ok);
+    border-color: var(--ok);
+    color: #fff;
+  }
+  .done-text {
+    text-decoration: line-through;
+    color: var(--muted);
+  }
+
+  .row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+  .row > * { flex: 1; min-width: 120px; }
+  input[type="text"], input[type="number"], select {
+    width: 100%;
+    padding: 10px 11px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    font-size: 14px;
+    background: #fff;
+    color: var(--ink);
+  }
+  .chip-group {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+  .chip {
+    padding: 6px 11px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--muted);
+  }
+  .chip.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .stat {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px;
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--accent);
+  }
+  .stat-lbl {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* iOS List Rows for Seating / Setting Plan */
+  .list-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .list-row:last-child { border-bottom: none; }
+  .list-main { flex: 1; min-width: 0; }
+  .list-title { font-size: 14.5px; font-weight: 600; }
+  .list-meta { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+  .checkin-btn {
+    padding: 7px 13px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .checkin-no { background: #f0ede8; color: var(--muted); }
+  .checkin-yes { background: var(--ok-bg); color: var(--ok); }
+
+  nav.tabbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--tab-h);
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    z-index: 30;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .tab-btn {
+    border: none;
+    background: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    font-size: 11px;
+    color: var(--muted);
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .tab-btn.active { color: var(--accent); }
+  .tab-icon { font-size: 18px; line-height: 1; }
+  .amt-badge {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ok);
+    white-space: nowrap;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <h1>婚禮當日工具 Hub</h1>
+    <span class="badge" id="syncStatus">本機模式</span>
+  </div>
+  <div class="sync-bar">
+    <input type="text" id="apiUrlInput" placeholder="貼上 Google Apps Script Web App URL（可留空先用本機）">
+    <button class="btn btn-sm" onclick="saveApiUrl()">儲存</button>
+    <button class="btn btn-sm btn-secondary" onclick="syncAll()">同步</button>
+  </div>
+</header>
+
+<main>
+  <section id="panel-rundown" class="panel active">
+    <div class="chip-group" id="rdFilterChips">
+      <button class="chip active" data-filter="all" onclick="setRdFilter('all', this)">全部流程</button>
+      <button class="chip" data-filter="setting" onclick="setRdFilter('setting', this)">Setting Plan</button>
+      <button class="chip" data-filter="photo" onclick="setRdFilter('photo', this)">影相流程</button>
+      <button class="chip" data-filter="banquet" onclick="setRdFilter('banquet', this)">午宴／證婚</button>
+    </div>
+    <div id="rundownContainer"></div>
+  </section>
+
+  <section id="panel-seating" class="panel">
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num" id="statTotalGuests">0</div>
+        <div class="stat-lbl">預估總人數</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="statArrived">0</div>
+        <div class="stat-lbl">已經到</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="statTables">0</div>
+        <div class="stat-lbl">圍數 / 桌數</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>加人／新增座位</h2>
+      <div class="row">
+        <input type="text" id="guestNameInput" placeholder="人名（例：陳大文）">
+        <input type="text" id="guestTableInput" placeholder="桌數（例：第1圍 / 主家席）">
+      </div>
+      <div class="row">
+        <select id="guestCheckinInput">
+          <option value="未到">未到</option>
+          <option value="已經到">已經到</option>
+        </select>
+        <button class="btn" onclick="addGuest()">加人</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Setting Plan 座位及簽到列表 <span class="sub" style="margin:0" id="guestFilterLabel"></span></h2>
+      <div class="row">
+        <input type="text" id="guestSearchInput" placeholder="搜尋人名或桌數..." oninput="renderSeating()">
+        <select id="tableFilterSelect" onchange="renderSeating()">
+          <option value="ALL">全部桌數</option>
+        </select>
+      </div>
+      <div id="seatingList"></div>
+    </div>
+  </section>
+
+  <section id="panel-angpao" class="panel">
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num" id="statAngpaoTotal">$0</div>
+        <div class="stat-lbl">人情總額（自行填）</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="statAngpaoCount">0</div>
+        <div class="stat-lbl">已登記筆數</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="statGoldCount">0</div>
+        <div class="stat-lbl">金器登記</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>登記人情／金器</h2>
+      <div class="row">
+        <input type="text" id="apNameInput" placeholder="賓客姓名">
+        <select id="apGenderInput">
+          <option value="男">男</option>
+          <option value="女">女</option>
+        </select>
+      </div>
+      <div class="row">
+        <select id="apTypeInput">
+          <option value="人情">人情</option>
+          <option value="金器">金器</option>
+        </select>
+        <input type="number" id="apAmountInput" inputmode="decimal" placeholder="人情數字（可留空／自行填）">
+      </div>
+      <div class="row">
+        <input type="text" id="apNoteInput" placeholder="備註／收款方式／金器項目（例：現金 / 龍鳳鈪）">
+        <button class="btn" onclick="addAngpao()">Submit 登記</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>人情及金器明細（可直接改數字）</h2>
+      <div id="angpaoList"></div>
+    </div>
+  </section>
+
+  <section id="panel-chan" class="panel">
+    <div class="card">
+      <h2>物資清單 Chan List（按 Rundown 整理）</h2>
+      <div class="sub">已按早拍、過場、證婚、午宴、外影及金器物資整理，可直接 Tick 完成</div>
+      <div class="row" style="margin-bottom:8px;">
+        <input type="text" id="chanNewInput" placeholder="新增臨時物資...">
+        <button class="btn btn-sm" onclick="addChanItem()">新增</button>
+      </div>
+      <div id="chanListContainer"></div>
+    </div>
+  </section>
+</main>
+
+<nav class="tabbar">
+  <button class="tab-btn active" data-tab="rundown" onclick="switchTab('rundown', this)">
+    <span class="tab-icon">🗓️</span>
+    <span>Rundown</span>
+  </button>
+  <button class="tab-btn" data-tab="seating" onclick="switchTab('seating', this)">
+    <span class="tab-icon">🪑</span>
+    <span>Setting Plan</span>
+  </button>
+  <button class="tab-btn" data-tab="angpao" onclick="switchTab('angpao', this)">
+    <span class="tab-icon">🧧</span>
+    <span>人情／金器</span>
+  </button>
+  <button class="tab-btn" data-tab="chan" onclick="switchTab('chan', this)">
+    <span class="tab-icon">📦</span>
+    <span>Chan List</span>
+  </button>
+</nav>
+
+<script>
+const RUNDOWN_DATA = [
+  {
+    phase: "一、早上出入門及過場 (Morning & Transfer)",
+    category: "banquet",
+    items: [
+      {
+        id: "rd1",
+        time: "03:30 - 06:00",
+        text: "新娘化妝 (Emily)；姊妹 > 外母 > 新郎 > 奶奶及妹妹 (另外兩位化妝師)",
+        owner: "負責：Emily（新娘化妝師）、另外兩位化妝師、新娘、姊妹、外母、新郎、奶奶、妹妹",
+        tags: ["banquet"]
+      },
+      {
+        id: "rd2",
+        time: "06:00 - 07:00",
+        text: "新娘姊妹組拍攝花絮",
+        owner: "負責：攝影團隊、新娘、姊妹組",
+        tags: ["photo"]
+      },
+      {
+        id: "rd3",
+        time: "07:00 - 07:30",
+        text: "接新娘環節 (開門利是 / 遊戲 x1 / 愛的宣言)",
+        owner: "負責：兄弟姊妹團、新郎、新娘",
+        tags: ["banquet"]
+      },
+      {
+        id: "rd4",
+        time: "07:30 - 07:45",
+        text: "女家奉茶 (爸爸媽媽, +阿哥)",
+        owner: "負責：新人、女家爸爸媽媽、阿哥、攝影團隊",
+        tags: ["photo", "banquet"]
+      },
+      {
+        id: "rd5",
+        time: "07:45 - 08:00",
+        text: "出門花絮拍攝",
+        owner: "負責：攝影團隊、新人、女家家人",
+        tags: ["photo"]
+      },
+      {
+        id: "rd6",
+        time: "08:00 - 08:15",
+        text: "男家奉茶 (爸爸媽媽)",
+        owner: "負責：新人、男家爸爸媽媽、攝影團隊",
+        tags: ["photo", "banquet"]
+      },
+      {
+        id: "rd7",
+        time: "08:15 - 08:30",
+        text: "新人拍攝花絮",
+        owner: "負責：攝影團隊、新人",
+        tags: ["photo"]
+      },
+      {
+        id: "rd8",
+        time: "08:30 - 09:30",
+        text: "新郎兄弟組拍攝花絮 + 新郎換禮服；乘搭的士或私家車前往會場 (Total: 23人 TBC) — 新娘+貼身姊妹x1+化妝師(3人) ~8:30am出發；攝影Crew(3人)完成新郎補拍花絮後出發；新郎+四大長老+家人(8人)",
+        owner: "負責：新郎、兄弟組、攝影團隊（新娘+貼身姊妹x1+化妝師3人 ~8:30am出發；攝影Crew 3人補拍後出發；新郎+四大長老+家人8人）",
+        tags: ["photo", "setting"]
+      },
+      {
+        id: "rd9",
+        time: "09:30 前",
+        text: "兄弟姊妹團分批出發 (A組：會場準備 / B組：酒店清理+物管)；過場前準備：物資金器收好+label分配 > 帶去會場；清理好房間 > Check out",
+        owner: "負責：兄弟姊妹團（A組：會場準備；B組：酒店清理+物管、物資金器收好+Label分配、酒店 Check out）",
+        tags: ["setting"]
+      }
+    ]
+  },
+  {
+    phase: "二、迎賓及證婚流程 (迎賓 & Ceremony)",
+    category: "banquet",
+    items: [
+      {
+        id: "rd10",
+        time: "09:00 - 10:00",
+        text: "新娘換造型；Deco / Photobooth 到場 Setup；MC 到場準備；攝影團隊剪片；新郎+外父外母彩排 (待定)",
+        owner: "負責：化妝師（新娘換造型）、Deco / Photobooth 團隊、MC、攝影團隊（剪片）、新郎、外父外母",
+        tags: ["setting"]
+      },
+      {
+        id: "rd11",
+        time: "10:00",
+        text: "其他主人家迎賓",
+        owner: "負責：其他主人家",
+        tags: ["banquet"]
+      },
+      {
+        id: "rd12",
+        time: "10:15",
+        text: "律師到場 Briefing",
+        owner: "負責：律師、新人、主人家",
+        tags: ["banquet"]
+      },
+      {
+        id: "rd13",
+        time: "10:25",
+        text: "外父 & 外母幫新娘戴頭紗影花絮 (完成後外母先就座 / 外父準備帶新娘進場)",
+        owner: "負責：外父、外母、新娘、攝影團隊",
+        tags: ["photo"]
+      },
+      {
+        id: "rd14",
+        time: "10:30 - 11:30",
+        text: "證婚儀式：司儀致歡迎辭 > 新郎進場 > 外父帶新娘進場 > 交接儀式 > 新人進場 > 宣讀誓辭、交換指環、揭頭紗、吻賀 > 簽紙證婚 (老爺+外母) > 新人與主人家合照 > March out > Re-March in (兄弟姊妹放泡泡) > 拋花球 (姊妹拎定專用花球) > 切真餅 (兄弟姊妹兩排拍手) > 合照時間",
+        owner: "負責：司儀、律師、新人、外父、老爺、外母、主人家、兄弟姊妹團（放泡泡、拎專用花球、兩排拍手）、攝影團隊",
+        tags: ["photo", "banquet"]
+      },
+      {
+        id: "rd15",
+        time: "11:30",
+        text: "小過場：新娘新郎換進場造型、新郎迎賓",
+        owner: "負責：化妝師（新娘換造型）、新郎（迎賓）、新娘",
+        tags: ["banquet"]
+      }
+    ]
+  },
+  {
+    phase: "三、午宴及售後外影流程 (Luncheon Banquet & Photo Session)",
+    category: "banquet",
+    items: [
+      {
+        id: "rd16",
+        time: "12:00",
+        text: "午宴開席：司儀致歡迎辭 > 播放成長片段 > 新人進場 > 切 Dummy cake > 交杯 > 世紀之吻 > 致謝辭 > 台上送感恩花 (2束俾奶奶+外母) > 6人祝酒",
+        owner: "負責：司儀、新人、奶奶、外母、6位祝酒嘉賓",
+        tags: ["banquet"]
+      },
+      {
+        id: "rd17",
+        time: "12:30",
+        text: "自助餐正式開始",
+        owner: "負責：場地職員、全體賓客",
+        tags: ["banquet"]
+      },
+      {
+        id: "rd18",
+        time: "12:45",
+        text: "補奉茶儀式 (男家6~7組 / 女家TBC)",
+        owner: "負責：新人、男家（6~7組）、女家（TBC）、兄弟姊妹團、攝影團隊",
+        tags: ["photo", "banquet"]
+      },
+      {
+        id: "rd19",
+        time: "13:15",
+        text: "刮刮卡小遊戲",
+        owner: "負責：司儀、兄弟姊妹團、賓客",
+        tags: ["banquet"]
+      },
+      {
+        id: "rd20",
+        time: "13:30",
+        text: "合照環節；播放早拍午播花絮片；敬酒",
+        owner: "負責：攝影團隊、新人、兄弟姊妹團",
+        tags: ["photo", "banquet"]
+      },
+      {
+        id: "rd21",
+        time: "14:15",
+        text: "送客及散場：歡送賓客 / 宴會結束",
+        owner: "負責：新人、主人家、兄弟姊妹團",
+        tags: ["banquet"]
+      },
+      {
+        id: "rd22",
+        time: "14:30",
+        text: "旅遊巴開出 (接載賓客 / 工作人員)",
+        owner: "負責：兄弟姊妹團、旅遊巴司機",
+        tags: ["setting"]
+      },
+      {
+        id: "rd23",
+        time: "14:30 - 15:30",
+        text: "外影拍攝：新娘快速補妝 + 換婚紗；新人 + 兄弟姊妹團補拍外影合照 / 花絮",
+        owner: "負責：化妝師（新娘快速補妝+換婚紗）、新人、兄弟姊妹團、攝影團隊",
+        tags: ["photo"]
+      }
+    ]
+  }
+];
+
+const INITIAL_CHAN_LIST = [
+  { id: "c1", group: "接新娘及奉茶", name: "開門利是 + 接新娘遊戲道具 x1 + 愛的宣言卡", done: false },
+  { id: "c2", group: "接新娘及奉茶", name: "奉茶茶具套裝 (茶壺、茶杯、托盤、跪墊、紅棗蓮子茶)", done: false },
+  { id: "c3", group: "金器及貴重物", name: "金器盒 (龍鳳鈪／豬牌／金戒指) + 標籤 Label + 專人保管袋", done: false },
+  { id: "c4", group: "造型及服裝", name: "新娘多套禮服／婚紗、頭紗、飾物、新郎禮服／領呔", done: false },
+  { id: "c5", group: "造型及服裝", name: "姊妹、外母、新郎、奶奶、妹妹造型配件及補妝用品", done: false },
+  { id: "c6", group: "證婚及場地佈置", name: "Deco / Photobooth 佈置物資、迎賓牌、指示牌", done: false },
+  { id: "c7", group: "證婚及場地佈置", name: "結婚戒指 (指環)、誓辭卡、簽婚書筆／證書夾", done: false },
+  { id: "c8", group: "證婚及場地佈置", name: "兄弟姊妹用泡泡機／泡泡水", done: false },
+  { id: "c9", group: "證婚及場地佈置", name: "拋花球專用花球 (姊妹拎定)", done: false },
+  { id: "c10", group: "證婚及場地佈置", name: "切真餅刀叉／切 Dummy Cake 道具", done: false },
+  { id: "c11", group: "午宴互動及送客", name: "成長片段檔案 + 早拍午播設備／USB 備份", done: false },
+  { id: "c12", group: "午宴互動及送客", name: "台上感恩花 x2 束 (奶奶 + 外母)", done: false },
+  { id: "c13", group: "午宴互動及送客", name: "刮刮卡小遊戲卡及獎品", done: false },
+  { id: "c14", group: "午宴互動及送客", name: "人情箱／人情袋、簽名簿、筆、回禮禮物", done: false },
+  { id: "c15", group: "過場及外影", name: "行李箱／物資袋 Label 分類貼紙、酒店退房檢查清單", done: false },
+  { id: "c16", group: "過場及外影", name: "外影替換婚紗、波鞋／便鞋、防蚊／紙巾／水", done: false }
+];
+
+const SURNAMES = ["陳","李","張","黃","林","吳","周","徐","孫","馬","胡","朱","郭","何","羅","高","鄭","梁","謝","宋","唐","許","韓","馮","鄧","曹","彭","曾","蕭","蔡"];
+const GIVEN_M = ["志明","家豪","俊傑","文浩","嘉誠","子軒","偉強","建華","耀祖","冠宇","浩然","柏豪","國榮","家俊","思齊","天佑","銘軒","曉東","樂天","卓然"];
+const GIVEN_F = ["嘉怡","芷晴","穎思","詩敏","欣怡","曉彤","慧敏","雅婷","淑儀","嘉欣","美玲","婉婷","芷君","靖雯","寶儀","詠思","樂怡","梓晴","曼君","子瑜"];
+
+function generateDefaultGuests() {
+  const tables = ["主家席", "第1圍", "第2圍", "第3圍", "第4圍", "第5圍", "第6圍", "第7圍", "第8圍", "第9圍"];
+  const list = [];
+  for (let i = 0; i < 100; i++) {
+    const isFemale = i % 2 === 1;
+    const name = SURNAMES[i % SURNAMES.length] + (isFemale ? GIVEN_F[i % GIVEN_F.length] : GIVEN_M[i % GIVEN_M.length]);
+    list.push({
+      id: "g_" + (i + 1),
+      name,
+      table: tables[Math.floor(i / 10)],
+      checkin: "未到"
+    });
+  }
+  return list;
+}
+
+const STORAGE_KEY = "wedding_hub_state_v4";
+let state = loadState();
+let currentRdFilter = "all";
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed.guests) && parsed.guests.length) {
+        parsed.guests = parsed.guests.map(g => ({
+          id: g.id,
+          name: g.name,
+          table: g.table || "未編排",
+          checkin: g.checkin || (g.arrived ? "已經到" : "未到")
+        }));
+      }
+      return parsed;
+    }
+  } catch (e) {}
+  return {
+    apiUrl: "",
+    rdChecked: {},
+    guests: generateDefaultGuests(),
+    angpao: [
+      { id: "ap_1", name: "陳志明", gender: "男", type: "人情", amount: "", note: "待填" },
+      { id: "ap_2", name: "李嘉怡", gender: "女", type: "人情", amount: "", note: "待填" }
+    ],
+    chan: INITIAL_CHAN_LIST
+  };
+}
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  if (state.apiUrl) {
+    pushToCloud();
+  }
+}
+
+function saveApiUrl() {
+  state.apiUrl = document.getElementById("apiUrlInput").value.trim();
+  saveState();
+  updateSyncBadge();
+  if (state.apiUrl) syncAll();
+}
+
+function updateSyncBadge() {
+  const el = document.getElementById("syncStatus");
+  const inp = document.getElementById("apiUrlInput");
+  inp.value = state.apiUrl || "";
+  el.textContent = state.apiUrl ? "已連結 Sheets" : "本機模式";
+}
+
+async function pushToCloud() {
+  if (!state.apiUrl) return;
+  try {
+    await fetch(state.apiUrl, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        rdChecked: state.rdChecked,
+        guests: state.guests,
+        angpao: state.angpao,
+        chan: state.chan
+      })
+    });
+    document.getElementById("syncStatus").textContent = "已同步";
+  } catch (e) {
+    document.getElementById("syncStatus").textContent = "同步失敗";
+  }
+}
+
+async function syncAll() {
+  if (!state.apiUrl) {
+    alert("未填 Google Apps Script URL，目前使用本機儲存。");
+    return;
+  }
+  try {
+    const res = await fetch(state.apiUrl);
+    const data = await res.json();
+    if (data && typeof data === "object") {
+      if (data.rdChecked) state.rdChecked = data.rdChecked;
+      if (Array.isArray(data.guests) && data.guests.length) {
+        state.guests = data.guests.map(g => ({
+          id: g.id,
+          name: g.name,
+          table: g.table || "未編排",
+          checkin: g.checkin || (g.arrived ? "已經到" : "未到")
+        }));
+      }
+      if (Array.isArray(data.angpao)) state.angpao = data.angpao;
+      if (Array.isArray(data.chan) && data.chan.length) state.chan = data.chan;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      renderAll();
+      document.getElementById("syncStatus").textContent = "已同步最新";
+    }
+  } catch (e) {
+    alert("讀取雲端資料失敗，請檢查 Apps Script 部署權限。");
+  }
+}
+
+function switchTab(tab, btn) {
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+  document.getElementById("panel-" + tab).classList.add("active");
+}
+
+function setRdFilter(filter, chip) {
+  currentRdFilter = filter;
+  document.querySelectorAll("#rdFilterChips .chip").forEach(c => c.classList.remove("active"));
+  chip.classList.add("active");
+  renderRundown();
+}
+
+function toggleRd(id) {
+  state.rdChecked[id] = !state.rdChecked[id];
+  saveState();
+  renderRundown();
+}
+
+function renderRundown() {
+  const container = document.getElementById("rundownContainer");
+  let html = "";
+  RUNDOWN_DATA.forEach(sec => {
+    const filteredItems = sec.items.filter(it => currentRdFilter === "all" || it.tags.includes(currentRdFilter));
+    if (!filteredItems.length) return;
+    html += `<div class="card">
+      <div class="phase-tag">${sec.phase}</div>`;
+    filteredItems.forEach(it => {
+      const checked = !!state.rdChecked[it.id];
+      html += `<div class="rundown-item">
+        <button class="ios-check ${checked ? "checked" : ""}" onclick="toggleRd('${it.id}')">${checked ? "✓" : ""}</button>
+        <div class="rd-time">${it.time}</div>
+        <div class="rd-body ${checked ? "done-text" : ""}">
+          <div>${it.text}</div>
+          <div class="rd-owner">${it.owner}</div>
+        </div>
+      </div>`;
+    });
+    html += `</div>`;
+  });
+  container.innerHTML = html;
+}
+
+function populateTableFilter() {
+  const sel = document.getElementById("tableFilterSelect");
+  const cur = sel.value;
+  const tables = [...new Set(state.guests.map(g => g.table))];
+  sel.innerHTML = `<option value="ALL">全部桌數 (${state.guests.length}人)</option>` +
+    tables.map(t => `<option value="${t}">${t}</option>`).join("");
+  if (tables.includes(cur)) sel.value = cur;
+}
+
+function addGuest() {
+  const name = document.getElementById("guestNameInput").value.trim();
+  const table = document.getElementById("guestTableInput").value.trim() || "未編排";
+  const checkin = document.getElementById("guestCheckinInput").value || "未到";
+  if (!name) return;
+  state.guests.unshift({
+    id: "g_" + Date.now(),
+    name,
+    table,
+    checkin
+  });
+  document.getElementById("guestNameInput").value = "";
+  saveState();
+  populateTableFilter();
+  renderSeating();
+}
+
+function toggleCheckin(id) {
+  const g = state.guests.find(x => x.id === id);
+  if (!g) return;
+  g.checkin = g.checkin === "已經到" ? "未到" : "已經到";
+  saveState();
+  renderSeating();
+}
+
+function renderSeating() {
+  const q = document.getElementById("guestSearchInput").value.trim().toLowerCase();
+  const tbl = document.getElementById("tableFilterSelect").value;
+  const arrivedCount = state.guests.filter(g => g.checkin === "已經到").length;
+  const tableCount = new Set(state.guests.map(g => g.table)).size;
+
+  document.getElementById("statTotalGuests").textContent = state.guests.length;
+  document.getElementById("statArrived").textContent = arrivedCount;
+  document.getElementById("statTables").textContent = tableCount;
+
+  const filtered = state.guests.filter(g => {
+    const matchQ = !q || g.name.toLowerCase().includes(q) || g.table.toLowerCase().includes(q) || g.checkin.toLowerCase().includes(q);
+    const matchT = tbl === "ALL" || g.table === tbl;
+    return matchQ && matchT;
+  });
+
+  document.getElementById("guestFilterLabel").textContent = `顯示 ${filtered.length} 人`;
+  document.getElementById("seatingList").innerHTML = filtered.slice(0, 150).map(g => {
+    const isYes = g.checkin === "已經到";
+    return `<div class="list-row">
+      <div class="list-main">
+        <div class="list-title">${g.name}</div>
+        <div class="list-meta">${g.table}</div>
+      </div>
+      <button class="checkin-btn ${isYes ? "checkin-yes" : "checkin-no"}" onclick="toggleCheckin('${g.id}')">
+        ${g.checkin}
+      </button>
+    </div>`;
+  }).join("");
+}
+
+function addAngpao() {
+  const name = document.getElementById("apNameInput").value.trim();
+  const gender = document.getElementById("apGenderInput").value;
+  const type = document.getElementById("apTypeInput").value;
+  const amount = document.getElementById("apAmountInput").value;
+  const note = document.getElementById("apNoteInput").value.trim();
+  if (!name) return;
+  state.angpao.unshift({
+    id: "ap_" + Date.now(),
+    name,
+    gender,
+    type,
+    amount: amount === "" ? "" : Number(amount),
+    note
+  });
+  document.getElementById("apNameInput").value = "";
+  document.getElementById("apAmountInput").value = "";
+  document.getElementById("apNoteInput").value = "";
+  saveState();
+  renderAngpao();
+}
+
+function updateAngpaoAmount(id, val) {
+  const item = state.angpao.find(x => x.id === id);
+  if (!item) return;
+  item.amount = val === "" ? "" : Number(val);
+  saveState();
+  updateAngpaoStats();
+}
+
+function updateAngpaoNote(id, val) {
+  const item = state.angpao.find(x => x.id === id);
+  if (!item) return;
+  item.note = val;
+  saveState();
+}
+
+function updateAngpaoStats() {
+  const apItems = state.angpao.filter(x => x.type === "人情");
+  const goldItems = state.angpao.filter(x => x.type === "金器");
+  const total = apItems.reduce((sum, x) => sum + (typeof x.amount === "number" && !isNaN(x.amount) ? x.amount : 0), 0);
+  document.getElementById("statAngpaoTotal").textContent = "$" + total.toLocaleString();
+  document.getElementById("statAngpaoCount").textContent = apItems.length;
+  document.getElementById("statGoldCount").textContent = goldItems.length;
+}
+
+function renderAngpao() {
+  updateAngpaoStats();
+  document.getElementById("angpaoList").innerHTML = state.angpao.map(x => `
+    <div class="list-row" style="align-items:flex-start; flex-direction:column; gap:6px;">
+      <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
+        <div>
+          <span class="list-title">${x.name}</span>
+          <span class="list-meta"> · ${x.gender} · ${x.type}</span>
+        </div>
+        <span class="amt-badge">${x.type === "人情" ? (x.amount === "" ? "待填" : "$" + Number(x.amount).toLocaleString()) : "金器"}</span>
+      </div>
+      <div class="row" style="width:100%; margin:0;">
+        <input type="number" inputmode="decimal" placeholder="人情數字（自行填）" value="${x.amount}" onchange="updateAngpaoAmount('${x.id}', this.value)">
+        <input type="text" placeholder="備註／金器項目" value="${x.note || ""}" onchange="updateAngpaoNote('${x.id}', this.value)">
+      </div>
+    </div>
+  `).join("");
+}
+
+function toggleChan(id) {
+  const c = state.chan.find(x => x.id === id);
+  if (!c) return;
+  c.done = !c.done;
+  saveState();
+  renderChan();
+}
+
+function addChanItem() {
+  const name = document.getElementById("chanNewInput").value.trim();
+  if (!name) return;
+  state.chan.unshift({ id: "c_" + Date.now(), group: "臨時新增", name, done: false });
+  document.getElementById("chanNewInput").value = "";
+  saveState();
+  renderChan();
+}
+
+function renderChan() {
+  const groups = [...new Set(state.chan.map(c => c.group))];
+  document.getElementById("chanListContainer").innerHTML = groups.map(g => {
+    const items = state.chan.filter(c => c.group === g);
+    return `<div style="margin-bottom:12px;">
+      <div class="phase-tag">${g}</div>
+      ${items.map(it => `
+        <div class="rundown-item">
+          <button class="ios-check ${it.done ? "checked" : ""}" onclick="toggleChan('${it.id}')">${it.done ? "✓" : ""}</button>
+          <div class="rd-body ${it.done ? "done-text" : ""}">${it.name}</div>
+        </div>
+      `).join("")}
+    </div>`;
+  }).join("");
+}
+
+function renderAll() {
+  updateSyncBadge();
+  renderRundown();
+  populateTableFilter();
+  renderSeating();
+  renderAngpao();
+  renderChan();
+}
+
+renderAll();
+</script>
+</body>
+</html>
