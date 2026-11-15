@@ -251,7 +251,7 @@
     margin-top: 2px;
   }
 
-  /* iOS List Rows for Seating / Setting Plan */
+  /* iOS List Rows for Seating / Seating Plan */
   .list-row {
     display: flex;
     align-items: center;
@@ -264,6 +264,18 @@
   .list-main { flex: 1; min-width: 0; }
   .list-title { font-size: 14.5px; font-weight: 600; }
   .list-meta { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+  .seat-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .seat-amt-input {
+    width: 96px !important;
+    padding: 7px 9px !important;
+    font-size: 13px !important;
+    border-radius: 9px !important;
+  }
   .checkin-btn {
     padding: 7px 13px;
     border-radius: 999px;
@@ -333,7 +345,7 @@
   <section id="panel-rundown" class="panel active">
     <div class="chip-group" id="rdFilterChips">
       <button class="chip active" data-filter="all" onclick="setRdFilter('all', this)">全部流程</button>
-      <button class="chip" data-filter="setting" onclick="setRdFilter('setting', this)">Setting Plan</button>
+      <button class="chip" data-filter="setting" onclick="setRdFilter('setting', this)">Seating Plan</button>
       <button class="chip" data-filter="photo" onclick="setRdFilter('photo', this)">影相流程</button>
       <button class="chip" data-filter="banquet" onclick="setRdFilter('banquet', this)">午宴／證婚</button>
     </div>
@@ -356,6 +368,21 @@
       </div>
     </div>
 
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num" id="statSeatAngpaoTotal">$0</div>
+        <div class="stat-lbl">人情總額</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="statSeatAngpaoCount">0</div>
+        <div class="stat-lbl">登記人情數量</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="statSeatUnpaidCount">0</div>
+        <div class="stat-lbl">未填人情</div>
+      </div>
+    </div>
+
     <div class="card">
       <h2>加人／新增座位</h2>
       <div class="row">
@@ -363,6 +390,7 @@
         <input type="text" id="guestTableInput" placeholder="桌數（例：第1圍 / 主家席）">
       </div>
       <div class="row">
+        <input type="number" id="guestAmountInput" inputmode="decimal" placeholder="人情多少（可留空）">
         <select id="guestCheckinInput">
           <option value="未到">未到</option>
           <option value="已經到">已經到</option>
@@ -372,7 +400,7 @@
     </div>
 
     <div class="card">
-      <h2>Setting Plan 座位及簽到列表 <span class="sub" style="margin:0" id="guestFilterLabel"></span></h2>
+      <h2>Seating Plan 座位及簽到列表 <span class="sub" style="margin:0" id="guestFilterLabel"></span></h2>
       <div class="row">
         <input type="text" id="guestSearchInput" placeholder="搜尋人名或桌數..." oninput="renderSeating()">
         <select id="tableFilterSelect" onchange="renderSeating()">
@@ -447,7 +475,7 @@
   </button>
   <button class="tab-btn" data-tab="seating" onclick="switchTab('seating', this)">
     <span class="tab-icon">🪑</span>
-    <span>Setting Plan</span>
+    <span>Seating Plan</span>
   </button>
   <button class="tab-btn" data-tab="angpao" onclick="switchTab('angpao', this)">
     <span class="tab-icon">🧧</span>
@@ -675,13 +703,14 @@ function generateDefaultGuests() {
       id: "g_" + (i + 1),
       name,
       table: tables[Math.floor(i / 10)],
-      checkin: "未到"
+      checkin: "未到",
+      amount: ""
     });
   }
   return list;
 }
 
-const STORAGE_KEY = "wedding_hub_state_v4";
+const STORAGE_KEY = "wedding_hub_state_v5";
 let state = loadState();
 let currentRdFilter = "all";
 
@@ -695,7 +724,8 @@ function loadState() {
           id: g.id,
           name: g.name,
           table: g.table || "未編排",
-          checkin: g.checkin || (g.arrived ? "已經到" : "未到")
+          checkin: g.checkin || (g.arrived ? "已經到" : "未到"),
+          amount: g.amount === undefined ? "" : g.amount
         }));
       }
       return parsed;
@@ -769,7 +799,8 @@ async function syncAll() {
           id: g.id,
           name: g.name,
           table: g.table || "未編排",
-          checkin: g.checkin || (g.arrived ? "已經到" : "未到")
+          checkin: g.checkin || (g.arrived ? "已經到" : "未到"),
+          amount: g.amount === undefined ? "" : g.amount
         }));
       }
       if (Array.isArray(data.angpao)) state.angpao = data.angpao;
@@ -839,15 +870,18 @@ function populateTableFilter() {
 function addGuest() {
   const name = document.getElementById("guestNameInput").value.trim();
   const table = document.getElementById("guestTableInput").value.trim() || "未編排";
+  const amountRaw = document.getElementById("guestAmountInput").value;
   const checkin = document.getElementById("guestCheckinInput").value || "未到";
   if (!name) return;
   state.guests.unshift({
     id: "g_" + Date.now(),
     name,
     table,
-    checkin
+    checkin,
+    amount: amountRaw === "" ? "" : Number(amountRaw)
   });
   document.getElementById("guestNameInput").value = "";
+  document.getElementById("guestAmountInput").value = "";
   saveState();
   populateTableFilter();
   renderSeating();
@@ -861,6 +895,23 @@ function toggleCheckin(id) {
   renderSeating();
 }
 
+function updateGuestAmount(id, val) {
+  const g = state.guests.find(x => x.id === id);
+  if (!g) return;
+  g.amount = val === "" ? "" : Number(val);
+  saveState();
+  updateSeatAngpaoStats();
+}
+
+function updateSeatAngpaoStats() {
+  const withAmt = state.guests.filter(g => typeof g.amount === "number" && !isNaN(g.amount));
+  const total = withAmt.reduce((sum, g) => sum + g.amount, 0);
+  const unpaid = state.guests.filter(g => g.amount === "" || g.amount === null || g.amount === undefined || isNaN(Number(g.amount))).length;
+  document.getElementById("statSeatAngpaoTotal").textContent = "$" + total.toLocaleString();
+  document.getElementById("statSeatAngpaoCount").textContent = withAmt.length;
+  document.getElementById("statSeatUnpaidCount").textContent = unpaid;
+}
+
 function renderSeating() {
   const q = document.getElementById("guestSearchInput").value.trim().toLowerCase();
   const tbl = document.getElementById("tableFilterSelect").value;
@@ -870,9 +921,10 @@ function renderSeating() {
   document.getElementById("statTotalGuests").textContent = state.guests.length;
   document.getElementById("statArrived").textContent = arrivedCount;
   document.getElementById("statTables").textContent = tableCount;
+  updateSeatAngpaoStats();
 
   const filtered = state.guests.filter(g => {
-    const matchQ = !q || g.name.toLowerCase().includes(q) || g.table.toLowerCase().includes(q) || g.checkin.toLowerCase().includes(q);
+    const matchQ = !q || g.name.toLowerCase().includes(q) || g.table.toLowerCase().includes(q) || g.checkin.toLowerCase().includes(q) || String(g.amount).includes(q);
     const matchT = tbl === "ALL" || g.table === tbl;
     return matchQ && matchT;
   });
@@ -885,9 +937,12 @@ function renderSeating() {
         <div class="list-title">${g.name}</div>
         <div class="list-meta">${g.table}</div>
       </div>
-      <button class="checkin-btn ${isYes ? "checkin-yes" : "checkin-no"}" onclick="toggleCheckin('${g.id}')">
-        ${g.checkin}
-      </button>
+      <div class="seat-right">
+        <input type="number" inputmode="decimal" class="seat-amt-input" placeholder="人情金額" value="${g.amount}" onchange="updateGuestAmount('${g.id}', this.value)">
+        <button class="checkin-btn ${isYes ? "checkin-yes" : "checkin-no"}" onclick="toggleCheckin('${g.id}')">
+          ${g.checkin}
+        </button>
+      </div>
     </div>`;
   }).join("");
 }
