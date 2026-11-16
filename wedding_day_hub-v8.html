@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>2026.11.22 Angela & Vincent Wedding Day Hub v8</title>
+<title>2026.11.22 Angela & Vincent Wedding Day Hub v9</title>
 <style>
   :root {
     --bg: #f6f4f0;
@@ -16,6 +16,8 @@
     --accent-soft: #f2e8df;
     --ok: #2e7d5b;
     --ok-bg: #e7f5ee;
+    --warn: #b26a00;
+    --warn-bg: #fff3e0;
     --line: #e5e0d8;
     --tab-h: 64px;
   }
@@ -25,9 +27,51 @@
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang HK", "Noto Sans TC", sans-serif;
     background: var(--bg);
     color: var(--ink);
-    padding-bottom: calc(var(--tab-h) + 24px);
+    padding-bottom: calc(var(--tab-h) + 28px);
     line-height: 1.45;
   }
+  /* 密碼鎖遮罩 */
+  #lockScreen {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  #lockScreen.hidden { display: none; }
+  .lock-card {
+    width: 100%;
+    max-width: 380px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 24px 20px;
+    text-align: center;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+  }
+  .lock-card h2 { margin: 0 0 6px; font-size: 18px; }
+  .lock-card p { margin: 0 0 16px; font-size: 13px; color: var(--muted); }
+  .pin-input {
+    width: 100%;
+    text-align: center;
+    font-size: 22px;
+    letter-spacing: 8px;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    background: #fff;
+  }
+  .lock-err {
+    color: #c62828;
+    font-size: 12px;
+    min-height: 18px;
+    margin-bottom: 8px;
+  }
+
   header {
     position: sticky;
     top: 0;
@@ -46,7 +90,7 @@
   }
   header h1 {
     margin: 0;
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 700;
     letter-spacing: -0.01em;
   }
@@ -59,6 +103,15 @@
     font-weight: 600;
     white-space: nowrap;
   }
+  .sync-pill {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .sync-pill.live { background: var(--ok-bg); color: var(--ok); }
+  .sync-pill.offline { background: var(--warn-bg); color: var(--warn); }
   .toolbar {
     margin-top: 8px;
     display: flex;
@@ -67,6 +120,29 @@
     align-items: center;
     font-size: 12px;
     color: var(--muted);
+  }
+  .outdoor-bar {
+    margin-top: 8px;
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+  .outdoor-pill {
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--ink);
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .outdoor-pill:active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
   }
   .btn {
     border: none;
@@ -83,6 +159,7 @@
     background: var(--accent-soft);
     color: var(--accent);
   }
+  .btn-block { width: 100%; padding: 11px; font-size: 13px; }
   main {
     padding: 14px 14px 0;
     max-width: 780px;
@@ -105,12 +182,17 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
   }
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 8px;
     margin-bottom: 12px;
+  }
+  .stats-grid.three-col {
+    grid-template-columns: repeat(3, 1fr);
   }
   .stat-box {
     background: var(--card);
@@ -142,7 +224,30 @@
     border-color: var(--accent);
     font-weight: 600;
   }
-  input[type="text"], input[type="number"], select {
+  .mode-switch {
+    display: inline-flex;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 3px;
+    gap: 3px;
+  }
+  .mode-switch button {
+    border: none;
+    background: transparent;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .mode-switch button.active {
+    background: var(--card);
+    color: var(--accent);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  }
+  input[type="text"], input[type="number"], input[type="password"], select {
     padding: 8px 10px;
     border: 1px solid var(--line);
     border-radius: 10px;
@@ -227,7 +332,7 @@
     backdrop-filter: blur(12px);
     border-top: 1px solid var(--line);
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     z-index: 30;
   }
   nav.tabbar button {
@@ -245,24 +350,55 @@
   }
   nav.tabbar button.active { color: var(--accent); }
   .done-text { text-decoration: line-through; color: var(--muted); }
+  .locked-only { display: none; }
+  body.unlocked .locked-only { display: block; }
+  body.unlocked .locked-only-flex { display: flex; }
+  .locked-only-flex { display: none; }
 </style>
 </head>
 <body>
+
+<!-- 1122 密碼鎖畫面 -->
+<div id="lockScreen">
+  <div class="lock-card">
+    <div class="badge" style="margin-bottom:8px;">2026.11.22 Angela &amp; Vincent</div>
+    <h2>Wedding Day Hub 密碼鎖</h2>
+    <p>兄弟姊妹／工作人員請輸入 4 位數密碼解鎖完整流程與物資；其他賓客可直接查位。</p>
+    <input type="password" id="pinInput" class="pin-input" inputmode="numeric" maxlength="4" placeholder="••••" onkeyup="if(event.key==='Enter')unlockHub()">
+    <div class="lock-err" id="lockErr"></div>
+    <button class="btn btn-block" onclick="unlockHub()" style="margin-bottom:8px;">解鎖完整 Hub</button>
+    <button class="btn btn-secondary btn-block" onclick="enterSeatingRefOnly()">👀 直接睇 Seating 參考版（無人情）</button>
+  </div>
+</div>
+
 <header>
   <div class="header-top">
-    <h1>2026.11.22 Angela & Vincent Wedding Hub</h1>
-    <span class="badge">黃金海岸酒店 → 遊艇會</span>
+    <h1>2026.11.22 Angela &amp; Vincent Hub</h1>
+    <div style="display:flex; gap:6px; align-items:center;">
+      <span id="syncBadge" class="sync-pill offline">離線暫存</span>
+      <span class="badge">黃金海岸 → 遊艇會</span>
+    </div>
   </div>
   <div class="toolbar">
-    <button class="btn btn-secondary" onclick="exportJSON()">匯出備份 JSON</button>
-    <button class="btn btn-secondary" onclick="resetState()">還原 Excel 預設資料</button>
-    <span id="saveStatus">已自動儲存至本機</span>
+    <span class="locked-only-flex" style="gap:8px; flex-wrap:wrap; align-items:center;">
+      <button class="btn btn-secondary" onclick="exportJSON()">匯出備份 JSON</button>
+      <button class="btn btn-secondary" onclick="resetState()">還原預設資料</button>
+    </span>
+    <button class="btn btn-secondary" id="lockToggleBtn" onclick="lockHub()">🔒 鎖定／切換模式</button>
+    <span id="saveStatus">已自動儲存</span>
+  </div>
+  <!-- 戶外流程快速切換按鈕 -->
+  <div class="outdoor-bar locked-only-flex">
+    <button class="outdoor-pill" onclick="jumpOutdoor('出門')">🚐 出門／敬茶</button>
+    <button class="outdoor-pill" onclick="jumpOutdoor('證婚')">💍 戶外證婚</button>
+    <button class="outdoor-pill" onclick="jumpOutdoor('午宴')">🥂 午宴／補奉茶</button>
+    <button class="outdoor-pill" onclick="jumpOutdoor('尾數')">📦 尾數／回程</button>
   </div>
 </header>
 
 <main>
   <!-- TAB 1: RUNDOWN -->
-  <section id="tab-rundown" class="panel active">
+  <section id="tab-rundown" class="panel">
     <div class="card">
       <h2>Whole Day Rundown（拍攝：White Production）</h2>
       <div class="filter-row" id="rundownFilters"></div>
@@ -270,10 +406,24 @@
     </div>
   </section>
 
-  <!-- TAB 2: SEATING PLAN -->
-  <section id="tab-seating" class="panel">
-    <div class="stats-grid" id="seatingStats"></div>
+  <!-- TAB 2: SEATING PLAN（含無人情參考版 + 完整版） -->
+  <section id="tab-seating" class="panel active">
     <div class="card">
+      <h2>
+        <span>Seating Plan V5 座位表</span>
+        <span class="mode-switch" id="seatingModeSwitch">
+          <button type="button" id="btnSeatingRef" class="active" onclick="setSeatingMode('REF')">無人情參考版</button>
+          <button type="button" id="btnSeatingFull" class="locked-only" onclick="setSeatingMode('FULL')">完整版（含人情）</button>
+        </span>
+      </h2>
+      <div id="seatingModeHint" style="font-size:12px; color:var(--muted);">
+        參考版只顯示賓客姓名、枱號、男／女家及到場狀態，方便無關人情崗位嘅朋友快速查位。
+      </div>
+    </div>
+
+    <div class="stats-grid" id="seatingStats"></div>
+
+    <div class="card locked-only" id="addGuestCard">
       <h2>新增座位／臨時加人</h2>
       <div style="display:flex; gap:6px; flex-wrap:wrap;">
         <input type="text" id="newGuestName" placeholder="賓客姓名" style="flex:1; min-width:120px;">
@@ -298,8 +448,9 @@
         <button class="btn" onclick="addGuest()">新增</button>
       </div>
     </div>
+
     <div class="card">
-      <h2>Seating Plan V5 賓客名單</h2>
+      <h2 id="seatingListTitle">Seating Plan V5 賓客名單（無人情參考版）</h2>
       <div style="display:flex; gap:6px; margin-bottom:8px; flex-wrap:wrap;">
         <input type="text" id="seatingSearch" placeholder="搜尋姓名或枱號..." oninput="renderSeating()" style="flex:1; min-width:150px;">
         <div class="filter-row" id="tableFilterChips" style="margin-bottom:0;"></div>
@@ -328,7 +479,7 @@
 
   <!-- TAB 4: 物資表 -->
   <section id="tab-materials" class="panel">
-    <div class="stats-grid" id="materialsStats" style="grid-template-columns: repeat(3, 1fr);"></div>
+    <div class="stats-grid three-col" id="materialsStats"></div>
     <div class="card">
       <h2>新增物資項目</h2>
       <div style="display:flex; gap:6px; flex-wrap:wrap;">
@@ -357,359 +508,33 @@
       <div id="materialsContainer"></div>
     </div>
   </section>
-
-  <!-- TAB 5: 人情／金器匯總 -->
-  <section id="tab-angpao" class="panel">
-    <div class="stats-grid" id="angpaoStats"></div>
-    <div class="card">
-      <h2>人情登記明細（同步 Seating Plan）</h2>
-      <div id="angpaoContainer"></div>
-    </div>
-  </section>
 </main>
 
 <nav class="tabbar">
-  <button class="active" data-tab="rundown" onclick="switchTab('rundown', this)"><span>📅</span><span>Rundown</span></button>
-  <button data-tab="seating" onclick="switchTab('seating', this)"><span>🪑</span><span>Seating</span></button>
-  <button data-tab="ceremony" onclick="switchTab('ceremony', this)"><span>🍵</span><span>奉茶／合照</span></button>
-  <button data-tab="materials" onclick="switchTab('materials', this)"><span>📦</span><span>物資表</span></button>
-  <button data-tab="angpao" onclick="switchTab('angpao', this)"><span>🧧</span><span>人情匯總</span></button>
+  <button class="locked-only-flex" data-tab="rundown" onclick="switchTab('rundown', this)"><span>📅</span><span>Rundown</span></button>
+  <button class="active" data-tab="seating" onclick="switchTab('seating', this)"><span>🪑</span><span>Seating</span></button>
+  <button class="locked-only-flex" data-tab="ceremony" onclick="switchTab('ceremony', this)"><span>🍵</span><span>奉茶／合照</span></button>
+  <button class="locked-only-flex" data-tab="materials" onclick="switchTab('materials', this)"><span>📦</span><span>物資表</span></button>
 </nav>
 
+<!-- Firebase Realtime Database Compat SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
 <script>
-const STORAGE_KEY = "wedding_hub_state_v8_1122";
-const INITIAL_DATA = {"rundown": [{"phase": "一、出門及過場 (黃金海岸酒店 → 遊艇會)", "items": [{"id": "rd_5", "time": "03:00 - 06:00", "text": "Angela 食早餐\n3:30 am 化妝師及助手到達, Angela 開始化妝\n(~2hrs 30mins)", "material": "套房 - 新娘裙褂、褂鞋、飾物、護膚品、急救袋、飲用水吸管", "sister": ["LingLing：聯絡化妝師 Emily、姊妹化妝師"], "brother": [], "done": false}, {"id": "rd_6", "time": "03:30 - 06:00", "text": "姊妹開始化妝\n3:30 am化2位姊妹 (LingLing, 懿雅)\n4:15 am化2位 姊妹 (Hilary, Eunice)\n5:00 am化1位姊妹 (阿蜆) + Angela媽媽 \n5:45 am化Vincent + Vincent 媽媽 + Vincent妹妹", "material": "姊妹房 1 - \n姊妹食早餐 及輪流化妝 \n\n套房 - 有時間可預備定物資, 如︰敬茶用品\n\nBag  - 酒店房佈置物資 + 道具\nBag  - 敬茶用品", "sister": ["懿雅：派手花(姊妹)、派利是俾姊妹化妝師 \n、提Angela派利是俾化妝師/化妝師助手", "Hilary & 蜆：準備茶(茶葉、紅棗、蓮子)，跪墊，執枱準備", "Eunice：幫忙點算物資(請帖, 高踭鞋, 花球, 金器)"], "brother": ["Vincent：姊妹房 1\n5:45 am 化妝 + 著馬掛 + 繡球"], "done": false}, {"id": "rd_9", "time": "06:00 - 07:00", "text": "5:45 am 攝影師到達黃金海岸酒店\n攝影師拍花絮, 姊妹團影相", "material": "Bag - 酒店房佈置物資 + 道具\nBag - 敬茶用品\n\n【姊妹】跪墊x2、斟茶茶具x2、茶葉、紅棗、蓮子、 褂、褂鞋 、紅傘x1、姊妹利是x5、姊妹禮物", "sister": ["Angela：派利是俾攝影師x 3"], "brother": ["Vincent：派襟花 x5 給兄弟\n派兄弟利是 x 5 + 保管開門利是x 2\n所有利是給 *兄弟1保管 (俾利是袋給*Darren保管)\n+ 少量備用利是給*Lun保管", "兄弟 / Vincent：[6:00 - 6:30 食早餐］", "Frankie + 城哥：[06:30］執定兄弟團花絮props出黎", "*Terry：[6:45］所有兄弟到達, 換好衫"], "done": false}, {"id": "rd_13", "time": "跟進", "text": "姊妹準備物資\n-攝影師拍花絮, 姊妹團影相\n- Angela: 著褂, 派姊妹利是, 拋彩條, props影相 (eg. sunglasses)", "material": "", "sister": ["令令 & 懿雅：幫Angela著掛", "蜆：派2襟花2手花 to Angela家人"], "brother": ["Lun + Darren：[7am前] Angela爸爸 、哥哥、Amy到達 (兄弟3 迎接帶去套房)"], "done": false}, {"id": "rd_15", "time": "07:00 - 07:30", "text": "接新娘環節\n- 姊妹準備迎門 & 開門利是 & 快玩Game 1個\n- 愛的宣言(5 mins) (只有Vincent講)", "material": "開門利是 x2\nBag 3 - 新郎兄弟中式拍攝道具", "sister": ["令令 & 懿雅：收利是\nfacetime Angela", "Hilary & Eunice：Hold game & 做MC", "蜆：手機側拍"], "brother": ["Vincent：-派開門利是x2\n-愛的宣言", "所有兄弟：玩game, enjoy"], "done": false}, {"id": "rd_18", "time": "07:30 - 07:45", "text": "女家奉茶\n[7am前] Angela爸爸 、哥哥、Amy到達\n\n新人敬茶及拍照 \n(Angela 父母)\n(Angela 哥哥)", "material": "Bag  - 敬茶用品\n\n跪墊x2、斟茶茶具x2、\n茶葉、紅棗、蓮子、\n紙杯、花車利是、\n金器袋", "sister": ["令令：幫戴金器", "懿雅：收金器/利是、貼LABEL", "Hilary：準備茶 (紅棗、蓮子)", "Eunice：協助遞茶, 企隔離, 講吉利說話", "蜆：用手機影花絮", "懿雅：pass 姊妹房1 房卡 比Angela 爸爸\nAngela媽媽回睡收拾"], "brother": ["Darren：保管套房房卡  x1", "所有兄弟：講吉利說話 + 氣氛小組", "Terry：手機影花絮", "城哥：聯絡男家家人ready到套房"], "done": false}, {"id": "rd_24", "time": "07:45", "text": "新人+兄弟姊妹團+女家家人出門\n男家家人到套房準備", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_25", "time": "07:45 - 08:00", "text": "出門影相 (撒米, 紅遮)", "material": "", "sister": ["Hilary：擔紅遮送Angela岀門", "Eunice：撒米 (負站在新人斜後方，把米往「上方、紅遮頂」拋灑，切勿直接往新人臉上或頭上砸。", "蜆：用手機影花絮"], "brother": [], "done": false}, {"id": "rd_28", "time": "08:00 - 08:15", "text": "男家奉茶\n\n新人敬茶及拍照 \n(Vincent 父母)\n(Vincent 細姨 & 姨丈)\n\nVincent 派利是比妹妹", "material": "", "sister": ["令令：幫戴金器", "懿雅：收金器/利是、貼LABEL", "Hilary：準備茶 (紅棗、蓮子)", "Eunice：協助遞茶, 企隔離, 講吉利說話", "蜆：用手機影花絮"], "brother": ["所有兄弟：講吉利說話 + 氣氛小組", "Darren：遞妹妹利是比Vinvent", "Terry：手機影花絮", "Frankie：拎齊兄弟團花絮props, 準備拍攝\n（黑超／扇 etc）"], "done": false}, {"id": "rd_33", "time": "08:15 - 08:30", "text": "新人拍攝花絮", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_34", "time": "08:30 - 08:45", "text": "Angela\n除褂，除金器", "material": "", "sister": ["令令：keep金器 + 利是", "懿雅：收拾房間, 交房卡比Darren", "Hilary：幫Angela除褂, 收拾好放物資房 (Lun), \n套房拎白熊結婚公仔", "蜆：收拾房間, 交房卡比Darren", "Eunice：Call Ray幫手出車, 收拾房間"], "brother": ["Vincent + 所有兄弟：拍攝"], "done": false}, {"id": "rd_39", "time": "08:45 - 09:00", "text": "過場 (黃金海岸酒店 > 黃金海岸遊艇會會場)\n第1批 [8:50出車, 9:00到達]：Angela + 化妝師 Emily + 令令 + 懿雅\n第2批：Eunice + Angela 爸爸 、哥哥、Amy\n第3批：Grace + Hilary + 蜆 + Angela 媽媽\n\nRay幫忙泊車, 車匙比Eunice", "material": "", "sister": ["懿雅：提Angela比利是Ray"], "brother": [], "done": false}, {"id": "rd_41", "time": "08:30 - 09:00", "text": "Vincent\n新郎兄弟組拍攝花絮", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_42", "time": "09:00 - 10:00", "text": "Angela 轉證婚造型", "material": "- 油畫, BB迎賓牌, 相簿x1, 簽名卷釉x1, 簽名筆x5, 白熊結婚公仔, 文具雜項物資", "sister": ["懿雅：- 金器鎖新娘房保險箱, Keep新娘房鎖匙", "Eunice：確保所有人員到場 + 會場聯絡\n- MC Jessica \n- Deco (9am到場)\n- Photobooth \n\n鄭國杰律師 － 確認10am到場\n(93025693 / 91931787)", "懿雅 + Eunice：派利是比:\n- 會場 (Boey)\n- MC Jessica \n- Deco (9am到場)\n- Photobooth", "令令 + Eunice：Decoration: \n- 放油畫\n- 放BB迎賓牌\n- 迎賓枱 & 相簿枱 (相簿x1, 簽名卷釉x1, 簽名筆x5, 文具雜項物資)\n- 白熊結婚公仔", "None：Check with Deco公司set up, make sure 靚\n(Sasa Chan: 6161 9322)\n證婚草地:\n1. 絲花拱門 (+ 人名牌)\n2. 地花 8個\n3. 迎賓枱佈置\n4. Welcome board 1個\n5. 證婚枱花 1個\n\n室內宴會廳：\n1. 8x16尺布藝（包柱花1對+地花1對）\n2.全頂花藝\n3. 掛吊燈左右各1組\n4. DietCut人名牌", "Hilary + 蜆：準備證婚物資", "Hilary：(1) 問Angela & Vincent & Angela 媽媽 & Vincent 爸爸拎身份證\n* 保管一共4張身份證 (show比律師)\n(2) 保管證婚套，把證婚書放在證書套內\n(3) 保管誓詞卡\n(4) 保管Angela 電話"], "brother": ["Vincent + Lun：返物資房換白色西裝\n夾萬拎結婚戒指\nLun Keep物資房卡 + 對戒 + 新郎手機", "城哥/Frankie/Darren/Lun：收拾房間+出門套房", "Darren：收齊6張房卡，酒店check out", "Lun：確保所有物資鎖好物資房，保管物資房卡\n（唔好比Darren還）", "Terry：拎車 － 過場 (黃金海岸酒店 > 黃金海岸遊艇會會場)\n第1批： Frankie(拎自己野) + 攝影師 （3人）[9:00 出發]\n第2批： 新郎家人（3人）+ 新郎 [9:15出發]\n第3批：Lun + Darren + Frankie + 城哥 [9:30出發]\n第4批：細姨＋姨丈 （tbc）\n\nTerry泊車", "Vincent：到新娘房拎襟花 ＋ 交低身份證"], "done": false}, {"id": "rd_49", "time": "09:30", "text": "崗位跟進", "material": "", "sister": ["蜆：(1) 派襟花比Vincent\n(2) 保管Angela 兩紮捧花\n - 主捧花 for Angela 進場 \n - 次捧花 for 拋花球用\n(3) 保管泡泡槍\n(4) 保管Angela 電話"], "brother": ["Frankie：同Eunice夾, 確保人員到場 + 會場聯絡\n會場 － Boey Lai：2404 3280\n\n聯絡Deco公司拎 2紮感恩花 －＞ 聯絡會場存放\nSasa：6161 9322", "城哥：致電巴士司機\n確保賓客已到，9點半能夠出車\n\ncheck 所有野正常\n＞門口 Photoslide show / Seating Plan \n＞會場播緊Background Music \n保管USB－＞交比會場工作人員", "[9:45所有兄弟到會場]：None"], "done": false}, {"id": "rd_52", "time": "10:00 - 10:30", "text": "Reception 投入服務", "material": "", "sister": ["Eunice + 令令 + 懿雅：10am前stand by\n- Reception + 點人名\n- 令令 Keep女家人情 (mark name & account)\n- 派菲林相機+任務卡 (小梁, Franklin, Maurice)\n詳情＞賓客名單"], "brother": ["Darren + Lun +\n Terry：10am前stand by\n- Reception + 點人名\n- Darren Keep男家人情  (mark name & account)\n- 派菲林相機+任務卡 (Cecilia, Jennifer)\n詳情＞賓客名單"], "done": false}, {"id": "rd_53", "time": "跟進", "text": "賓客到達合場", "material": "", "sister": [], "brother": ["Vincent + 城哥：迎賓"], "done": false}, {"id": "rd_54", "time": "跟進", "text": "穿梭巴士到達會場", "material": "", "sister": ["懿雅：派利是比巴士司機 & 律師"], "brother": [], "done": false}, {"id": "rd_55", "time": "跟進", "text": "律師到場Briefing", "material": "Angela + Angela媽媽 + Vincent + Vincent爸爸", "sister": ["Hilary：(1) 保管一共4張身份證 (show比律師)\n(2) 保管證婚套，把證婚書放在證書套內, 放證婚枱上\n(3) 保管誓詞卡"], "brother": [], "done": false}, {"id": "rd_56", "time": "10:20 - 10:30", "text": "準備證婚開始", "material": "Angela + Angela 爸爸+ Angela 媽媽standby\n拍攝幫新娘戴頭紗影花絮", "sister": ["懿雅 + Eunice：幫忙叫賓客就座\n令令留守Reception until match in", "Hilary：拍攝花絮後帶Angela 媽媽就座"], "brother": ["Frankie + 城哥 + Terry：幫忙叫賓客到戶外草地就座", "Darren：留守Reception until match in"], "done": false}, {"id": "rd_59", "time": "證婚儀式", "text": "崗位跟進", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_60", "time": "10:30 - 11:30", "text": "證婚儀式正式開始", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_61", "time": "跟進", "text": "司儀致歡迎辭", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_62", "time": "跟進", "text": "新郎進場", "material": "新郎進場音樂", "sister": [], "brother": [], "done": false}, {"id": "rd_63", "time": "跟進", "text": "外父帶新娘進場", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_64", "time": "跟進", "text": "交接儀式", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_65", "time": "跟進", "text": "宣讀誓辭 (Vincent > Angela)", "material": "", "sister": ["Hilary：(1) 比新朗誓詞卡 Lun\n(2) 遞誓詞卡比Angela"], "brother": ["Lun：遞誓詞卡比Vincent"], "done": false}, {"id": "rd_66", "time": "跟進", "text": "交換戒指 (Vincent > Angela)", "material": "", "sister": ["Hilary：(1) 從Lun手上接戒指\n(2) 遞結婚戒指比Angela"], "brother": ["Lun：(1) 遞結婚戒指比Vincent\n(2) 結婚戒指盒比Hilary"], "done": false}, {"id": "rd_67", "time": "跟進", "text": "揭頭紗", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_68", "time": "跟進", "text": "吻賀", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_69", "time": "跟進", "text": "簽紙儀式", "material": "Angela + Angela媽媽 + Vincent + Vincent爸爸", "sister": ["Hilary：證婚後：保管證書套、誓詞套、Angela & Vincvent HKID card\""], "brother": [], "done": false}, {"id": "rd_70", "time": "跟進", "text": "新人與主人家合照", "material": "Angela + Vincent + 四大長老", "sister": ["Eunice + 懿雅：去reception拎泡泡槍X2 準備"], "brother": ["Terry + Darren：去reception拎泡泡槍X2 準備"], "done": false}, {"id": "rd_71", "time": "跟進", "text": "March out", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_72", "time": "跟進", "text": "Re-March in (兄弟姊妹放泡泡)", "material": "", "sister": ["Eunice + 懿雅：放泡泡"], "brother": ["Terry + Darren：放泡泡"], "done": false}, {"id": "rd_73", "time": "跟進", "text": "拋花球 (姊妹拎定專用花球)", "material": "", "sister": ["蜆：遞拋花球專用捧花比Angela"], "brother": ["所有兄弟：邀請大家比黎接花球"], "done": false}, {"id": "rd_74", "time": "跟進", "text": "切真餅", "material": "", "sister": ["所有姊妹：企新人兩排拍手歡呼"], "brother": ["所有兄弟：企新人兩排拍手歡呼"], "done": false}, {"id": "rd_75", "time": "跟進", "text": "合照時間", "material": "", "sister": [], "brother": ["Terry：幫忙手機側拍／賓客電話幫拍", "城哥 + Darren：檢查每枱座位桌上已擺放好：（如未有請搵搵會場工作人員）\n1.) 魚子醬\n2.) 回禮小禮物"], "done": false}, {"id": "rd_77", "time": "11:30 - 12:00", "text": "新娘新郎換進場造型、新郎迎賓", "material": "", "sister": ["蜆：陪Angela換造型（新娘房）", "Eunice + Hilary：宴會廳物資：\n- 紙杯、紅棗、蓮子比宴會廳職員\n- 小遊戲 (刮刮卡 + 禮物)", "其他姊妹：Guide 賓客到室內宴會廳 / 邀請賓客玩自拍機"], "brother": ["Lun：陪Vincent換造型（新娘房）", "Frankie + 城哥：幫手姊妹團拎物資（Eunice + Hilary)", "其他兄弟：Guide 賓客到室內宴會廳 / 邀請賓客玩自拍機"], "done": false}, {"id": "rd_80", "time": "午宴", "text": "崗位跟進", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_81", "time": "12:00", "text": "午宴開席", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_82", "time": "跟進", "text": "Reception 結束", "material": "", "sister": ["令令 + 懿雅：keep人情袋 + 收Darren人情袋\n放入新娘房"], "brother": ["Darren：交人情袋比令令 + 懿雅"], "done": false}, {"id": "rd_83", "time": "跟進", "text": "司儀致歡迎辭", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_84", "time": "跟進", "text": "成長片段", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_85", "time": "跟進", "text": "新人進場", "material": "01_進場音樂", "sister": ["兄弟姊妹拍手：None"], "brother": [], "done": false}, {"id": "rd_86", "time": "跟進", "text": "切 Dummy cake", "material": "02_儀式音樂", "sister": [], "brother": [], "done": false}, {"id": "rd_87", "time": "跟進", "text": "合巹交杯＋世紀之吻", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_88", "time": "跟進", "text": "致謝辭", "material": "", "sister": ["蜆：遞Angela 電話比Angela"], "brother": ["Lun：遞Vincent電話 & 誓詞卡x2 比Vincent & Angela"], "done": false}, {"id": "rd_89", "time": "跟進", "text": "台上送感恩花 (2 束俾奶奶+外母)", "material": "", "sister": [], "brother": ["Frankie：搵定工作人員，準備感恩花x2"], "done": false}, {"id": "rd_90", "time": "跟進", "text": "6人祝酒", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_91", "time": "12:30", "text": "自助餐開始", "material": "MC 會宣佈逐枱分流，主家席先行", "sister": [], "brother": [], "done": false}, {"id": "rd_92", "time": "12:45", "text": "補奉茶儀式 (男家 x7 , 女家x9)", "material": "", "sister": ["蜆：協助Angela 奉茶儀式"], "brother": ["Lun：協助 Vincent 奉茶儀式"], "done": false}, {"id": "rd_93", "time": "13:15", "text": "刮刮卡小遊戲", "material": "", "sister": ["所有姊妹：派刮刮卡 + 硬幣 (每枱兩三個) + 參與遊戲"], "brother": ["所有兄弟：派刮刮卡 + 硬幣 (每枱兩三個) + 參與遊戲", "Terry + 城哥：上台領獎時幫手遞禮物"], "done": false}, {"id": "rd_95", "time": "13:30", "text": "合照環節", "material": "", "sister": [], "brother": ["Frankie：聯絡攝影師 confirm幾時可以播放「早拍午播」，再update MC Jessica"], "done": false}, {"id": "rd_96", "time": "~13:45", "text": "播放早拍午播花絮片", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_97", "time": "跟進", "text": "敬酒", "material": "05_敬酒音樂", "sister": ["飲!：None"], "brother": [], "done": false}, {"id": "rd_98", "time": "14:00", "text": "崗位跟進", "material": "", "sister": [], "brother": ["Darren：photobooth收拾後， 接收一本guest book"], "done": false}, {"id": "rd_99", "time": "14:15", "text": "歡送賓客 / 宴會結束", "material": "06_送客音樂", "sister": ["新郎新娘+雙方父母送客+Eunice + Lun：送客\nEunice + Lun 回收菲林相機x5", "Hilary + 令令 + 懿雅 + 蜆：收拾物資"], "brother": ["新郎新娘+雙方父母送客+Eunice + Lun：送客\nEunice + Lun 回收菲林相機x5", "Terry + 城哥 + Frankie + Darren：收拾物資"], "done": false}]}, {"phase": "四、尾數及回程 (14:30 - 15:30+)", "items": [{"id": "rd_101", "time": "14:30", "text": "兩架50座旅遊巴開出", "material": "地點：\n1.) 沙田火車站\n2.) 旺角海景中心", "sister": [], "brother": [], "done": false}, {"id": "rd_102", "time": "14:30", "text": "Angela 補妝換衫", "material": "Angela 媽媽 + Vincent 家人 - \n自行回酒店定等待拍攝結束", "sister": [], "brother": [], "done": false}, {"id": "rd_103", "time": "14:45 - 15:30", "text": "崗位跟進", "material": "", "sister": ["兄弟姊妹補影團隊相！：None"], "brother": [], "done": false}, {"id": "rd_104", "time": "15:30", "text": "比尾數\n- Deco\n- 化妝師\n- 攝影師\n- 會場", "material": "物資\n- 油畫, BB迎賓牌, 相簿x1, 簽名卷釉x1, 簽名筆x5, 白熊結婚公仔, 文具雜項物資\n- 證書套、誓詞套\n- 戒指盒, 新娘飾物\n- photobooth guest book\n- 婚紗 x 2 ; 禮服 x 1, backup 鞋\n- 捧花\n- 其他剩餘禮物\n- 利是, 賓客名單\n- 敬茶用品\n- USB", "sister": ["所有姊妹：收拾物資上車返酒店物資房", "Angela + Eunice + Hilary：跟車 \nAngela Keep 金器+人情+證書套、誓詞套+剩餘利是"], "brother": ["Terry + Vincent：拎車", "城哥 + Lun + Frankie + Darren：跟車 幫助搬物資"], "done": false}]}], "seating": [{"id": "s_1", "name": "Vincent", "table": "T.1 (Garden Room)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_2", "name": "鴻爸", "table": "T.1 (Garden Room)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_3", "name": "大舅父", "table": "T.1 (Garden Room)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_4", "name": "舅母", "table": "T.1 (Garden Room)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_5", "name": "細舅父", "table": "T.1 (Garden Room)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_6", "name": "大伯", "table": "T.1 (Garden Room)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_7", "name": "Angela", "table": "T.1 (Garden Room)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_8", "name": "鴻媽", "table": "T.1 (Garden Room)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_9", "name": "貞", "table": "T.1 (Garden Room)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_10", "name": "德仔", "table": "T.1 (Garden Room)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_11", "name": "公公", "table": "T.1 (Garden Room)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_12", "name": "妹妹", "table": "T.1 (Garden Room)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_13", "name": "心媽", "table": "T.2 (Garden Room)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_14", "name": "公公", "table": "T.2 (Garden Room)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_15", "name": "姨媽", "table": "T.2 (Garden Room)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_16", "name": "黃智姬", "table": "T.2 (Garden Room)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_17", "name": "華小霞", "table": "T.2 (Garden Room)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_18", "name": "劉敏", "table": "T.2 (Garden Room)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_19", "name": "姨婆", "table": "T.2 (Garden Room)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_20", "name": "鄭惠連 表姨媽", "table": "T.2 (Garden Room)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_21", "name": "鄭惠霞 表姨媽", "table": "T.2 (Garden Room)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_22", "name": "余蘭", "table": "T.2 (Garden Room)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_23", "name": "鄭妙淮", "table": "T.2 (Garden Room)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_24", "name": "彭偉豪", "table": "T.2 (Garden Room)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_25", "name": "心爸", "table": "T.3 (Garden Room)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_26", "name": "叔叔", "table": "T.3 (Garden Room)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_27", "name": "嬸嬸", "table": "T.3 (Garden Room)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_28", "name": "哥", "table": "T.3 (Garden Room)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_29", "name": "Amy", "table": "T.3 (Garden Room)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_30", "name": "珍嬸嬸", "table": "T.3 (Garden Room)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_31", "name": "嫲嫲", "table": "T.3 (Garden Room)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_32", "name": "鄧慶田 二叔公", "table": "T.3 (Garden Room)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_33", "name": "二叔婆", "table": "T.3 (Garden Room)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_34", "name": "鄧澤田 三叔公", "table": "T.3 (Garden Room)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_35", "name": "堂弟(俊賢)", "table": "T.3 (Garden Room)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_36", "name": "鄧兆裕 叔叔", "table": "T.3 (Garden Room)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_37", "name": "崔仲棋", "table": "T.5 (Garden Room)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_38", "name": "林浩民", "table": "T.5 (Garden Room)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_39", "name": "崔峻偉", "table": "T.5 (Garden Room)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_40", "name": "張金發", "table": "T.5 (Garden Room)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_41", "name": "張金華", "table": "T.5 (Garden Room)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_42", "name": "張金池", "table": "T.5 (Garden Room)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_43", "name": "崔潤婷", "table": "T.5 (Garden Room)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_44", "name": "victor", "table": "T.5 (Garden Room)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_45", "name": "張金發仔", "table": "T.5 (Garden Room)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_46", "name": "張金發老婆", "table": "T.5 (Garden Room)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_47", "name": "張金華老婆", "table": "T.5 (Garden Room)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_48", "name": "BB", "table": "T.6 (Garden Room)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_49", "name": "欣表姐", "table": "T.6 (Garden Room)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_50", "name": "Edmond表姐夫", "table": "T.6 (Garden Room)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_51", "name": "佩表姐", "table": "T.6 (Garden Room)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_52", "name": "Sam表姐夫", "table": "T.6 (Garden Room)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_53", "name": "表嫂", "table": "T.6 (Garden Room)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_54", "name": "子聰表哥", "table": "T.6 (Garden Room)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_55", "name": "鄧巧賢 姑婆", "table": "T.7 (The Deck)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_56", "name": "姐姐", "table": "T.7 (The Deck)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_57", "name": "候玉梅 表姑媽", "table": "T.7 (The Deck)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_58", "name": "候玉華 表姑媽", "table": "T.7 (The Deck)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_59", "name": "陳麗", "table": "T.7 (The Deck)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_60", "name": "陳麗男朋友", "table": "T.7 (The Deck)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_61", "name": "鄧偉康 表叔", "table": "T.7 (The Deck)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_62", "name": "鄧偉國 表叔", "table": "T.7 (The Deck)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_63", "name": "蓮姑婆", "table": "T.7 (The Deck)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_64", "name": "候玉珍 表姑媽", "table": "T.7 (The Deck)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_65", "name": "均嬋", "table": "T.7 (The Deck)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_66", "name": "懿雅", "table": "T.7 (The Deck)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_67", "name": "hayley", "table": "T.8 (The Deck)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_68", "name": "cecilia", "table": "T.8 (The Deck)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_69", "name": "yu", "table": "T.8 (The Deck)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_70", "name": "mandy", "table": "T.8 (The Deck)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_71", "name": "大頭", "table": "T.8 (The Deck)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_72", "name": "SAM", "table": "T.8 (The Deck)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_73", "name": "To", "table": "T.8 (The Deck)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_74", "name": "becky", "table": "T.8 (The Deck)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_75", "name": "janice", "table": "T.8 (The Deck)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_76", "name": "Kenneth", "table": "T.8 (The Deck)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_77", "name": "城哥", "table": "T.8 (The Deck)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_78", "name": "Terry", "table": "T.8 (The Deck)", "side": "男家", "checkin": "未到", "amount": ""}, {"id": "s_79", "name": "老闆", "table": "T.9 (The Deck)", "side": "未標明", "checkin": "未到", "amount": ""}, {"id": "s_80", "name": "Maurice", "table": "T.9 (The Deck)", "side": "未標明", "checkin": "未到", "amount": ""}, {"id": "s_81", "name": "Mabel", "table": "T.9 (The Deck)", "side": "未標明", "checkin": "未到", "amount": ""}, {"id": "s_82", "name": "Harry", "table": "T.9 (The Deck)", "side": "未標明", "checkin": "未到", "amount": ""}, {"id": "s_83", "name": "Hilary", "table": "T.9 (The Deck)", "side": "未標明", "checkin": "未到", "amount": ""}, {"id": "s_84", "name": "令令", "table": "T.9 (The Deck)", "side": "未標明", "checkin": "未到", "amount": ""}, {"id": "s_85", "name": "劉小姐", "table": "T.9 (The Deck)", "side": "未標明", "checkin": "未到", "amount": ""}, {"id": "s_86", "name": "Carrie", "table": "T.9 (The Deck)", "side": "未標明", "checkin": "未到", "amount": ""}, {"id": "s_87", "name": "Helen", "table": "T.9 (The Deck)", "side": "未標明", "checkin": "未到", "amount": ""}, {"id": "s_88", "name": "Helen仔仔", "table": "T.9 (The Deck)", "side": "未標明", "checkin": "未到", "amount": ""}, {"id": "s_89", "name": "Eunice", "table": "T.9 (The Deck)", "side": "未標明", "checkin": "未到", "amount": ""}, {"id": "s_90", "name": "阿蜆", "table": "T.9 (The Deck)", "side": "未標明", "checkin": "未到", "amount": ""}, {"id": "s_91", "name": "Jennifer", "table": "T.10 (The Deck)", "side": "未標明", "checkin": "未到", "amount": ""}, {"id": "s_92", "name": "momo", "table": "T.10 (The Deck)", "side": "未標明", "checkin": "未到", "amount": ""}, {"id": "s_93", "name": "kenny", "table": "T.10 (The Deck)", "side": "未標明", "checkin": "未到", "amount": ""}, {"id": "s_94", "name": "monkey", "table": "T.10 (The Deck)", "side": "未標明", "checkin": "未到", "amount": ""}, {"id": "s_95", "name": "kachun", "table": "T.10 (The Deck)", "side": "未標明", "checkin": "未到", "amount": ""}, {"id": "s_96", "name": "Lun", "table": "T.10 (The Deck)", "side": "未標明", "checkin": "未到", "amount": ""}, {"id": "s_97", "name": "frankie", "table": "T.10 (The Deck)", "side": "未標明", "checkin": "未到", "amount": ""}, {"id": "s_98", "name": "darren", "table": "T.10 (The Deck)", "side": "未標明", "checkin": "未到", "amount": ""}, {"id": "s_99", "name": "Ray", "table": "T.11 (The Deck)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_100", "name": "Franklin", "table": "T.11 (The Deck)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_101", "name": "Jimmy", "table": "T.11 (The Deck)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_102", "name": "小梁", "table": "T.11 (The Deck)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_103", "name": "Millie", "table": "T.11 (The Deck)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_104", "name": "Grace", "table": "T.11 (The Deck)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_105", "name": "Jennifer", "table": "T.11 (The Deck)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_106", "name": "Amanda", "table": "T.11 (The Deck)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_107", "name": "Bill", "table": "T.11 (The Deck)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_108", "name": "Nikko", "table": "T.11 (The Deck)", "side": "女家", "checkin": "未到", "amount": ""}, {"id": "s_109", "name": "JC", "table": "T.11 (The Deck)", "side": "女家", "checkin": "未到", "amount": ""}], "tea": [{"id": "tea_1", "num": 1, "who": "Angela 爸爸 媽媽", "cup": "-", "location": "出門", "done": false, "gold": {"龍鳳手鐲": false, "戒指": false, "手鏈": false, "頸鏈": false, "耳環": false, "豬牌": false, "利是": false}}, {"id": "tea_2", "num": 2, "who": "Angela 哥哥", "cup": "-", "location": "出門", "done": false, "gold": {"龍鳳手鐲": false, "戒指": false, "手鏈": false, "頸鏈": false, "耳環": false, "豬牌": false, "利是": false}}, {"id": "tea_3", "num": 3, "who": "Vincent 爸爸 媽媽", "cup": "-", "location": "出門", "done": false, "gold": {"龍鳳手鐲": false, "戒指": false, "手鏈": false, "頸鏈": false, "耳環": false, "豬牌": false, "利是": false}}, {"id": "tea_4", "num": 4, "who": "Vincent 細姨 姨丈", "cup": "-", "location": "出門", "done": false, "gold": {"龍鳳手鐲": false, "戒指": false, "手鏈": false, "頸鏈": false, "耳環": false, "豬牌": false, "利是": false}}, {"id": "tea_5", "num": 5, "who": "Vincent 公公", "cup": "1.0", "location": "場地", "done": false, "gold": {"龍鳳手鐲": false, "戒指": false, "手鏈": false, "頸鏈": false, "耳環": false, "豬牌": false, "利是": false}}, {"id": "tea_6", "num": 6, "who": "Vincent 大舅父大舅母", "cup": "2.0", "location": "場地", "done": false, "gold": {"龍鳳手鐲": false, "戒指": false, "手鏈": false, "頸鏈": false, "耳環": false, "豬牌": false, "利是": false}}, {"id": "tea_7", "num": 7, "who": "Vincent 細舅父", "cup": "1.0", "location": "場地", "done": false, "gold": {"龍鳳手鐲": false, "戒指": false, "手鏈": false, "頸鏈": false, "耳環": false, "豬牌": false, "利是": false}}, {"id": "tea_8", "num": 8, "who": "Vincent 大伯父", "cup": "1.0", "location": "場地", "done": false, "gold": {"龍鳳手鐲": false, "戒指": false, "手鏈": false, "頸鏈": false, "耳環": false, "豬牌": false, "利是": false}}, {"id": "tea_9", "num": 9, "who": "Vincent 張金華表舅父", "cup": "2.0", "location": "場地", "done": false, "gold": {"龍鳳手鐲": false, "戒指": false, "手鏈": false, "頸鏈": false, "耳環": false, "豬牌": false, "利是": false}}, {"id": "tea_10", "num": 10, "who": "Vincent 張金發表舅父", "cup": "2.0", "location": "場地", "done": false, "gold": {"龍鳳手鐲": false, "戒指": false, "手鏈": false, "頸鏈": false, "耳環": false, "豬牌": false, "利是": false}}, {"id": "tea_11", "num": 11, "who": "Vincent 張金池表舅父", "cup": "1.0", "location": "場地", "done": false, "gold": {"龍鳳手鐲": false, "戒指": false, "手鏈": false, "頸鏈": false, "耳環": false, "豬牌": false, "利是": false}}, {"id": "tea_12", "num": 12, "who": "Angela 嫲嫲", "cup": "1.0", "location": "場地", "done": false, "gold": {"龍鳳手鐲": false, "戒指": false, "手鏈": false, "頸鏈": false, "耳環": false, "豬牌": false, "利是": false}}, {"id": "tea_13", "num": 13, "who": "Angela 二叔公 + 二叔婆", "cup": "2.0", "location": "場地", "done": false, "gold": {"龍鳳手鐲": false, "戒指": false, "手鏈": false, "頸鏈": false, "耳環": false, "豬牌": false, "利是": false}}, {"id": "tea_14", "num": 14, "who": "Angela 三叔公", "cup": "1.0", "location": "場地", "done": false, "gold": {"龍鳳手鐲": false, "戒指": false, "手鏈": false, "頸鏈": false, "耳環": false, "豬牌": false, "利是": false}}, {"id": "tea_15", "num": 15, "who": "Angela 鄧巧賢姑婆", "cup": "1.0", "location": "場地", "done": false, "gold": {"龍鳳手鐲": false, "戒指": false, "手鏈": false, "頸鏈": false, "耳環": false, "豬牌": false, "利是": false}}, {"id": "tea_16", "num": 16, "who": "Angela 蓮姑婆", "cup": "1.0", "location": "場地", "done": false, "gold": {"龍鳳手鐲": false, "戒指": false, "手鏈": false, "頸鏈": false, "耳環": false, "豬牌": false, "利是": false}}, {"id": "tea_17", "num": 17, "who": "Angela 姨婆", "cup": "1.0", "location": "場地", "done": false, "gold": {"龍鳳手鐲": false, "戒指": false, "手鏈": false, "頸鏈": false, "耳環": false, "豬牌": false, "利是": false}}, {"id": "tea_18", "num": 18, "who": "Angela 叔叔  +  嬸嬸", "cup": "2.0", "location": "場地", "done": false, "gold": {"龍鳳手鐲": false, "戒指": false, "手鏈": false, "頸鏈": false, "耳環": false, "豬牌": false, "利是": false}}, {"id": "tea_19", "num": 19, "who": "Angela 公公", "cup": "1.0", "location": "場地", "done": false, "gold": {"龍鳳手鐲": false, "戒指": false, "手鏈": false, "頸鏈": false, "耳環": false, "豬牌": false, "利是": false}}, {"id": "tea_20", "num": 20, "who": "Angela 姨媽", "cup": "1.0", "location": "場地", "done": false, "gold": {"龍鳳手鐲": false, "戒指": false, "手鏈": false, "頸鏈": false, "耳環": false, "豬牌": false, "利是": false}}], "photos": [{"id": "photo_4", "num": 1, "group": "新郎新娘雙方家長 (雙方父母)", "count": 4, "remark": "", "done": false}, {"id": "photo_5", "num": 2, "group": "新郎家人(爸媽＋妹妹)", "count": 3, "remark": "", "done": false}, {"id": "photo_6", "num": 3, "group": "新郎爸爸親友", "count": 15, "remark": "新郎家人(爸媽＋妹妹) + 爸爸親友", "done": false}, {"id": "photo_7", "num": 11, "group": "新郎媽媽親友", "count": 22, "remark": "新郎家人(爸媽＋妹妹) + 媽媽親友", "done": false}, {"id": "photo_8", "num": 23, "group": "新郎呂潤財中學朋友 (連兄弟)", "count": 8, "remark": "", "done": false}, {"id": "photo_9", "num": 24, "group": "新郎祟真中學朋友 (連兄弟)", "count": 4, "remark": "", "done": false}, {"id": "photo_10", "num": 25, "group": "新郎大學朋友", "count": 8, "remark": "", "done": false}, {"id": "photo_17", "num": 10, "group": "新娘家人", "count": 2, "remark": "爸爸、媽媽", "done": false}, {"id": "photo_18", "num": 12, "group": "新娘 + 爸爸/嫲嫲邊大合照", "count": 20, "remark": "爸爸、哥哥、Amy、嫲嫲、叔叔、嬸嬸、俊賢、姨婆、鄧巧賢姑婆、候玉梅表姑媽、候玉華表姑媽、候玉珍表姑媽、鄧慶田二叔公、二叔婆、鄧偉康表叔、鄧偉國表叔、鄧澤田三叔公、蓮姑婆、鄧兆裕叔叔、珍嬸嬸", "done": false}, {"id": "photo_19", "num": 13, "group": "新娘媽媽親人", "count": 5, "remark": "媽媽、公公、姨媽、鄭惠連表姨媽、鄭惠霞表姨媽", "done": false}, {"id": "photo_20", "num": 14, "group": "新娘媽媽朋友", "count": 7, "remark": "媽媽、黃智姬、劉敏、鄭妙淮、余蘭、華小霞、彭偉豪", "done": false}, {"id": "photo_21", "num": 15, "group": "新娘中學朋友", "count": 5, "remark": "令令、懿雅、均嬋、陳麗、黃澤明", "done": false}, {"id": "photo_22", "num": 16, "group": "新娘大學朋友", "count": 7, "remark": "Eunice、Hilary、小梁、Millie、Nikko、Bill、JC", "done": false}, {"id": "photo_23", "num": 17, "group": "新娘同事", "count": 9, "remark": "老闆、劉小姐、Ray、Maurice、Mabel、Harry、Carrie、Helen、Helen仔仔 (Nardo & Vincy 証婚only)", "done": false}, {"id": "photo_24", "num": 18, "group": "新娘行山Group", "count": 7, "remark": "Ray、Grace、Jimmy、Amanda、Franklin、Jennifer、Eunice", "done": false}, {"id": "photo_25", "num": 19, "group": "other 新娘朋友", "count": 1, "remark": "阿蜆", "done": false}, {"id": "photo_27", "num": 21, "group": "伴郎伴娘及兄弟姊妹團", "count": 10, "remark": "", "done": false}, {"id": "photo_53", "num": 51, "group": "其他來賓及好友", "count": "", "remark": "", "done": false}], "materials": [{"id": "m_01", "cat": "酒店房／出門物資", "item": "新娘裙褂", "qty": "1套", "loc": "黃金海岸酒店套房", "owner": "Angela / 令令 / 懿雅", "done": false}, {"id": "m_02", "cat": "酒店房／出門物資", "item": "褂鞋", "qty": "1對", "loc": "黃金海岸酒店套房", "owner": "Angela", "done": false}, {"id": "m_03", "cat": "酒店房／出門物資", "item": "裙褂配襯飾物", "qty": "1批", "loc": "黃金海岸酒店套房", "owner": "Angela / 令令", "done": false}, {"id": "m_04", "cat": "酒店房／出門物資", "item": "新娘護膚品／補妝用品", "qty": "1袋", "loc": "黃金海岸酒店套房", "owner": "Angela / 化妝師 Emily", "done": false}, {"id": "m_05", "cat": "酒店房／出門物資", "item": "急救袋（膠布、止痛藥、針線等）", "qty": "1袋", "loc": "黃金海岸酒店套房", "owner": "Angela / 蜆", "done": false}, {"id": "m_06", "cat": "酒店房／出門物資", "item": "飲用水＋吸管（方便著裙褂飲水）", "qty": "1批", "loc": "黃金海岸酒店套房", "owner": "Angela / 蜆", "done": false}, {"id": "m_07", "cat": "酒店房／出門物資", "item": "紅傘（出門遮天用）", "qty": "1把", "loc": "黃金海岸酒店套房", "owner": "Hilary（擔紅遮）", "done": false}, {"id": "m_08", "cat": "酒店房／出門物資", "item": "姊妹利是", "qty": "5封", "loc": "黃金海岸酒店套房", "owner": "Angela", "done": false}, {"id": "m_09", "cat": "酒店房／出門物資", "item": "姊妹禮物", "qty": "5份", "loc": "黃金海岸酒店套房", "owner": "Angela", "done": false}, {"id": "m_10", "cat": "酒店房／出門物資", "item": "兄弟襟花", "qty": "5個", "loc": "黃金海岸酒店", "owner": "Vincent", "done": false}, {"id": "m_11", "cat": "酒店房／出門物資", "item": "兄弟利是", "qty": "5封", "loc": "黃金海岸酒店", "owner": "Vincent → Darren保管", "done": false}, {"id": "m_12", "cat": "酒店房／出門物資", "item": "開門利是", "qty": "2封", "loc": "黃金海岸酒店", "owner": "Vincent → 令令/懿雅收", "done": false}, {"id": "m_13", "cat": "酒店房／出門物資", "item": "新郎馬掛＋繡球", "qty": "1套", "loc": "黃金海岸酒店姊妹房1", "owner": "Vincent", "done": false}, {"id": "m_14", "cat": "酒店房／出門物資", "item": "Bag 3（新郎兄弟中式拍攝道具：黑超／扇等）", "qty": "1袋", "loc": "黃金海岸酒店", "owner": "Frankie / 城哥", "done": false}, {"id": "m_15", "cat": "酒店房／出門物資", "item": "新郎兄弟花絮 Props", "qty": "1批", "loc": "黃金海岸酒店", "owner": "Frankie / 城哥", "done": false}, {"id": "m_16", "cat": "酒店房／出門物資", "item": "女家家人襟花＋手花", "qty": "2襟花 + 2手花", "loc": "黃金海岸酒店套房", "owner": "蜆", "done": false}, {"id": "m_17", "cat": "酒店房／出門物資", "item": "姊妹手花", "qty": "5束", "loc": "黃金海岸酒店姊妹房1", "owner": "懿雅", "done": false}, {"id": "m_18", "cat": "酒店房／出門物資", "item": "酒店房卡（套房＋姊妹房1＋物資房等）", "qty": "6張", "loc": "黃金海岸酒店", "owner": "Darren（收齊6張）／Lun（物資房卡）", "done": false}, {"id": "m_19", "cat": "敬茶用品", "item": "跪墊", "qty": "2個", "loc": "敬茶 Bag → 遊艇會", "owner": "Hilary / 蜆", "done": false}, {"id": "m_20", "cat": "敬茶用品", "item": "斟茶茶具", "qty": "2套", "loc": "敬茶 Bag → 遊艇會", "owner": "Hilary / 蜆", "done": false}, {"id": "m_21", "cat": "敬茶用品", "item": "茶葉", "qty": "1包", "loc": "敬茶 Bag → 遊艇會", "owner": "Hilary / 蜆", "done": false}, {"id": "m_22", "cat": "敬茶用品", "item": "紅棗", "qty": "1包", "loc": "敬茶 Bag → 遊艇會", "owner": "Hilary / 蜆", "done": false}, {"id": "m_23", "cat": "敬茶用品", "item": "蓮子", "qty": "1包", "loc": "敬茶 Bag → 遊艇會", "owner": "Hilary / 蜆", "done": false}, {"id": "m_24", "cat": "敬茶用品", "item": "敬茶紙杯（#1–#20 共 20 組）", "qty": "26杯", "loc": "敬茶 Bag → 遊艇會宴會廳", "owner": "Hilary / 蜆 → 交宴會廳職員", "done": false}, {"id": "m_25", "cat": "敬茶用品", "item": "花車利是", "qty": "1批", "loc": "敬茶 Bag", "owner": "懿雅 / Angela", "done": false}, {"id": "m_26", "cat": "敬茶用品", "item": "金器袋", "qty": "1批", "loc": "酒店套房 → 新娘房夾萬", "owner": "令令 / 懿雅", "done": false}, {"id": "m_27", "cat": "敬茶用品", "item": "奉茶號碼小貼紙（#1–#20，每號約 6–8 張）", "qty": "約120–160張", "loc": "敬茶 Bag", "owner": "懿雅", "done": false}, {"id": "m_28", "cat": "敬茶用品", "item": "白熊結婚公仔", "qty": "1對", "loc": "酒店套房 → 遊艇會迎賓枱", "owner": "Hilary → 令令/Eunice", "done": false}, {"id": "m_29", "cat": "證婚及會場佈置", "item": "油畫", "qty": "1幅", "loc": "物資房 → 遊艇會迎賓區", "owner": "令令 / Eunice", "done": false}, {"id": "m_30", "cat": "證婚及會場佈置", "item": "BB 迎賓牌", "qty": "1個", "loc": "物資房 → 遊艇會迎賓區", "owner": "令令 / Eunice", "done": false}, {"id": "m_31", "cat": "證婚及會場佈置", "item": "相簿", "qty": "1本", "loc": "物資房 → 遊艇會相簿枱", "owner": "令令 / Eunice", "done": false}, {"id": "m_32", "cat": "證婚及會場佈置", "item": "簽名卷軸", "qty": "1卷", "loc": "物資房 → 遊艇會迎賓枱", "owner": "令令 / Eunice", "done": false}, {"id": "m_33", "cat": "證婚及會場佈置", "item": "簽名筆", "qty": "5支", "loc": "物資房 → 遊艇會迎賓枱", "owner": "令令 / Eunice", "done": false}, {"id": "m_34", "cat": "證婚及會場佈置", "item": "文具雜項物資（膠紙、剪刀、大頭針等）", "qty": "1盒", "loc": "物資房 → 遊艇會", "owner": "令令 / Eunice", "done": false}, {"id": "m_35", "cat": "證婚及會場佈置", "item": "證婚套＋證婚書", "qty": "1套", "loc": "遊艇會證婚枱", "owner": "Hilary保管", "done": false}, {"id": "m_36", "cat": "證婚及會場佈置", "item": "誓詞卡（Angela & Vincent）", "qty": "2張", "loc": "遊艇會證婚枱／午宴", "owner": "Hilary / Lun", "done": false}, {"id": "m_37", "cat": "證婚及會場佈置", "item": "結婚戒指盒＋對戒", "qty": "1盒／1對", "loc": "酒店夾萬 → Lun保管", "owner": "Lun → Hilary遞戒指", "done": false}, {"id": "m_38", "cat": "證婚及會場佈置", "item": "身份證（Angela、Vincent、Angela媽媽、Vincent爸爸）", "qty": "4張", "loc": "遊艇會律師 Briefing", "owner": "Hilary保管", "done": false}, {"id": "m_39", "cat": "證婚及會場佈置", "item": "主捧花（進場用）", "qty": "1束", "loc": "遊艇會新娘房", "owner": "蜆保管", "done": false}, {"id": "m_40", "cat": "證婚及會場佈置", "item": "次捧花（拋花球用）", "qty": "1束", "loc": "遊艇會新娘房", "owner": "蜆保管", "done": false}, {"id": "m_41", "cat": "證婚及會場佈置", "item": "泡泡槍", "qty": "2支", "loc": "遊艇會 Reception → 草地", "owner": "蜆保管 → Eunice/懿雅/Terry/Darren", "done": false}, {"id": "m_42", "cat": "證婚及會場佈置", "item": "即影即有／菲林相機＋拍攝任務卡", "qty": "5部＋任務卡", "loc": "遊艇會 Reception", "owner": "Eunice/令令/懿雅派發 → Eunice/Lun回收", "done": false}, {"id": "m_43", "cat": "宴會廳及互動物資", "item": "每枱魚子醬", "qty": "10份（T.1–T.11）", "loc": "遊艇會宴會廳桌面", "owner": "城哥 / Darren 檢查", "done": false}, {"id": "m_44", "cat": "宴會廳及互動物資", "item": "回禮小禮物", "qty": "每枱份量", "loc": "遊艇會宴會廳桌面", "owner": "城哥 / Darren 檢查", "done": false}, {"id": "m_45", "cat": "宴會廳及互動物資", "item": "刮刮卡＋刮獎硬幣", "qty": "每枱2–3張＋硬幣", "loc": "遊艇會宴會廳", "owner": "Eunice / Hilary → 兄弟姊妹派發", "done": false}, {"id": "m_46", "cat": "宴會廳及互動物資", "item": "感恩花（送奶奶＋外母）", "qty": "2束", "loc": "Deco Sasa → 遊艇會存放", "owner": "Frankie跟進", "done": false}, {"id": "m_47", "cat": "宴會廳及互動物資", "item": "Background Music USB（01_進場、02_儀式、05_敬酒、06_送客等）", "qty": "1支", "loc": "遊艇會宴會廳 AV", "owner": "城哥交會場工作人員", "done": false}, {"id": "m_48", "cat": "宴會廳及互動物資", "item": "Photoslide show / Seating Plan 檔案", "qty": "1份", "loc": "遊艇會門口螢幕", "owner": "城哥檢查", "done": false}, {"id": "m_49", "cat": "宴會廳及互動物資", "item": "Photobooth Guest Book", "qty": "1本", "loc": "遊艇會 Photobooth 區", "owner": "Darren 14:00 回收", "done": false}, {"id": "m_50", "cat": "過場、送客及尾數物資", "item": "婚紗", "qty": "2件", "loc": "遊艇會新娘房", "owner": "蜆 / 所有姊妹", "done": false}, {"id": "m_51", "cat": "過場、送客及尾數物資", "item": "敬酒／送客禮服", "qty": "1件", "loc": "遊艇會新娘房", "owner": "蜆 / 所有姊妹", "done": false}, {"id": "m_52", "cat": "過場、送客及尾數物資", "item": "Backup 鞋", "qty": "1對", "loc": "遊艇會新娘房", "owner": "所有姊妹", "done": false}, {"id": "m_53", "cat": "過場、送客及尾數物資", "item": "賓客名單（Reception 點名用）", "qty": "1份", "loc": "遊艇會 Reception", "owner": "Eunice / 令令 / 懿雅 / Darren / Lun / Terry", "done": false}, {"id": "m_54", "cat": "過場、送客及尾數物資", "item": "人情袋（男家＋女家）", "qty": "2個", "loc": "Reception → 新娘房夾萬", "owner": "令令收女家／Darren收男家 → 令令+懿雅入夾萬", "done": false}, {"id": "m_55", "cat": "過場、送客及尾數物資", "item": "剩餘利是（司機、律師、MC、Deco、Photobooth、會場等）", "qty": "1批", "loc": "遊艇會", "owner": "懿雅 / Eunice / Angela", "done": false}, {"id": "m_56", "cat": "過場、送客及尾數物資", "item": "尾數清單：Deco（Sasa 6161 9322）", "qty": "1份", "loc": "遊艇會（15:30 結算）", "owner": "Vincent / 財務主管", "done": false}, {"id": "m_57", "cat": "過場、送客及尾數物資", "item": "尾數清單：化妝師（Emily）", "qty": "1份", "loc": "遊艇會（15:30 結算）", "owner": "Vincent / 財務主管", "done": false}, {"id": "m_58", "cat": "過場、送客及尾數物資", "item": "尾數清單：攝影師（White Production / Eric）", "qty": "1份", "loc": "遊艇會（15:30 結算）", "owner": "Vincent / 財務主管", "done": false}, {"id": "m_59", "cat": "過場、送客及尾數物資", "item": "尾數清單：會場（遊艇會 Boey Lai 2404 3280）", "qty": "1份", "loc": "遊艇會（15:30 結算）", "owner": "Vincent / 財務主管", "done": false}]};
+const HUB_PIN = "1122";
+const STORAGE_KEY = "wedding_hub_state_v9_1122";
+const DB_NODE = "wedding_1122_av_k9x2p7";
 
-let state = loadState();
-let activeRundownPhase = "ALL";
-let activeTableFilter = "ALL";
-let activeMatCat = "ALL";
-let activeMatStatus = "ALL";
+const firebaseConfig = {
+  apiKey: "AIzaSyCBC-9kpUzDEL0iptoxkc95ysJVys23J8w",
+  authDomain: "wedding-1122-hub.firebaseapp.com",
+  databaseURL: "https://wedding-1122-hub-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "wedding-1122-hub",
+  storageBucket: "wedding-1122-hub.firebasestorage.app",
+  messagingSenderId: "591670742536",
+  appId: "1:591670742536:web:3e1b55a316f81e376d0bbd",
+  measurementId: "G-BLTRPKVFX9"
+};
 
-function loadState() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch (e) {}
-  return JSON.parse(JSON.stringify(INITIAL_DATA));
-}
-
-function saveState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  const el = document.getElementById("saveStatus");
-  if (el) {
-    const now = new Date();
-    el.textContent = "已儲存 " + now.toTimeString().slice(0,8);
-  }
-}
-
-function resetState() {
-  if (!confirm("確定還原為 Excel 預設資料？（本機勾選與人情紀錄會重設）")) return;
-  localStorage.removeItem(STORAGE_KEY);
-  state = JSON.parse(JSON.stringify(INITIAL_DATA));
-  renderAll();
-  saveState();
-}
-
-function exportJSON() {
-  const blob = new Blob([JSON.stringify(state, null, 2)], {type: "application/json"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "wedding_1122_backup.json";
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-function switchTab(tab, btn) {
-  document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
-  document.querySelectorAll("nav.tabbar button").forEach(b => b.classList.remove("active"));
-  document.getElementById("tab-" + tab).classList.add("active");
-  if (btn) btn.classList.add("active");
-  if (tab === "angpao") renderAngpao();
-}
-
-function renderRundown() {
-  const filterWrap = document.getElementById("rundownFilters");
-  const phases = ["ALL", ...state.rundown.map(s => s.phase)];
-  filterWrap.innerHTML = phases.map(p =>
-    `<button class="chip ${activeRundownPhase===p?'active':''}" onclick="activeRundownPhase='${p.replace(/'/g,"\\'")}';renderRundown()">${p==='ALL'?'全部時段':p}</button>`
-  ).join("");
-
-  const container = document.getElementById("rundownContainer");
-  const sections = state.rundown.filter(s => activeRundownPhase === "ALL" || s.phase === activeRundownPhase);
-  container.innerHTML = sections.map((sec, sIdx) => `
-    <div style="margin-bottom:14px;">
-      <div style="font-weight:700; font-size:13px; color:var(--accent); margin-bottom:6px;">${sec.phase}</div>
-      ${sec.items.map((it, iIdx) => `
-        <div class="row-item">
-          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
-            <div>
-              <span class="meta-tag">${it.time}</span>
-              <span class="${it.done?'done-text':''}" style="font-weight:600; font-size:13px;">${it.text.replace(/\n/g, '<br>')}</span>
-            </div>
-            <button class="status-btn ${it.done?'ok':''}" onclick="toggleRundownDone(${sIdx}, ${iIdx})">${it.done?'已完成':'待完成'}</button>
-          </div>
-          ${it.material ? `<div style="font-size:12px; color:var(--muted); margin-top:4px;">物資／備註：${it.material.replace(/\n/g, '；')}</div>` : ''}
-          ${(it.sister.length || it.brother.length) ? `
-            <div class="duty-box">
-              ${it.sister.map(x => `<div>👩 姊妹：${x.replace(/\n/g, ' ')}</div>`).join("")}
-              ${it.brother.map(x => `<div>👨 兄弟：${x.replace(/\n/g, ' ')}</div>`).join("")}
-            </div>
-          ` : ''}
-        </div>
-      `).join("")}
-    </div>
-  `).join("");
-}
-
-function toggleRundownDone(sIdx, iIdx) {
-  const sec = state.rundown.filter(s => activeRundownPhase === "ALL" || s.phase === activeRundownPhase)[sIdx];
-  sec.items[iIdx].done = !sec.items[iIdx].done;
-  saveState();
-  renderRundown();
-}
-
-function renderSeating() {
-  const total = state.seating.length;
-  const arrived = state.seating.filter(g => g.checkin === "已經到").length;
-  const tables = [...new Set(state.seating.map(g => g.table))];
-  const totalAmt = state.seating.reduce((acc, g) => acc + (parseFloat(g.amount) || 0), 0);
-
-  document.getElementById("seatingStats").innerHTML = `
-    <div class="stat-box"><div class="stat-num">${total}</div><div class="stat-lbl">入座人數</div></div>
-    <div class="stat-box"><div class="stat-num">${arrived}</div><div class="stat-lbl">已經到</div></div>
-    <div class="stat-box"><div class="stat-num">${tables.length}</div><div class="stat-lbl">圍數</div></div>
-    <div class="stat-box"><div class="stat-num">$${totalAmt.toLocaleString()}</div><div class="stat-lbl">已填人情</div></div>
-  `;
-
-  const chipWrap = document.getElementById("tableFilterChips");
-  chipWrap.innerHTML = ["ALL", ...tables].map(t =>
-    `<button class="chip ${activeTableFilter===t?'active':''}" onclick="activeTableFilter='${t}';renderSeating()">${t==='ALL'?'全部枱':t.split(' ')[0]}</button>`
-  ).join("");
-
-  const q = (document.getElementById("seatingSearch")?.value || "").trim().toLowerCase();
-  const filtered = state.seating.filter(g => {
-    const matchTbl = activeTableFilter === "ALL" || g.table === activeTableFilter;
-    const matchQ = !q || g.name.toLowerCase().includes(q) || g.table.toLowerCase().includes(q);
-    return matchTbl && matchQ;
-  });
-
-  document.getElementById("seatingContainer").innerHTML = filtered.map(g => `
-    <div class="guest-row">
-      <div>
-        <div style="font-weight:600; font-size:13px;">${g.name}</div>
-        <div style="font-size:11px; color:var(--muted);">${g.table} · ${g.side}</div>
-      </div>
-      <div style="display:flex; gap:6px; align-items:center;">
-        <input type="number" placeholder="$ 人情" value="${g.amount}" style="width:82px; padding:5px 7px; font-size:12px;"
-               onchange="updateGuestAmt('${g.id}', this.value)">
-        <button class="status-btn ${g.checkin==='已經到'?'ok':''}" onclick="toggleCheckin('${g.id}')">
-          ${g.checkin}
-        </button>
-      </div>
-    </div>
-  `).join("");
-}
-
-function toggleCheckin(id) {
-  const g = state.seating.find(x => x.id === id);
-  if (!g) return;
-  g.checkin = g.checkin === "已經到" ? "未到" : "已經到";
-  saveState();
-  renderSeating();
-}
-
-function updateGuestAmt(id, val) {
-  const g = state.seating.find(x => x.id === id);
-  if (!g) return;
-  g.amount = val;
-  saveState();
-  renderSeating();
-}
-
-function addGuest() {
-  const name = document.getElementById("newGuestName").value.trim();
-  if (!name) return;
-  const table = document.getElementById("newGuestTable").value;
-  const side = document.getElementById("newGuestSide").value;
-  const amount = document.getElementById("newGuestAmt").value;
-  state.seating.unshift({
-    id: "s_custom_" + Date.now(),
-    name, table, side, checkin: "未到", amount
-  });
-  document.getElementById("newGuestName").value = "";
-  document.getElementById("newGuestAmt").value = "";
-  saveState();
-  renderSeating();
-}
-
-function renderTeaAndPhoto() {
-  const goldKeys = ["龍鳳手鐲", "戒指", "手鏈", "頸鏈", "耳環", "豬牌", "利是"];
-  document.getElementById("teaContainer").innerHTML = state.tea.map((t, idx) => `
-    <div class="row-item">
-      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
-        <div>
-          <span class="meta-tag">#${t.num} · ${t.location}</span>
-          <strong style="font-size:13px;" class="${t.done?'done-text':''}">${t.who}</strong>
-          <span style="font-size:11px; color:var(--muted);">（紙杯：${t.cup}）</span>
-        </div>
-        <button class="status-btn ${t.done?'ok':''}" onclick="toggleTeaDone(${idx})">${t.done?'已完成':'待奉茶'}</button>
-      </div>
-      <div class="gold-pills">
-        ${goldKeys.map(k => `
-          <span class="gold-pill ${t.gold[k]?'on':''}" onclick="toggleTeaGold(${idx}, '${k}')">${t.gold[k]?'✓ ':''}${k}</span>
-        `).join("")}
-      </div>
-    </div>
-  `).join("");
-
-  document.getElementById("photoContainer").innerHTML = state.photos.map((p, idx) => `
-    <div class="row-item">
-      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
-        <div>
-          <span class="meta-tag">#${p.num || '-'} · ${p.count !== '' ? p.count + '人' : '待定'}</span>
-          <strong style="font-size:13px;" class="${p.done?'done-text':''}">${p.group}</strong>
-          ${p.remark ? `<div style="font-size:12px; color:var(--muted); margin-top:3px;">${p.remark}</div>` : ''}
-        </div>
-        <button class="status-btn ${p.done?'ok':''}" onclick="togglePhotoDone(${idx})">${p.done?'已影':'未影'}</button>
-      </div>
-    </div>
-  `).join("");
-}
-
-function toggleTeaDone(idx) {
-  state.tea[idx].done = !state.tea[idx].done;
-  saveState();
-  renderTeaAndPhoto();
-}
-
-function toggleTeaGold(idx, key) {
-  state.tea[idx].gold[key] = !state.tea[idx].gold[key];
-  saveState();
-  renderTeaAndPhoto();
-}
-
-function togglePhotoDone(idx) {
-  state.photos[idx].done = !state.photos[idx].done;
-  saveState();
-  renderTeaAndPhoto();
-}
-
-function filterMatStatus(st) {
-  activeMatStatus = st;
-  renderMaterials();
-}
-
-function renderMaterials() {
-  const total = state.materials.length;
-  const checked = state.materials.filter(m => m.done).length;
-  const remain = total - checked;
-
-  const statsEl = document.getElementById("materialsStats");
-  if (statsEl) {
-    statsEl.innerHTML = `
-      <div class="stat-box"><div class="stat-num">${total}</div><div class="stat-lbl">物資總數</div></div>
-      <div class="stat-box"><div class="stat-num">${checked}</div><div class="stat-lbl">已點算備齊</div></div>
-      <div class="stat-box"><div class="stat-num">${remain}</div><div class="stat-lbl">待點算</div></div>
-    `;
-  }
-
-  const cats = ["ALL", ...new Set(state.materials.map(m => m.cat))];
-  const chipWrap = document.getElementById("materialFilterChips");
-  if (chipWrap) {
-    chipWrap.innerHTML = cats.map(c =>
-      `<button class="chip ${activeMatCat===c?'active':''}" onclick="activeMatCat='${c.replace(/'/g,"\'")}';renderMaterials()">${c==='ALL'?'全部類別':c}</button>`
-    ).join("");
-  }
-
-  const q = (document.getElementById("matSearch")?.value || "").trim().toLowerCase();
-  const rows = state.materials.map((m, idx) => ({m, idx})).filter(({m}) => {
-    const matchCat = activeMatCat === "ALL" || m.cat === activeMatCat;
-    const matchSt = activeMatStatus === "ALL" || (activeMatStatus === "TODO" && !m.done);
-    const matchQ = !q ||
-      (m.item && m.item.toLowerCase().includes(q)) ||
-      (m.owner && m.owner.toLowerCase().includes(q)) ||
-      (m.loc && m.loc.toLowerCase().includes(q)) ||
-      (m.cat && m.cat.toLowerCase().includes(q));
-    return matchCat && matchSt && matchQ;
-  });
-
-  document.getElementById("materialsContainer").innerHTML = rows.length ? rows.map(({m, idx}) => `
-    <div class="row-item" style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
-      <div style="flex:1; min-width:0;">
-        <div style="display:flex; flex-wrap:wrap; gap:4px; align-items:center; margin-bottom:3px;">
-          <span class="meta-tag">${m.cat}</span>
-          ${m.qty ? `<span class="meta-tag" style="background:var(--ok-bg); color:var(--ok);">數量：${m.qty}</span>` : ''}
-          <span class="${m.done?'done-text':''}" style="font-size:13px; font-weight:600;">${m.item}</span>
-        </div>
-        <div style="font-size:11px; color:var(--muted);">
-          ${m.loc ? `📍 ${m.loc} · ` : ''}負責人：${m.owner || '待定'}
-        </div>
-      </div>
-      <button class="status-btn ${m.done?'ok':''}" onclick="toggleMatDone(${idx})">${m.done?'已備齊':'未備齊'}</button>
-    </div>
-  `).join("") : `<div style="font-size:12px; color:var(--muted);">沒有符合篩選條件的物資。</div>`;
-}
-
-function toggleMatDone(idx) {
-  state.materials[idx].done = !state.materials[idx].done;
-  saveState();
-  renderMaterials();
-}
-
-function addMaterial() {
-  const item = document.getElementById("newMatItem").value.trim();
-  if (!item) return;
-  const cat = document.getElementById("newMatCat")?.value || "自訂物資";
-  const qty = document.getElementById("newMatQty")?.value.trim() || "1份";
-  const owner = document.getElementById("newMatOwner").value.trim();
-  state.materials.unshift({
-    id: "m_" + Date.now(),
-    cat,
-    item,
-    qty,
-    loc: "",
-    owner,
-    done: false
-  });
-  document.getElementById("newMatItem").value = "";
-  if (document.getElementById("newMatQty")) document.getElementById("newMatQty").value = "";
-  document.getElementById("newMatOwner").value = "";
-  saveState();
-  renderMaterials();
-}
-
-function renderAngpao() {
-  const filled = state.seating.filter(g => String(g.amount).trim() !== "");
-  const totalAmt = filled.reduce((s, g) => s + (parseFloat(g.amount) || 0), 0);
-  const maleAmt = filled.filter(g => g.side === "男家").reduce((s, g) => s + (parseFloat(g.amount) || 0), 0);
-  const femaleAmt = filled.filter(g => g.side === "女家").reduce((s, g) => s + (parseFloat(g.amount) || 0), 0);
-
-  document.getElementById("angpaoStats").innerHTML = `
-    <div class="stat-box"><div class="stat-num">$${totalAmt.toLocaleString()}</div><div class="stat-lbl">人情總額</div></div>
-    <div class="stat-box"><div class="stat-num">${filled.length}</div><div class="stat-lbl">已填人數</div></div>
-    <div class="stat-box"><div class="stat-num">$${maleAmt.toLocaleString()}</div><div class="stat-lbl">男家小計</div></div>
-    <div class="stat-box"><div class="stat-num">$${femaleAmt.toLocaleString()}</div><div class="stat-lbl">女家小計</div></div>
-  `;
-
-  document.getElementById("angpaoContainer").innerHTML = filled.length ? filled.map(g => `
-    <div class="guest-row">
-      <div><strong>${g.name}</strong> <span style="font-size:11px; color:var(--muted);">(${g.table} · ${g.side})</span></div>
-      <div style="font-weight:700; color:var(--accent);">$${Number(g.amount).toLocaleString()}</div>
-    </div>
-  `).join("") : `<div style="font-size:12px; color:var(--muted);">尚未填寫人情金額，可在 Seating 分頁直接輸入。</div>`;
-}
-
-function renderAll() {
-  renderRundown();
-  renderSeating();
-  renderTeaAndPhoto();
-  renderMaterials();
-  renderAngpao();
-}
-
-renderAll();
-</script>
-</body>
-</html>
+const INITIAL_DATA = {"rundown": [{"phase": "一、出門及過場 (黃金海岸酒店 → 遊艇會)", "items": [{"id": "rd_5", "time": "03:00 - 06:00", "text": "Angela 食早餐\n3:30 am 化妝師及助手到達, Angela 開始化妝\n(~2hrs 30mins)", "material": "套房 - 新娘裙褂、褂鞋、飾物、護膚品、急救袋、飲用水吸管", "sister": ["LingLing：聯絡化妝師 Emily、姊妹化妝師"], "brother": [], "done": false}, {"id": "rd_6", "time": "03:30 - 06:00", "text": "姊妹開始化妝\n3:30 am化2位姊妹 (LingLing, 懿雅)\n4:15 am化2位 姊妹 (Hilary, Eunice)\n5:00 am化1位姊妹 (阿蜆) + Angela媽媽 \n5:45 am化Vincent + Vincent 媽媽 + Vincent妹妹", "material": "姊妹房 1 - \n姊妹食早餐 及輪流化妝 \n\n套房 - 有時間可預備定物資, 如︰敬茶用品\n\nBag  - 酒店房佈置物資 + 道具\nBag  - 敬茶用品", "sister": ["懿雅：派手花(姊妹)、派利是俾姊妹化妝師 \n、提Angela派利是俾化妝師/化妝師助手", "Hilary & 蜆：準備茶(茶葉、紅棗、蓮子)，跪墊，執枱準備", "Eunice：幫忙點算物資(請帖, 高踭鞋, 花球, 金器)"], "brother": ["Vincent：姊妹房 1\n5:45 am 化妝 + 著馬掛 + 繡球"], "done": false}, {"id": "rd_9", "time": "06:00 - 07:00", "text": "5:45 am 攝影師到達黃金海岸酒店\n攝影師拍花絮, 姊妹團影相", "material": "Bag - 酒店房佈置物資 + 道具\nBag - 敬茶用品\n\n【姊妹】跪墊x2、斟茶茶具x2、茶葉、紅棗、蓮子、 褂、褂鞋 、紅傘x1、姊妹利是x5、姊妹禮物", "sister": ["Angela：派利是俾攝影師x 3"], "brother": ["Vincent：派襟花 x5 給兄弟\n派兄弟利是 x 5 + 保管開門利是x 2\n所有利是給 *兄弟1保管 (俾利是袋給*Darren保管)\n+ 少量備用利是給*Lun保管", "兄弟 / Vincent：[6:00 - 6:30 食早餐］", "Frankie + 城哥：[06:30］執定兄弟團花絮props出黎", "*Terry：[6:45］所有兄弟到達, 換好衫"], "done": false}, {"id": "rd_13", "time": "跟進", "text": "姊妹準備物資\n-攝影師拍花絮, 姊妹團影相\n- Angela: 著褂, 派姊妹利是, 拋彩條, props影相 (eg. sunglasses)", "material": "", "sister": ["令令 & 懿雅：幫Angela著掛", "蜆：派2襟花2手花 to Angela家人"], "brother": ["Lun + Darren：[7am前] Angela爸爸 、哥哥、Amy到達 (兄弟3 迎接帶去套房)"], "done": false}, {"id": "rd_15", "time": "07:00 - 07:30", "text": "接新娘環節\n- 姊妹準備迎門 & 開門利是 & 快玩Game 1個\n- 愛的宣言(5 mins) (只有Vincent講)", "material": "開門利是 x2\nBag 3 - 新郎兄弟中式拍攝道具", "sister": ["令令 & 懿雅：收利是\nfacetime Angela", "Hilary & Eunice：Hold game & 做MC", "蜆：手機側拍"], "brother": ["Vincent：-派開門利是x2\n-愛的宣言", "所有兄弟：玩game, enjoy"], "done": false}, {"id": "rd_18", "time": "07:30 - 07:45", "text": "女家奉茶\n[7am前] Angela爸爸 、哥哥、Amy到達\n\n新人敬茶及拍照 \n(Angela 父母)\n(Angela 哥哥)", "material": "Bag  - 敬茶用品\n\n跪墊x2、斟茶茶具x2、\n茶葉、紅棗、蓮子、\n紙杯、花車利是、\n金器袋", "sister": ["令令：幫戴金器", "懿雅：收金器/利是、貼LABEL", "Hilary：準備茶 (紅棗、蓮子)", "Eunice：協助遞茶, 企隔離, 講吉利說話", "蜆：用手機影花絮", "懿雅：pass 姊妹房1 房卡 比Angela 爸爸\nAngela媽媽回睡收拾"], "brother": ["Darren：保管套房房卡  x1", "所有兄弟：講吉利說話 + 氣氛小組", "Terry：手機影花絮", "城哥：聯絡男家家人ready到套房"], "done": false}, {"id": "rd_24", "time": "07:45", "text": "新人+兄弟姊妹團+女家家人出門\n男家家人到套房準備", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_25", "time": "07:45 - 08:00", "text": "出門影相 (撒米, 紅遮)", "material": "", "sister": ["Hilary：擔紅遮送Angela岀門", "Eunice：撒米 (負站在新人斜後方，把米往「上方、紅遮頂」拋灑，切勿直接往新人臉上或頭上砸。", "蜆：用手機影花絮"], "brother": [], "done": false}, {"id": "rd_28", "time": "08:00 - 08:15", "text": "男家奉茶\n\n新人敬茶及拍照 \n(Vincent 父母)\n(Vincent 細姨 & 姨丈)\n\nVincent 派利是比妹妹", "material": "", "sister": ["令令：幫戴金器", "懿雅：收金器/利是、貼LABEL", "Hilary：準備茶 (紅棗、蓮子)", "Eunice：協助遞茶, 企隔離, 講吉利說話", "蜆：用手機影花絮"], "brother": ["所有兄弟：講吉利說話 + 氣氛小組", "Darren：遞妹妹利是比Vinvent", "Terry：手機影花絮", "Frankie：拎齊兄弟團花絮props, 準備拍攝\n（黑超／扇 etc）"], "done": false}, {"id": "rd_33", "time": "08:15 - 08:30", "text": "新人拍攝花絮", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_34", "time": "08:30 - 08:45", "text": "Angela\n除褂，除金器", "material": "", "sister": ["令令：keep金器 + 利是", "懿雅：收拾房間, 交房卡比Darren", "Hilary：幫Angela除褂, 收拾好放物資房 (Lun), \n套房拎白熊結婚公仔", "蜆：收拾房間, 交房卡比Darren", "Eunice：Call Ray幫手出車, 收拾房間"], "brother": ["Vincent + 所有兄弟：拍攝"], "done": false}, {"id": "rd_39", "time": "08:45 - 09:00", "text": "過場 (黃金海岸酒店 > 黃金海岸遊艇會會場)\n第1批 [8:50出車, 9:00到達]：Angela + 化妝師 Emily + 令令 + 懿雅\n第2批：Eunice + Angela 爸爸 、哥哥、Amy\n第3批：Grace + Hilary + 蜆 + Angela 媽媽\n\nRay幫忙泊車, 車匙比Eunice", "material": "", "sister": ["懿雅：提Angela比利是Ray"], "brother": [], "done": false}, {"id": "rd_41", "time": "08:30 - 09:00", "text": "Vincent\n新郎兄弟組拍攝花絮", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_42", "time": "09:00 - 10:00", "text": "Angela 轉證婚造型", "material": "- 油畫, BB迎賓牌, 相簿x1, 簽名卷釉x1, 簽名筆x5, 白熊結婚公仔, 文具雜項物資", "sister": ["懿雅：- 金器鎖新娘房保險箱, Keep新娘房鎖匙", "Eunice：確保所有人員到場 + 會場聯絡\n- MC Jessica \n- Deco (9am到場)\n- Photobooth \n\n鄭國杰律師 － 確認10am到場\n(93025693 / 91931787)", "懿雅 + Eunice：派利是比:\n- 會場 (Boey)\n- MC Jessica \n- Deco (9am到場)\n- Photobooth", "令令 + Eunice：Decoration: \n- 放油畫\n- 放BB迎賓牌\n- 迎賓枱 & 相簿枱 (相簿x1, 簽名卷釉x1, 簽名筆x5, 文具雜項物資)\n- 白熊結婚公仔", "None：Check with Deco公司set up, make sure 靚\n(Sasa Chan: 6161 9322)\n證婚草地:\n1. 絲花拱門 (+ 人名牌)\n2. 地花 8個\n3. 迎賓枱佈置\n4. Welcome board 1個\n5. 證婚枱花 1個\n\n室內宴會廳：\n1. 8x16尺布藝（包柱花1對+地花1對）\n2.全頂花藝\n3. 掛吊燈左右各1組\n4. DietCut人名牌", "Hilary + 蜆：準備證婚物資", "Hilary：(1) 問Angela & Vincent & Angela 媽媽 & Vincent 爸爸拎身份證\n* 保管一共4張身份證 (show比律師)\n(2) 保管證婚套，把證婚書放在證書套內\n(3) 保管誓詞卡\n(4) 保管Angela 電話"], "brother": ["Vincent + Lun：返物資房換白色西裝\n夾萬拎結婚戒指\nLun Keep物資房卡 + 對戒 + 新郎手機", "城哥/Frankie/Darren/Lun：收拾房間+出門套房", "Darren：收齊6張房卡，酒店check out", "Lun：確保所有物資鎖好物資房，保管物資房卡\n（唔好比Darren還）", "Terry：拎車 － 過場 (黃金海岸酒店 > 黃金海岸遊艇會會場)\n第1批： Frankie(拎自己野) + 攝影師 （3人）[9:00 出發]\n第2批： 新郎家人（3人）+ 新郎 [9:15出發]\n第3批：Lun + Darren + Frankie + 城哥 [9:30出發]\n第4批：細姨＋姨丈 （tbc）\n\nTerry泊車", "Vincent：到新娘房拎襟花 ＋ 交低身份證"], "done": false}, {"id": "rd_49", "time": "09:30", "text": "崗位跟進", "material": "", "sister": ["蜆：(1) 派襟花比Vincent\n(2) 保管Angela 兩紮捧花\n - 主捧花 for Angela 進場 \n - 次捧花 for 拋花球用\n(3) 保管泡泡槍\n(4) 保管Angela 電話"], "brother": ["Frankie：同Eunice夾, 確保人員到場 + 會場聯絡\n會場 － Boey Lai：2404 3280\n\n聯絡Deco公司拎 2紮感恩花 －＞ 聯絡會場存放\nSasa：6161 9322", "城哥：致電巴士司機\n確保賓客已到，9點半能夠出車\n\ncheck 所有野正常\n＞門口 Photoslide show / Seating Plan \n＞會場播緊Background Music \n保管USB－＞交比會場工作人員", "[9:45所有兄弟到會場]：None"], "done": false}, {"id": "rd_52", "time": "10:00 - 10:30", "text": "Reception 投入服務", "material": "", "sister": ["Eunice + 令令 + 懿雅：10am前stand by\n- Reception + 點人名\n- 令令 Keep女家人情 (mark name & account)\n- 派菲林相機+任務卡 (小梁, Franklin, Maurice)\n詳情＞賓客名單"], "brother": ["Darren + Lun +\n Terry：10am前stand by\n- Reception + 點人名\n- Darren Keep男家人情  (mark name & account)\n- 派菲林相機+任務卡 (Cecilia, Jennifer)\n詳情＞賓客名單"], "done": false}, {"id": "rd_53", "time": "跟進", "text": "賓客到達合場", "material": "", "sister": [], "brother": ["Vincent + 城哥：迎賓"], "done": false}, {"id": "rd_54", "time": "跟進", "text": "穿梭巴士到達會場", "material": "", "sister": ["懿雅：派利是比巴士司機 & 律師"], "brother": [], "done": false}, {"id": "rd_55", "time": "跟進", "text": "律師到場Briefing", "material": "Angela + Angela媽媽 + Vincent + Vincent爸爸", "sister": ["Hilary：(1) 保管一共4張身份證 (show比律師)\n(2) 保管證婚套，把證婚書放在證書套內, 放證婚枱上\n(3) 保管誓詞卡"], "brother": [], "done": false}, {"id": "rd_56", "time": "10:20 - 10:30", "text": "準備證婚開始", "material": "Angela + Angela 爸爸+ Angela 媽媽standby\n拍攝幫新娘戴頭紗影花絮", "sister": ["懿雅 + Eunice：幫忙叫賓客就座\n令令留守Reception until match in", "Hilary：拍攝花絮後帶Angela 媽媽就座"], "brother": ["Frankie + 城哥 + Terry：幫忙叫賓客到戶外草地就座", "Darren：留守Reception until match in"], "done": false}, {"id": "rd_59", "time": "證婚儀式", "text": "崗位跟進", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_60", "time": "10:30 - 11:30", "text": "證婚儀式正式開始", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_61", "time": "跟進", "text": "司儀致歡迎辭", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_62", "time": "跟進", "text": "新郎進場", "material": "新郎進場音樂", "sister": [], "brother": [], "done": false}, {"id": "rd_63", "time": "跟進", "text": "外父帶新娘進場", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_64", "time": "跟進", "text": "交接儀式", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_65", "time": "跟進", "text": "宣讀誓辭 (Vincent > Angela)", "material": "", "sister": ["Hilary：(1) 比新朗誓詞卡 Lun\n(2) 遞誓詞卡比Angela"], "brother": ["Lun：遞誓詞卡比Vincent"], "done": false}, {"id": "rd_66", "time": "跟進", "text": "交換戒指 (Vincent > Angela)", "material": "", "sister": ["Hilary：(1) 從Lun手上接戒指\n(2) 遞結婚戒指比Angela"], "brother": ["Lun：(1) 遞結婚戒指比Vincent\n(2) 結婚戒指盒比Hilary"], "done": false}, {"id": "rd_67", "time": "跟進", "text": "揭頭紗", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_68", "time": "跟進", "text": "吻賀", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_69", "time": "跟進", "text": "簽紙儀式", "material": "Angela + Angela媽媽 + Vincent + Vincent爸爸", "sister": ["Hilary：證婚後：保管證書套、誓詞套、Angela & Vincvent HKID card\""], "brother": [], "done": false}, {"id": "rd_70", "time": "跟進", "text": "新人與主人家合照", "material": "Angela + Vincent + 四大長老", "sister": ["Eunice + 懿雅：去reception拎泡泡槍X2 準備"], "brother": ["Terry + Darren：去reception拎泡泡槍X2 準備"], "done": false}, {"id": "rd_71", "time": "跟進", "text": "March out", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_72", "time": "跟進", "text": "Re-March in (兄弟姊妹放泡泡)", "material": "", "sister": ["Eunice + 懿雅：放泡泡"], "brother": ["Terry + Darren：放泡泡"], "done": false}, {"id": "rd_73", "time": "跟進", "text": "拋花球 (姊妹拎定專用花球)", "material": "", "sister": ["蜆：遞拋花球專用捧花比Angela"], "brother": ["所有兄弟：邀請大家比黎接花球"], "done": false}, {"id": "rd_74", "time": "跟進", "text": "切真餅", "material": "", "sister": ["所有姊妹：企新人兩排拍手歡呼"], "brother": ["所有兄弟：企新人兩排拍手歡呼"], "done": false}, {"id": "rd_75", "time": "跟進", "text": "合照時間", "material": "", "sister": [], "brother": ["Terry：幫忙手機側拍／賓客電話幫拍", "城哥 + Darren：檢查每枱座位桌上已擺放好：（如未有請搵搵會場工作人員）\n1.) 魚子醬\n2.) 回禮小禮物"], "done": false}, {"id": "rd_77", "time": "11:30 - 12:00", "text": "新娘新郎換進場造型、新郎迎賓", "material": "", "sister": ["蜆：陪Angela換造型（新娘房）", "Eunice + Hilary：宴會廳物資：\n- 紙杯、紅棗、蓮子比宴會廳職員\n- 小遊戲 (刮刮卡 + 禮物)", "其他姊妹：Guide 賓客到室內宴會廳 / 邀請賓客玩自拍機"], "brother": ["Lun：陪Vincent換造型（新娘房）", "Frankie + 城哥：幫手姊妹團拎物資（Eunice + Hilary)", "其他兄弟：Guide 賓客到室內宴會廳 / 邀請賓客玩自拍機"], "done": false}, {"id": "rd_80", "time": "午宴", "text": "崗位跟進", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_81", "time": "12:00", "text": "午宴開席", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_82", "time": "跟進", "text": "Reception 結束", "material": "", "sister": ["令令 + 懿雅：keep人情袋 + 收Darren人情袋\n放入新娘房"], "brother": ["Darren：交人情袋比令令 + 懿雅"], "done": false}, {"id": "rd_83", "time": "跟進", "text": "司儀致歡迎辭", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_84", "time": "跟進", "text": "成長片段", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_85", "time": "跟進", "text": "新人進場", "material": "01_進場音樂", "sister": ["兄弟姊妹拍手：None"], "brother": [], "done": false}, {"id": "rd_86", "time": "跟進", "text": "切 Dummy cake", "material": "02_儀式音樂", "sister": [], "brother": [], "done": false}, {"id": "rd_87", "time": "跟進", "text": "合巹交杯＋世紀之吻", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_88", "time": "跟進", "text": "致謝辭", "material": "", "sister": ["蜆：遞Angela 電話比Angela"], "brother": ["Lun：遞Vincent電話 & 誓詞卡x2 比Vincent & Angela"], "done": false}, {"id": "rd_89", "time": "跟進", "text": "台上送感恩花 (2 束俾奶奶+外母)", "material": "", "sister": [], "brother": ["Frankie：搵定工作人員，準備感恩花x2"], "done": false}, {"id": "rd_90", "time": "跟進", "text": "6人祝酒", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_91", "time": "12:30", "text": "自助餐開始", "material": "MC 會宣佈逐枱分流，主家席先行", "sister": [], "brother": [], "done": false}, {"id": "rd_92", "time": "12:45", "text": "補奉茶儀式 (男家 x7 , 女家x9)", "material": "", "sister": ["蜆：協助Angela 奉茶儀式"], "brother": ["Lun：協助 Vincent 奉茶儀式"], "done": false}, {"id": "rd_93", "time": "13:15", "text": "刮刮卡小遊戲", "material": "", "sister": ["所有姊妹：派刮刮卡 + 硬幣 (每枱兩三個) + 參與遊戲"], "brother": ["所有兄弟：派刮刮卡 + 硬幣 (每枱兩三個) + 參與遊戲", "Terry + 城哥：上台領獎時幫手遞禮物"], "done": false}, {"id": "rd_95", "time": "13:30", "text": "合照環節", "material": "", "sister": [], "brother": ["Frankie：聯絡攝影師 confirm幾時可以播放「早拍午播」，再update MC Jessica"], "done": false}, {"id": "rd_96", "time": "~13:45", "text": "播放早拍午播花絮片", "material": "", "sister": [], "brother": [], "done": false}, {"id": "rd_97", "time": "跟進", "text": "敬酒", "material": "05_敬酒音樂", "sister": ["飲!：None"], "brother": [], "done": false}, {"id": "rd_98", "time": "14:00", "text": "崗位跟進", "material": "", "sister": [], "brother": ["Darren：photobooth收拾後， 接收一本guest book"], "done": false}, {"id": "rd_99", "time": "14:15", "text": "歡送賓
