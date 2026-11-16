@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Wedding Day Hub v10</title>
+  <title>Wedding Day Hub v10 (1122)</title>
   <style>
     :root {
       --bg: #faf7f4;
@@ -25,7 +25,7 @@
       font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Noto Sans TC", sans-serif;
       background: var(--bg);
       color: var(--ink);
-      padding-bottom: calc(var(--nav-h) + 20px);
+      padding-bottom: calc(var(--nav-h) + 24px);
     }
     header {
       position: sticky;
@@ -40,17 +40,8 @@
       justify-content: space-between;
       gap: 10px;
     }
-    .brand {
-      font-size: 16px;
-      font-weight: 700;
-      letter-spacing: 0.2px;
-    }
-    .brand small {
-      display: block;
-      font-size: 11px;
-      font-weight: 400;
-      color: var(--muted);
-    }
+    .brand { font-size: 16px; font-weight: 700; }
+    .brand small { display: block; font-size: 11px; font-weight: 400; color: var(--muted); }
     .save-badge {
       font-size: 12px;
       padding: 5px 10px;
@@ -60,11 +51,7 @@
       font-weight: 600;
       white-space: nowrap;
     }
-    main {
-      padding: 14px 16px 24px;
-      max-width: 720px;
-      margin: 0 auto;
-    }
+    main { padding: 14px 16px 24px; max-width: 760px; margin: 0 auto; }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
     .card {
@@ -81,6 +68,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 8px;
     }
     .item-row {
       display: flex;
@@ -93,6 +81,14 @@
     .item-row:last-child { border-bottom: none; }
     .item-title { font-size: 14px; font-weight: 600; }
     .item-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .empty-tip {
+      padding: 14px;
+      border-radius: 10px;
+      background: var(--bg);
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
     button {
       border: 1px solid var(--border);
       background: var(--card);
@@ -103,25 +99,10 @@
       font-weight: 600;
       cursor: pointer;
     }
-    button.primary {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #fff;
-    }
-    .status-btn {
-      min-width: 82px;
-      text-align: center;
-    }
-    .status-btn.arrived {
-      background: var(--ok-soft);
-      border-color: var(--ok);
-      color: var(--ok);
-    }
-    .status-btn.pending {
-      background: var(--warn-soft);
-      border-color: var(--warn);
-      color: var(--warn);
-    }
+    button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .status-btn { min-width: 82px; text-align: center; }
+    .status-btn.arrived { background: var(--ok-soft); border-color: var(--ok); color: var(--ok); }
+    .status-btn.pending { background: var(--warn-soft); border-color: var(--warn); color: var(--warn); }
     .pill {
       display: inline-block;
       font-size: 11px;
@@ -131,7 +112,7 @@
       color: var(--accent);
       font-weight: 600;
     }
-    input[type="password"], input[type="text"], input[type="number"] {
+    input, textarea {
       width: 100%;
       padding: 10px 12px;
       border: 1px solid var(--border);
@@ -139,7 +120,9 @@
       font-size: 14px;
       margin-bottom: 10px;
       background: #fff;
+      font-family: inherit;
     }
+    textarea { min-height: 110px; font-size: 12px; }
     .row-actions { display: flex; gap: 8px; flex-wrap: wrap; }
     .err-text { color: #b42318; font-size: 12px; margin-top: 6px; min-height: 18px; }
     .bottom-nav {
@@ -167,17 +150,14 @@
       font-size: 11px;
       color: var(--muted);
     }
-    .nav-btn.active {
-      color: var(--accent);
-      background: var(--accent-soft);
-    }
+    .nav-btn.active { color: var(--accent); background: var(--accent-soft); }
     .nav-icon { font-size: 16px; line-height: 1; }
   </style>
 </head>
 <body>
   <header>
     <div class="brand">
-      Wedding Day Hub <span class="pill">v10</span>
+      Wedding 1122 Hub <span class="pill">v10</span>
       <small id="activeTabLabel">目前分頁：Rundown</small>
     </div>
     <div id="saveTimestamp" class="save-badge">已儲存：尚未變更</div>
@@ -187,8 +167,30 @@
     <!-- 1. Rundown -->
     <section id="panel-rundown" class="tab-panel active">
       <div class="card">
-        <h2>Rundown 流程表</h2>
+        <h2>
+          <span>Rundown 流程表</span>
+          <span id="rundownCount" class="pill"></span>
+        </h2>
         <div id="rundownList"></div>
+      </div>
+
+      <div class="card">
+        <h2>快速新增／貼上 Master 2 資料</h2>
+        <div class="item-sub" style="margin-bottom:8px;">
+          可直接貼上 JSON（支援 <code>rundown</code>、<code>seating</code>、<code>tea</code>、<code>supplies</code>、<code>angbao</code> 陣列），或逐筆新增流程。
+        </div>
+        <div class="row-actions" style="margin-bottom:8px;">
+          <input type="text" id="rdTimeInput" placeholder="時間 (例: 18:00)" style="flex:1; min-width:110px; margin-bottom:0;" />
+          <input type="text" id="rdTitleInput" placeholder="流程項目" style="flex:2; min-width:150px; margin-bottom:0;" />
+          <input type="text" id="rdNoteInput" placeholder="備註／負責人" style="flex:2; min-width:150px; margin-bottom:0;" />
+          <button type="button" class="primary" id="addRundownBtn">新增流程</button>
+        </div>
+        <textarea id="masterJsonInput" placeholder='貼上 Wedding 1122 - Master_2 匯出 JSON，例如：{"seating":[{"id":"s1","name":"賓客姓名","table":"Table 1","status":"未到"}]}'></textarea>
+        <div class="row-actions">
+          <button type="button" class="primary" id="importJsonBtn">匯入並儲存資料</button>
+          <button type="button" id="resetDataBtn">清空全部資料</button>
+        </div>
+        <div id="importMsg" class="err-text"></div>
       </div>
     </section>
 
@@ -200,6 +202,11 @@
           <span id="seatingSummary" class="pill"></span>
         </h2>
         <div class="item-sub" style="margin-bottom:8px;">無需密碼即可查閱，點擊右側按鈕可切換「未到／已經到」。</div>
+        <div class="row-actions" style="margin-bottom:10px;">
+          <input type="text" id="seatNameInput" placeholder="賓客姓名" style="flex:2; min-width:130px; margin-bottom:0;" />
+          <input type="text" id="seatTableInput" placeholder="桌號" style="flex:1; min-width:90px; margin-bottom:0;" />
+          <button type="button" class="primary" id="addSeatBtn">新增賓客</button>
+        </div>
         <div id="seatingList"></div>
       </div>
     </section>
@@ -207,7 +214,14 @@
     <!-- 3. 奉茶／合照 -->
     <section id="panel-tea" class="tab-panel">
       <div class="card">
-        <h2>奉茶／合照清單</h2>
+        <h2>
+          <span>奉茶／合照清單</span>
+          <span id="teaSummary" class="pill"></span>
+        </h2>
+        <div class="row-actions" style="margin-bottom:10px;">
+          <input type="text" id="teaTitleInput" placeholder="新增奉茶／合照項目" style="flex:1; min-width:180px; margin-bottom:0;" />
+          <button type="button" class="primary" id="addTeaBtn">新增項目</button>
+        </div>
         <div id="teaList"></div>
       </div>
     </section>
@@ -215,7 +229,14 @@
     <!-- 4. 物資表 -->
     <section id="panel-supplies" class="tab-panel">
       <div class="card">
-        <h2>物資表</h2>
+        <h2>
+          <span>物資表</span>
+          <span id="suppliesSummary" class="pill"></span>
+        </h2>
+        <div class="row-actions" style="margin-bottom:10px;">
+          <input type="text" id="supplyTitleInput" placeholder="新增物資項目" style="flex:1; min-width:180px; margin-bottom:0;" />
+          <button type="button" class="primary" id="addSupplyBtn">新增物資</button>
+        </div>
         <div id="suppliesList"></div>
       </div>
     </section>
@@ -224,7 +245,7 @@
     <section id="panel-angbao" class="tab-panel">
       <div id="angbaoLockBox" class="card">
         <h2>人情分頁（密碼鎖）</h2>
-        <div class="item-sub" style="margin-bottom:10px;">此分頁已上鎖，請輸入 4 位數密碼解鎖。</div>
+        <div class="item-sub" style="margin-bottom:10px;">此分頁已上鎖，請輸入密碼解鎖。</div>
         <input type="password" id="angbaoPassInput" inputmode="numeric" maxlength="10" placeholder="請輸入解鎖密碼" />
         <div class="row-actions">
           <button type="button" class="primary" id="unlockAngbaoBtn">解鎖人情分頁</button>
@@ -267,7 +288,7 @@
 
   <script>
     (function () {
-      const STORAGE_KEY = "wedding_day_hub_v10_state";
+      const STORAGE_KEY = "wedding_day_hub_v10_1122_state";
       const ANP_PASS = "1122";
       const TAB_NAMES = {
         rundown: "Rundown",
@@ -277,37 +298,15 @@
         angbao: "人情"
       };
 
-      const defaultState = {
+      const emptyState = {
         activeTab: "rundown",
         angbaoUnlocked: false,
         lastSaved: "",
-        rundown: [
-          { time: "17:30", title: "兄弟姊妹集合與場地核對", note: "確認音響、麥克風及迎賓牌" },
-          { time: "18:30", title: "賓客入席與 Seating 簽到", note: "依座位表引導就座" },
-          { time: "19:15", title: "奉茶儀式與大合照", note: "長輩奉茶順序核對" },
-          { time: "20:00", title: "晚宴進行與敬酒", note: "主家席與親友席逐桌敬酒" }
-        ],
-        seating: [
-          { id: "s1", name: "主家席 - 父母及長輩", table: "VIP 1", status: "未到" },
-          { id: "s2", name: "伴郎伴娘團", table: "Table 2", status: "未到" },
-          { id: "s3", name: "中學及大學好友", table: "Table 3", status: "未到" },
-          { id: "s4", name: "同事及合作夥伴", table: "Table 4", status: "未到" }
-        ],
-        tea: [
-          { id: "t1", title: "男家父母奉茶", done: false },
-          { id: "t2", title: "女家父母奉茶", done: false },
-          { id: "t3", title: "全體兄弟姊妹合照", done: false },
-          { id: "t4", title: "全體賓客大合照", done: false }
-        ],
-        supplies: [
-          { id: "p1", title: "新人禮服／西裝及備用衣物", checked: false },
-          { id: "p2", title: "戒指盒、證書及奉茶茶具", checked: false },
-          { id: "p3", title: "人情箱、簽名筆及賓客名單", checked: false },
-          { id: "p4", title: "急救包、紙巾及行動電源", checked: false }
-        ],
-        angbao: [
-          { id: "a1", name: "範例賓客 A", amount: 1000 }
-        ]
+        rundown: [],
+        seating: [],
+        tea: [],
+        supplies: [],
+        angbao: []
       };
 
       function sanitizeText(str) {
@@ -316,20 +315,19 @@
 
       function formatNow() {
         const now = new Date();
-        const hh = String(now.getHours()).padStart(2, "0");
-        const mm = String(now.getMinutes()).padStart(2, "0");
-        const ss = String(now.getSeconds()).padStart(2, "0");
-        return hh + ":" + mm + ":" + ss;
+        return [now.getHours(), now.getMinutes(), now.getSeconds()]
+          .map(function (n) { return String(n).padStart(2, "0"); })
+          .join(":");
       }
 
       function loadState() {
         try {
           const raw = localStorage.getItem(STORAGE_KEY);
-          if (!raw) return JSON.parse(JSON.stringify(defaultState));
+          if (!raw) return JSON.parse(JSON.stringify(emptyState));
           const parsed = JSON.parse(raw);
-          return Object.assign({}, JSON.parse(JSON.stringify(defaultState)), parsed);
+          return Object.assign({}, JSON.parse(JSON.stringify(emptyState)), parsed);
         } catch (e) {
-          return JSON.parse(JSON.stringify(defaultState));
+          return JSON.parse(JSON.stringify(emptyState));
         }
       }
 
@@ -353,7 +351,15 @@
 
       function renderRundown() {
         const container = document.getElementById("rundownList");
+        const countEl = document.getElementById("rundownCount");
         if (!container) return;
+        if (countEl) countEl.textContent = state.rundown.length + " 項";
+
+        if (!state.rundown.length) {
+          container.innerHTML = '<div class="empty-tip">尚未匯入 Rundown 流程資料，請貼上 Master_2 資料或於下方新增。</div>';
+          return;
+        }
+
         container.innerHTML = state.rundown.map(function (item) {
           return (
             '<div class="item-row">' +
@@ -370,8 +376,11 @@
         if (!container) return;
 
         const arrivedCount = state.seating.filter(function (g) { return g.status === "已經到"; }).length;
-        if (summary) {
-          summary.textContent = "已到 " + arrivedCount + " / " + state.seating.length;
+        if (summary) summary.textContent = "已到 " + arrivedCount + " / " + state.seating.length;
+
+        if (!state.seating.length) {
+          container.innerHTML = '<div class="empty-tip">尚未匯入 Seating 賓客名單，請從 Rundown 分頁貼上 Master_2 資料或於上方新增。</div>';
+          return;
         }
 
         container.innerHTML = state.seating.map(function (guest) {
@@ -382,7 +391,7 @@
             '<div><div class="item-title">' + sanitizeText(guest.name) + "</div>" +
             '<div class="item-sub">桌號：' + sanitizeText(guest.table) + "</div></div>" +
             '<button type="button" class="' + btnClass + '" data-seating-id="' + sanitizeText(guest.id) + '">' +
-            sanitizeText(guest.status) +
+            sanitizeText(guest.status || "未到") +
             "</button>" +
             "</div>"
           );
@@ -391,7 +400,17 @@
 
       function renderTea() {
         const container = document.getElementById("teaList");
+        const summary = document.getElementById("teaSummary");
         if (!container) return;
+
+        const doneCount = state.tea.filter(function (t) { return !!t.done; }).length;
+        if (summary) summary.textContent = "已完成 " + doneCount + " / " + state.tea.length;
+
+        if (!state.tea.length) {
+          container.innerHTML = '<div class="empty-tip">尚未匯入奉茶／合照資料。</div>';
+          return;
+        }
+
         container.innerHTML = state.tea.map(function (item) {
           return (
             '<div class="item-row">' +
@@ -406,7 +425,17 @@
 
       function renderSupplies() {
         const container = document.getElementById("suppliesList");
+        const summary = document.getElementById("suppliesSummary");
         if (!container) return;
+
+        const checkedCount = state.supplies.filter(function (s) { return !!s.checked; }).length;
+        if (summary) summary.textContent = "已備妥 " + checkedCount + " / " + state.supplies.length;
+
+        if (!state.supplies.length) {
+          container.innerHTML = '<div class="empty-tip">尚未匯入物資表資料。</div>';
+          return;
+        }
+
         container.innerHTML = state.supplies.map(function (item) {
           return (
             '<div class="item-row">' +
@@ -425,12 +454,12 @@
         const listEl = document.getElementById("angbaoList");
         if (!lockBox || !contentBox || !listEl) return;
 
-        if (state.angbaoUnlocked) {
-          lockBox.style.display = "none";
-          contentBox.style.display = "block";
-        } else {
-          lockBox.style.display = "block";
-          contentBox.style.display = "none";
+        lockBox.style.display = state.angbaoUnlocked ? "none" : "block";
+        contentBox.style.display = state.angbaoUnlocked ? "block" : "none";
+
+        if (!state.angbao.length) {
+          listEl.innerHTML = '<div class="empty-tip">尚未匯入人情紀錄。</div>';
+          return;
         }
 
         listEl.innerHTML = state.angbao.map(function (row) {
@@ -441,6 +470,15 @@
             "</div>"
           );
         }).join("");
+      }
+
+      function renderAll() {
+        renderRundown();
+        renderSeating();
+        renderTea();
+        renderSupplies();
+        renderAngbao();
+        updateSaveBadge();
       }
 
       function switchTab(tabKey) {
@@ -466,38 +504,118 @@
       function bindEvents() {
         document.querySelectorAll(".nav-btn").forEach(function (btn) {
           btn.addEventListener("click", function () {
-            const tab = btn.getAttribute("data-tab");
-            switchTab(tab);
+            switchTab(btn.getAttribute("data-tab"));
           });
+        });
+
+        document.getElementById("addRundownBtn").addEventListener("click", function () {
+          const timeEl = document.getElementById("rdTimeInput");
+          const titleEl = document.getElementById("rdTitleInput");
+          const noteEl = document.getElementById("rdNoteInput");
+          const title = sanitizeText(titleEl && titleEl.value);
+          if (!title) return;
+          state.rundown.push({
+            id: "rd_" + Date.now(),
+            time: sanitizeText(timeEl && timeEl.value),
+            title: title,
+            note: sanitizeText(noteEl && noteEl.value)
+          });
+          timeEl.value = "";
+          titleEl.value = "";
+          noteEl.value = "";
+          renderRundown();
+          saveState();
+        });
+
+        document.getElementById("importJsonBtn").addEventListener("click", function () {
+          const box = document.getElementById("masterJsonInput");
+          const msg = document.getElementById("importMsg");
+          try {
+            const incoming = JSON.parse(box.value);
+            ["rundown", "seating", "tea", "supplies", "angbao"].forEach(function (key) {
+              if (Array.isArray(incoming[key])) {
+                state[key] = incoming[key];
+              }
+            });
+            renderAll();
+            saveState();
+            if (msg) msg.textContent = "已成功匯入並儲存資料。";
+          } catch (e) {
+            if (msg) msg.textContent = "JSON 格式有誤，請檢查括號與引號。";
+          }
+        });
+
+        document.getElementById("resetDataBtn").addEventListener("click", function () {
+          state.rundown = [];
+          state.seating = [];
+          state.tea = [];
+          state.supplies = [];
+          state.angbao = [];
+          renderAll();
+          saveState();
+        });
+
+        document.getElementById("addSeatBtn").addEventListener("click", function () {
+          const nameEl = document.getElementById("seatNameInput");
+          const tableEl = document.getElementById("seatTableInput");
+          const name = sanitizeText(nameEl && nameEl.value);
+          if (!name) return;
+          state.seating.push({
+            id: "s_" + Date.now(),
+            name: name,
+            table: sanitizeText(tableEl && tableEl.value) || "-",
+            status: "未到"
+          });
+          nameEl.value = "";
+          tableEl.value = "";
+          renderSeating();
+          saveState();
         });
 
         document.getElementById("seatingList").addEventListener("click", function (e) {
           const btn = e.target.closest("[data-seating-id]");
           if (!btn) return;
-          const id = btn.getAttribute("data-seating-id");
-          const guest = state.seating.find(function (g) { return g.id === id; });
+          const guest = state.seating.find(function (g) { return g.id === btn.getAttribute("data-seating-id"); });
           if (!guest) return;
-          guest.status = guest.status === "未到" ? "已經到" : "未到";
+          guest.status = guest.status === "已經到" ? "未到" : "已經到";
           renderSeating();
+          saveState();
+        });
+
+        document.getElementById("addTeaBtn").addEventListener("click", function () {
+          const input = document.getElementById("teaTitleInput");
+          const title = sanitizeText(input && input.value);
+          if (!title) return;
+          state.tea.push({ id: "t_" + Date.now(), title: title, done: false });
+          input.value = "";
+          renderTea();
           saveState();
         });
 
         document.getElementById("teaList").addEventListener("click", function (e) {
           const btn = e.target.closest("[data-tea-id]");
           if (!btn) return;
-          const id = btn.getAttribute("data-tea-id");
-          const item = state.tea.find(function (t) { return t.id === id; });
+          const item = state.tea.find(function (t) { return t.id === btn.getAttribute("data-tea-id"); });
           if (!item) return;
           item.done = !item.done;
           renderTea();
           saveState();
         });
 
+        document.getElementById("addSupplyBtn").addEventListener("click", function () {
+          const input = document.getElementById("supplyTitleInput");
+          const title = sanitizeText(input && input.value);
+          if (!title) return;
+          state.supplies.push({ id: "p_" + Date.now(), title: title, checked: false });
+          input.value = "";
+          renderSupplies();
+          saveState();
+        });
+
         document.getElementById("suppliesList").addEventListener("click", function (e) {
           const btn = e.target.closest("[data-supply-id]");
           if (!btn) return;
-          const id = btn.getAttribute("data-supply-id");
-          const item = state.supplies.find(function (s) { return s.id === id; });
+          const item = state.supplies.find(function (s) { return s.id === btn.getAttribute("data-supply-id"); });
           if (!item) return;
           item.checked = !item.checked;
           renderSupplies();
@@ -538,13 +656,7 @@
         });
       }
 
-      // Initial render
-      renderRundown();
-      renderSeating();
-      renderTea();
-      renderSupplies();
-      renderAngbao();
-      updateSaveBadge();
+      renderAll();
       bindEvents();
       switchTab(state.activeTab || "rundown");
     })();
