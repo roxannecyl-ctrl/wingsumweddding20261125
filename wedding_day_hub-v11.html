@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>2026.11.22 Angela &amp; Vincent Wedding Day Hub v11</title>
+<style>
+  :root {
+    --bg: #f6f4f0;
+    --card: #ffffff;
+    --ink: #1e1e1e;
+    --muted: #6b6760;
+    --accent: #8c5e3c;
+    --accent-soft: #f2e8df;
+    --ok: #2e7d5b;
+    --ok-bg: #e7f5ee;
+    --warn: #b26a00;
+    --warn-bg: #fff3e0;
+    --line: #e5e0d8;
+    --tab-h: 64px;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang HK", "Noto Sans TC", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    padding-bottom: calc(var(--tab-h) + 28px);
+    line-height: 1.45;
+  }
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+    padding: 12px 16px 10px;
+  }
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+  header h1 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .badge {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .sync-pill {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .sync-pill.live { background: var(--ok-bg); color: var(--ok); }
+  .sync-pill.offline { background: var(--warn-bg); color: var(--warn); }
+  .toolbar {
+    margin-top: 8px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .outdoor-bar {
+    margin-top: 8px;
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+  .outdoor-pill {
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--ink);
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .outdoor-pill:active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .btn {
+    border: none;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn:active { opacity: 0.85; }
+  .btn-secondary {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  main {
+    padding: 14px 14px 0;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  }
+  .card h2 {
+    margin: 0 0 10px;
+    font-size: 15px;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .stats-grid.four-col {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .stat-box {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 8px;
+    text-align: center;
+  }
+  .stat-num { font-size: 18px; font-weight: 700; color: var(--accent); }
+  .stat-lbl { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .filter-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+  .chip {
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--ink);
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .chip.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+    font-weight: 600;
+  }
+  input[type="text"], input[type="number"], input[type="password"], select {
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    font-size: 13px;
+    background: #fff;
+    color: var(--ink);
+  }
+  .row-item {
+    border-top: 1px solid var(--line);
+    padding: 10px 0;
+  }
+  .row-item:first-child { border-top: none; padding-top: 0; }
+  .meta-tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 7px;
+    border-radius: 6px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    margin-right: 4px;
+    font-weight: 600;
+  }
+  .duty-box {
+    margin-top: 6px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: var(--bg);
+    font-size: 12px;
+  }
+  .duty-box div { margin-bottom: 3px; }
+  .guest-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 0;
+    border-top: 1px solid var(--line);
+  }
+  .guest-row:first-child { border-top: none; }
+  .status-btn {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 5px 9px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    background: #fff;
+    color: var(--muted);
+  }
+  .status-btn.ok {
+    background: var(--ok-bg);
+    color: var(--ok);
+    border-color: var(--ok);
+  }
+  .gold-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 6px;
+  }
+  .gold-pill {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    cursor: pointer;
+  }
+  .gold-pill.on {
+    background: var(--ok-bg);
+    color: var(--ok);
+    border-color: var(--ok);
+    font-weight: 600;
+  }
+  .angpao-lock-box {
+    background: var(--bg);
+    border: 1px dashed var(--accent);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+  .angpao-lock-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+  .lock-err {
+    color: #c62828;
+    font-size: 12px;
+    margin-top: 6px;
+    min-height: 16px;
+  }
+  nav.tabbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--tab-h);
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    z-index: 30;
+  }
+  nav.tabbar button {
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    cursor: pointer;
+    padding: 0 2px;
+  }
+  nav.tabbar button.active { color: var(--accent); }
+  .done-text { text-decoration: line-through; color: var(--muted); }
+  .angpao-private { display: none; }
+  body.angpao-unlocked .angpao-private { display: inline-flex; }
+  body.angpao-unlocked .angpao-private-block { display: block; }
+  .angpao-private-block { display: none; }
+</style>
+</head>
+<body>
+<header>
+  <div class="header-top">
+    <h1>2026.11.22 Angela &amp; Vincent Hub</h1>
+    <div style="display:flex; gap:6px; align-items:center;">
+      <span id="syncBadge" class="sync-pill offline">離線暫存</span>
+      <span class="badge">黃金海岸 → 遊艇會</span>
+    </div>
+  </div>
+  <div class="toolbar">
+    <button class="btn btn-secondary" onclick="exportJSON()">匯出備份 JSON</button>
+    <button class="btn btn-secondary" onclick="resetState()">還原預設資料</button>
+    <span id="saveStatus">已自動儲存</span>
+  </div>
+  <div class="outdoor-bar">
+    <button class="outdoor-pill" onclick="jumpOutdoor('出門')">🚐 出門／敬茶</button>
+    <button class="outdoor-pill" onclick="jumpOutdoor('證婚')">💍 戶外證婚</button>
+    <button class="outdoor-pill" onclick="jumpOutdoor('午宴')">🥂 午宴／補奉茶</button>
+    <button class="outdoor-pill" onclick="jumpOutdoor('尾數')">📦 尾數／回程</button>
+  </div>
+</header>
+
+<main>
+  <!-- TAB 1: RUNDOWN -->
+  <section id="tab-rundown" class="panel active">
+    <div class="card">
+      <h2>Whole Day Rundown（拍攝：White Production）</h2>
+      <div class="filter-row" id="rundownFilters"></div>
+      <div id="rundownContainer"></div>
+    </div>
+  </section>
+
+  <!-- TAB 2: SEATING PLAN -->
+  <section id="tab-seating" class="panel">
+    <div class="stats-grid" id="seatingStats"></div>
+    <div class="card">
+      <h2>新增座位／臨時加人</h2>
+      <div style="display:flex; gap:6px; flex-wrap:wrap;">
+        <input type="text" id="newGuestName" placeholder="賓客姓名" style="flex:1; min-width:120px;">
+        <select id="newGuestTable">
+          <option value="T.1 (Garden Room)">T.1 (Garden Room)</option>
+          <option value="T.2 (Garden Room)">T.2 (Garden Room)</option>
+          <option value="T.3 (Garden Room)">T.3 (Garden Room)</option>
+          <option value="T.5 (Garden Room)">T.5 (Garden Room)</option>
+          <option value="T.6 (Garden Room)">T.6 (Garden Room)</option>
+          <option value="T.7 (The Deck)">T.7 (The Deck)</option>
+          <option value="T.8 (The Deck)">T.8 (The Deck)</option>
+          <option value="T.9 (The Deck)">T.9 (The Deck)</option>
+          <option value="T.10 (The Deck)">T.10 (The Deck)</option>
+          <option value="T.11 (The Deck)">T.11 (The Deck)</option>
+        </select>
+        <select id="newGuestSide">
+          <option value="男家">男家</option>
+          <option value="女家">女家</option>
+          <option value="未標明">未標明</option>
+        </select>
+        <button class="btn" onclick="addGuest()">新增</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Seating Plan V5 座位表（無人情參考版）</h2>
+      <div style="font-size:12px; color:var(--muted); margin-bottom:8px;">
+        直接查閱賓客姓名、枱號同到場狀態，方便任何人快速搵位。
+      </div>
+      <div style="display:flex; gap:6px; margin-bottom:8px; flex-wrap:wrap;">
+        <input type="text" id="seatingSearch" placeholder="搜尋姓名或枱號..." oninput="renderSeating()" style="flex:1; min-width:150px;">
+        <div class="filter-row" id="tableFilterChips" style="margin-bottom:0;"></div>
+      </div>
+      <div id="seatingContainer"></div>
+    </div>
+  </section>
+
+  <!-- TAB 3: 奉茶 LIST & 大合照 LIST -->
+  <section id="tab-ceremony" class="panel">
+    <div class="card">
+      <h2>奉茶組合List（奉茶紀錄表）</h2>
+      <div style="font-size:12px; color:var(--muted); margin-bottom:8px;">
+        建議預備號碼小貼紙（每個號碼約 6-8 個）貼於奉茶時收到的金器或利是上。
+      </div>
+      <div id="teaContainer"></div>
+    </div>
+    <div class="card">
+      <h2>大合照List（敬酒大合照名單）</h2>
+      <div style="font-size:12px; color:var(--muted); margin-bottom:8px;">
+        列出預計人數（不計算新人），方便場地工作人員安排台上座椅數目。
+      </div>
+      <div id="photoContainer"></div>
+    </div>
+  </section>
+
+  <!-- TAB 4: 物資表 -->
+  <section id="tab-materials" class="panel">
+    <div class="stats-grid" id="materialsStats"></div>
+    <div class="card">
+      <h2>新增物資項目</h2>
+      <div style="display:flex; gap:6px; flex-wrap:wrap;">
+        <select id="newMatCat" style="min-width:130px;">
+          <option value="酒店房／出門物資">酒店房／出門物資</option>
+          <option value="敬茶用品">敬茶用品</option>
+          <option value="證婚及會場佈置">證婚及會場佈置</option>
+          <option value="宴會廳及互動物資">宴會廳及互動物資</option>
+          <option value="過場、送客及尾數物資">過場、送客及尾數物資</option>
+          <option value="自訂物資">自訂物資</option>
+        </select>
+        <input type="text" id="newMatItem" placeholder="物資名稱..." style="flex:1; min-width:130px;">
+        <input type="text" id="newMatQty" placeholder="數量 (如 1個)" style="width:95px;">
+        <input type="text" id="newMatOwner" placeholder="負責人" style="width:110px;">
+        <button class="btn" onclick="addMaterial()">新增</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2>物資逐一點算表（共 59 項細項）</h2>
+      <div style="display:flex; gap:6px; margin-bottom:8px; flex-wrap:wrap;">
+        <input type="text" id="matSearch" placeholder="搜尋物資、地點或負責人..." oninput="renderMaterials()" style="flex:1; min-width:150px;">
+        <button class="btn btn-secondary" onclick="filterMatStatus('ALL')" id="matBtnAll">全部</button>
+        <button class="btn btn-secondary" onclick="filterMatStatus('TODO')" id="matBtnTodo">未備齊</button>
+      </div>
+      <div class="filter-row" id="materialFilterChips"></div>
+      <div id="materialsContainer"></div>
+    </div>
+  </section>
+
+  <!-- TAB 5: 核心崗位 & 聯絡人 & 歌曲 -->
+  <section id="tab-info" class="panel">
+    <div class="card">
+      <h2>兄弟姊妹核心崗位</h2>
+      <div id="rolesContainer"></div>
+    </div>
+    <div class="card">
+      <h2>全日聯絡人名單（Full Contact List）</h2>
+      <div id="contactsContainer"></div>
+    </div>
+    <div class="card">
+      <h2>婚禮歌曲清單（需要歌曲）</h2>
+      <div id="songsContainer"></div>
+    </div>
+  </section>
+
+  <!-- TAB 6: 人情登記（單分頁密碼鎖 1122） -->
+  <section id="tab-angpao" class="panel">
+    <div class="card">
+      <h2>🔒 人情登記分頁（密碼鎖：1122）</h2>
+      <div class="angpao-lock-box" id="angpaoLockBox">
+        <div style="font-size:13px; font-weight:600;">此分頁已上鎖，只限負責收人情／核數人員輸入 4 位密碼解鎖</div>
+        <div class="angpao-lock-row">
+          <input type="password" id="angpaoPinInput" inputmode="numeric" maxlength="4" placeholder="輸入 1122" style="width:120px; text-align:center; letter-spacing:4px;" onkeyup="if(event.key==='Enter')unlockAngpaoTab()">
+          <button class="btn" onclick="unlockAngpaoTab()">解鎖人情分頁</button>
+          <button class="btn btn-secondary angpao-private" onclick="lockAngpaoTab()">重新上鎖</button>
+        </div>
+        <div class="lock-err" id="angpaoLockErr"></div>
+      </div>
+
+      <div class="angpao-private-block" id="angpaoUnlockedContent">
+        <div class="stats-grid four-col" id="angpaoStats"></div>
+        <div style="font-size:12px; color:var(--muted); margin-bottom:8px;">
+          可在此直接填寫或修改每位賓客的人情金額，即時同步至雲端及本機。
+        </div>
+        <div id="angpaoContainer"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<nav class="tabbar">
+  <button class="active" data-tab="rundown" onclick="switchTab('rundown', this)"><span>📅</span><span>Rundown</span></button>
+  <button data-tab="seating" onclick="switchTab('seating', this)"><span>🪑</span><span>Seating</span></button>
+  <button data-tab="ceremony" onclick="switchTab('ceremony', this)"><span>🍵</span><span>奉茶／合照</span></button>
+  <button data-tab="materials" onclick="switchTab('materials', this)"><span>📦</span><span>物資表</span></button>
+  <button data-tab="info" onclick="switchTab('info', this)"><span>📋</span><span>崗位／聯絡</span></button>
+  <button data-tab="angpao" onclick="switchTab('angpao', this)"><span>🔒</span><span>人情</span></button>
+</nav>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+<script>
+const ANGPAO_PIN = "1122";
+const STORAGE_KEY = "wedding_hub_state_v11_1122";
+const DB_NODE = "wedding_1122_av_k9x2p7";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCBC-9kpUzDEL0iptoxkc95ysJVys23J8w",
+  authDomain: "wedding-1122-hub.firebaseapp.com",
+  databaseURL: "https://wedding-1122-hub-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "wedding-1122-hub",
+  storageBucket: "wedding-1122-hub.firebasestorage.app",
+  messagingSenderId: "591670742536",
+  appId: "1:591670742536:web:3e1b55a316f81e376d0bbd",
+  measurementId: "G-BLTRPKVFX9"
+};
+
+const INITIAL_DATA = {
+  "rundown": [
+    {
+      "phase": "一、出門及過場 (黃金海岸酒店 → 遊艇會)",
+      "items": [
+        {"id": "rd_5", "time": "03:00 - 06:00", "text": "Angela 食早餐\n3:30 am 化妝師及助手到達, Angela 開始化妝\n(~2hrs 30mins)", "material": "套房 - 新娘裙褂、褂鞋、飾物、護膚品、急救袋、飲用水吸管", "sister": ["LingLing：聯絡化妝師 Emily、姊妹化妝師"], "brother": [], "done": false},
+        {"id": "rd_6", "time": "03:30 - 06:00", "text": "姊妹開始化妝\n3:30 am化2位姊妹 (LingLing, 懿雅)\n4:15 am化2位 姊妹 (Hilary, Eunice)\n5:00 am化1位姊妹 (阿蜆) + Angela媽媽\n5:45 am化Vincent + Vincent 媽媽 + Vincent妹妹", "material": "姊妹房 1 - 姊妹食早餐 及輪流化妝\n套房 - 有時間可預備定物資, 如︰敬茶用品\nBag - 酒店房佈置物資 + 道具\nBag - 敬茶用品", "sister": ["懿雅：派手花(姊妹)、派利是俾姊妹化妝師、提Angela派利是俾化妝師/化妝師助手", "Hilary & 蜆：準備茶(茶葉、紅棗、蓮子)，跪墊，執枱準備", "Eunice：幫忙點算物資(請帖, 高踭鞋, 花球, 金器)"], "brother": ["Vincent：姊妹房 1 5:45 am 化妝 + 著馬掛 + 繡球"], "done": false},
+        {"id": "rd_9", "time": "06:00 - 07:00", "text": "5:45 am 攝影師到達黃金海岸酒店\n攝影師拍花絮, 姊妹團影相", "material": "Bag - 酒店房佈置物資 + 道具\nBag - 敬茶用品\n【姊妹】跪墊x2、斟茶茶具x2、茶葉、紅棗、蓮子、褂、褂鞋、紅傘x1、姊妹利是x5、姊妹禮物", "sister": ["Angela：派利是俾攝影師x 3"], "brother": ["Vincent：派襟花 x5 給兄弟；派兄弟利是 x 5 + 保管開門利是x 2；所有利是給 *兄弟1保管 (俾利是袋給*Darren保管) + 少量備用利是給*Lun保管", "兄弟 / Vincent：[6:00 - 6:30 食早餐］", "Frankie + 城哥：[06:30］執定兄弟團花絮props出黎", "*Terry：[6:45］所有兄弟到達, 換好衫"], "done": false},
+        {"id": "rd_13", "time": "跟進", "text": "姊妹準備物資\n-攝影師拍花絮, 姊妹團影相\n- Angela: 著褂, 派姊妹利是, 拋彩條, props影相 (eg. sunglasses)", "material": "", "sister": ["令令 & 懿雅：幫Angela著掛", "蜆：派2襟花2手花 to Angela家人"], "brother": ["Lun + Darren：[7am前] Angela爸爸 、哥哥、Amy到達 (兄弟3 迎接帶去套房)"], "done": false},
+        {"id": "rd_15", "time": "07:00 - 07:30", "text": "接新娘環節\n- 姊妹準備迎門 & 開門利是 & 快玩Game 1個\n- 愛的宣言(5 mins) (只有Vincent講)", "material": "開門利是 x2\nBag 3 - 新郎兄弟中式拍攝道具", "sister": ["令令 & 懿雅：收利是 facetime Angela", "Hilary & Eunice：Hold game & 做MC", "蜆：手機側拍"], "brother": ["Vincent：-派開門利是x2 -愛的宣言", "所有兄弟：玩game, enjoy"], "done": false},
+        {"id": "rd_18", "time": "07:30 - 07:45", "text": "女家奉茶\n[7am前] Angela爸爸 、哥哥、Amy到達\n新人敬茶及拍照 (Angela 父母) (Angela 哥哥)", "material": "Bag - 敬茶用品\n跪墊x2、斟茶茶具x2、茶葉、紅棗、蓮子、紙杯、花車利是、金器袋", "sister": ["令令：幫戴金器", "懿雅：收金器/利是、貼LABEL", "Hilary：準備茶 (紅棗、蓮子)", "Eunice：協助遞茶, 企隔離, 講吉利說話", "蜆：用手機影花絮", "懿雅：pass 姊妹房1 房卡 比Angela 爸爸；Angela媽媽回睡收拾"], "brother": ["Darren：保管套房房卡 x1", "所有兄弟：講吉利說話 + 氣氛小組", "Terry：手機影花絮", "城哥：聯絡男家家人ready到套房"], "done": false},
+        {"id": "rd_24", "time": "07:45", "text": "新人+兄弟姊妹團+女家家人出門\n男家家人到套房準備", "material": "", "sister": [], "brother": [], "done": false},
+        {"id": "rd_25", "time": "07:45 - 08:00", "text": "出門影相 (撒米, 紅遮)", "material": "", "sister": ["Hilary：擔紅遮送Angela岀門", "Eunice：撒米 (站在新人斜後方，把米往「上方、紅遮頂」拋灑，切勿直接往新人臉上或頭上砸。)", "蜆：用手機影花絮"], "brother": [], "done": false},
+        {"id": "rd_28", "time": "08:00 - 08:15", "text": "男家奉茶\n新人敬茶及拍照 (Vincent 父母) (Vincent 細姨 & 姨丈)\nVincent 派利是比妹妹", "material": "", "sister": ["令令：幫戴金器", "懿雅：收金器/利是、貼LABEL", "Hilary：準備茶 (紅棗、蓮子)", "Eunice：協助遞茶, 企隔離, 講吉利說話", "蜆：用手機影花絮"], "brother": ["所有兄弟：講吉利說話 + 氣氛小組", "Darren：遞妹妹利是比Vincent", "Terry：手機影花絮", "Frankie：拎齊兄弟團花絮props, 準備拍攝（黑超／扇 etc）"], "done": false},
+        {"id": "rd_33", "time": "08:15 - 08:30", "text": "新人拍攝花絮", "material": "", "sister": [], "brother": [], "done": false},
+        {"id": "rd_34", "time": "08:30 - 08:45", "text": "Angela 除褂，除金器", "material": "", "sister": ["令令：keep金器 + 利是", "懿雅：收拾房間, 交房卡比Darren", "Hilary：幫Angela除褂, 收拾好放物資房 (Lun), 套房拎白熊結婚公仔", "蜆：收拾房間, 交房卡比Darren", "Eunice：Call Ray幫手出車, 收拾房間"], "brother": ["Vincent + 所有兄弟：拍攝"], "done": false},
+        {"id": "rd_41", "time": "08:30 - 09:00", "text": "Vincent 新郎兄弟組拍攝花絮", "material": "", "sister": [], "brother": [], "done": false},
+        {"id": "rd_39", "time": "08:45 - 09:00", "text": "過場 (黃金海岸酒店 > 黃金海岸遊艇會會場)\n第1批 [8:50出車, 9:00到達]：Angela + 化妝師 Emily + 令令 + 懿雅\n第2批：Eunice + Angela 爸爸 、哥哥、Amy\n第3批：Grace + Hilary + 蜆 + Angela 媽媽\nRay幫忙泊車, 車匙比Eunice", "material": "", "sister": ["懿雅：提Angela比利是Ray"], "brother": [], "done": false}
+      ]
+    },
+    {
+      "phase": "二、戶外證婚 (遊艇會草地)",
+      "items": [
+        {"id": "rd_42", "time": "09:00 - 10:00", "text": "Angela 轉證婚造型", "material": "- 油畫, BB迎賓牌, 相簿x1, 簽名卷軸x1, 簽名筆x5, 白熊結婚公仔, 文具雜項物資", "sister": ["懿雅：- 金器鎖新娘房保險箱, Keep新娘房鎖匙", "Eunice：確保所有人員到場 + 會場聯絡 - MC Jessica、Deco (9am到場)、Photobooth；鄭國杰律師 － 確認10am到場 (93025693 / 91931787)", "懿雅 + Eunice：派利是比 會場 (Boey)、MC Jessica、Deco (9am到場)、Photobooth", "令令 + Eunice：Decoration: 放油畫、BB迎賓牌、迎賓枱 & 相簿枱、白熊結婚公仔", "Check Deco公司set up (Sasa Chan: 6161 9322) 證婚草地及室內宴會廳佈置", "Hilary + 蜆：準備證婚物資", "Hilary：(1) 保管4張身份證 (Angela, Vincent, Angela媽媽, Vincent爸爸) (2) 保管證婚套及證婚書 (3) 保管誓詞卡 (4) 保管Angela電話"], "brother": ["Vincent + Lun：返物資房換白色西裝、夾萬拎結婚戒指、Lun Keep物資房卡 + 對戒 + 新郎手機", "城哥/Frankie/Darren/Lun：收拾房間+出門套房", "Darren：收齊6張房卡，酒店check out", "Lun：確保所有物資鎖好物資房，保管物資房卡（唔好比Darren還）", "Terry：拎車過場 (9:00 Frankie+攝影師; 9:15 新郎家人+新郎; 9:30 Lun+Darren+Frankie+城哥; 細姨+姨丈 tbc) 及泊車", "Vincent：到新娘房拎襟花 ＋ 交低身份證"], "done": false},
+        {"id": "rd_49", "time": "09:30", "text": "崗位跟進", "material": "", "sister": ["蜆：(1) 派襟花比Vincent (2) 保管Angela 兩紮捧花 (主捧花進場 / 次捧花拋花球) (3) 保管泡泡槍 (4) 保管Angela 電話"], "brother": ["Frankie：同Eunice夾人員到場 + 會場聯絡 Boey Lai (2404 3280)；聯絡Deco Sasa (6161 9322) 拎2紮感恩花存放會場", "城哥：致電巴士司機確保賓客9:30出車；check 門口 Photoslide show / Seating Plan 及會場 Background Music，保管USB交會場工作人員", "[9:45所有兄弟到會場]"], "done": false},
+        {"id": "rd_52", "time": "10:00 - 10:30", "text": "Reception 投入服務", "material": "", "sister": ["Eunice + 令令 + 懿雅：10am前stand by - Reception + 點人名；令令 Keep女家人情 (mark name & account)；派菲林相機+任務卡 (小梁, Franklin, Maurice)"], "brother": ["Darren + Lun + Terry：10am前stand by - Reception + 點人名；Darren Keep男家人情 (mark name & account)；派菲林相機+任務卡 (Cecilia, Jennifer)"], "done": false},
+        {"id": "rd_53", "time": "跟進", "text": "賓客到達會場", "material": "", "sister": [], "brother": ["Vincent + 城哥：迎賓"], "done": false},
+        {"id": "rd_54", "time": "跟進", "text": "穿梭巴士到達會場", "material": "", "sister": ["懿雅：派利是比巴士司機 & 律師"], "brother": [], "done": false},
+        {"id": "rd_55", "time": "跟進", "text": "律師到場Briefing", "material": "Angela + Angela媽媽 + Vincent + Vincent爸爸", "sister": ["Hilary：(1) 保管4張身份證 (show比律師) (2) 保管證婚套及證婚書放證婚枱上 (3) 保管誓詞卡"], "brother": [], "done": false},
+        {"id": "rd_56", "time": "10:20 - 10:30", "text": "準備證婚開始", "material": "Angela + Angela 爸爸 + Angela 媽媽 standby；拍攝幫新娘戴頭紗、準備進場", "sister": ["蜆：遞主捧花比 Angela、準備泡泡槍"], "brother": ["Vincent：草地證婚位 Stand by"], "done": false},
+        {"id": "rd_57", "time": "10:30 - 11:00", "text": "戶外證婚儀式\n- 進場、交換戒指、簽署婚書、拋花球／影大合照", "material": "結婚戒指、證婚書、誓詞卡、次捧花、泡泡槍", "sister": ["Hilary：遞誓詞卡及證婚書", "蜆：拋花球環節協助"], "brother": ["Lun：遞結婚戒指"], "done": false}
+      ]
+    },
+    {
+      "phase": "三、午宴及補奉茶 (遊艇會宴會廳)",
+      "items": [
+        {"id": "rd_60", "time": "11:00 - 11:45", "text": "證婚後影相及轉午宴造型\n賓客入席、Photobooth 互動", "material": "午宴禮服、首飾、Photobooth 道具", "sister": ["LingLing：跟進化妝師補妝", "Eunice + 懿雅：引導賓客入座及 Photobooth"], "brother": ["Frankie + 城哥：核對席前嘉賓及音響 Cue"], "done": false},
+        {"id": "rd_61", "time": "11:45 - 13:30", "text": "午宴進場、敬酒及補奉茶環節", "material": "奉茶茶具、跪墊、號碼小貼紙、敬酒酒杯", "sister": ["令令 + 懿雅：跟進金器／利是貼 Label 登記", "Hilary + 蜆：準備奉茶及台上大合照座椅"], "brother": ["Darren + Lun：保管貴重物品及協助敬酒路線"], "done": false}
+      ]
+    },
+    {
+      "phase": "四、尾數及回程 (送客及清點物資)",
+      "items": [
+        {"id": "rd_70", "time": "13:30 - 14:30", "text": "送客、清點物資及核對尾數\n- 派回禮、收起油畫／相簿／金器／人情袋", "material": "回禮物資、物資清單、金器袋、人情登記簿", "sister": ["令令 + 懿雅：核對女家人情及金器件數", "Eunice：點算裝飾物資及交還場地物品"], "brother": ["Darren + Lun：核對男家人情、尾數利是及物資房物品", "Terry + 城哥：安排車輛及穿梭巴士回程"], "done": false}
+      ]
+    }
+  ],
+  "seating": [
+    {"id": "g1", "name": "Angela 爸爸", "table": "T.1 (Garden Room)", "side": "女家", "arrived": false},
+    {"id": "g2", "name": "Angela 媽媽", "table": "T.1 (Garden Room)", "side": "女家", "arrived": false},
+    {"id": "g3", "name": "Angela 哥哥", "table": "T.1 (Garden Room)", "side": "女家", "arrived": false},
+    {"id": "g4", "name": "Amy", "table": "T.1 (Garden Room)", "side": "女家", "arrived": false},
+    {"id": "g5", "name": "Vincent 爸爸", "table": "T.2 (Garden Room)", "side": "男家", "arrived": false},
+    {"id": "g6", "name": "Vincent 媽媽", "table": "T.2 (Garden Room)", "side": "男家", "arrived": false},
+    {"id": "g7", "name": "Vincent 妹妹", "table": "T.2 (Garden Room)", "side": "男家", "arrived": false},
+    {"id": "g8", "name": "Vincent 細姨", "table": "T.3 (Garden Room)", "side": "男家", "arrived": false},
+    {"id": "g9", "name": "Vincent 姨丈", "table": "T.3 (Garden Room)", "side": "男家", "arrived": false},
+    {"id": "g10", "name": "小梁", "table": "T.7 (The Deck)", "side": "未標明", "arrived": false},
+    {"id": "g11", "name": "Franklin", "table": "T.7 (The Deck)", "side": "未標明", "arrived": false},
+    {"id": "g12", "name": "Maurice", "table": "T.7 (The Deck)", "side": "未標明", "arrived": false},
+    {"id": "g13", "name": "Cecilia", "table": "T.8 (The Deck)", "side": "未標明", "arrived": false},
+    {"id": "g14", "name": "Jennifer", "table": "T.8 (The Deck)", "side": "未標明", "arrived": false}
+  ],
+  "tea": [
+    {"id": "t1", "code": "01", "group": "女家直系：Angela 爸爸、Angela 媽媽", "sticker": "01", "done": false, "goldItems": ["龍鳳鈪", "頸鏈", "利是"]},
+    {"id": "t2", "code": "02", "group": "女家親屬：Angela 哥哥、Amy", "sticker": "02", "done": false, "goldItems": ["利是", "金飾"]},
+    {"id": "t3", "code": "03", "group": "男家直系：Vincent 爸爸、Vincent 媽媽", "sticker": "03", "done": false, "goldItems": ["龍鳳鈪", "頸鏈", "利是"]},
+    {"id": "t4", "code": "04", "group": "男家親屬：Vincent 細姨、Vincent 姨丈", "sticker": "04", "done": false, "goldItems": ["利是", "金飾"]}
+  ],
+  "photo": [
+    {"id": "p1", "title": "戶外證婚大合照（全體賓客）", "count": 45, "done": false},
+    {"id": "p2", "title": "女家家人大合照", "count": 4, "done": false},
+    {"id": "p3", "title": "男家家人大合照", "count": 5, "done": false},
+    {"id": "p4", "title": "兄弟姊妹團大合照", "count": 10, "done": false},
+    {"id": "p5", "title": "午宴敬酒大合照", "count": 30, "done": false}
+  ],
+  "materials": [
+    {"id": "m1", "cat": "酒店房／出門物資", "item": "新娘裙褂、褂鞋、飾物", "qty": "1套", "owner": "LingLing / 懿雅", "done": false},
+    {"id": "m2", "cat": "酒店房／出門物資", "item": "新郎馬掛、繡球、襟花 x5", "qty": "1套", "owner": "Vincent", "done": false},
+    {"id": "m3", "cat": "酒店房／出門物資", "item": "開門利是", "qty": "2封", "owner": "Vincent / *兄弟1", "done": false},
+    {"id": "m4", "cat": "酒店房／出門物資", "item": "兄弟利是 + 姊妹利是", "qty": "各5封", "owner": "Vincent / 懿雅", "done": false},
+    {"id": "m5", "cat": "酒店房／出門物資", "item": "紅傘、撒米道具", "qty": "1set", "owner": "Hilary / Eunice", "done": false},
+    {"id": "m6", "cat": "敬茶用品", "item": "跪墊、斟茶茶具", "qty": "2set", "owner": "Hilary & 蜆", "done": false},
+    {"id": "m7", "cat": "敬茶用品", "item": "茶葉、紅棗、蓮子、紙杯", "qty": "1set", "owner": "Hilary & 蜆", "done": false},
+    {"id": "m8", "cat": "敬茶用品", "item": "金器袋、號碼小貼紙", "qty": "1set", "owner": "懿雅", "done": false},
+    {"id": "m9", "cat": "證婚及會場佈置", "item": "油畫、BB迎賓牌、相簿、簽名卷軸、簽名筆", "qty": "1set", "owner": "令令 & Eunice", "done": false},
+    {"id": "m10", "cat": "證婚及會場佈置", "item": "白熊結婚公仔、主捧花、次捧花、泡泡槍", "qty": "1set", "owner": "蜆", "done": false},
+    {"id": "m11", "cat": "證婚及會場佈置", "item": "4張身份證、證婚套、證婚書、誓詞卡", "qty": "1set", "owner": "Hilary", "done": false},
+    {"id": "m12", "cat": "宴會廳及互動物資", "item": "結婚戒指、菲林相機 + 任務卡", "qty": "1set", "owner": "Lun / 令令 / Darren", "done": false},
+    {"id": "m13", "cat": "過場、送客及尾數物資", "item": "感恩花 x2、回禮物資、Photoslide USB", "qty": "1set", "owner": "Frankie / 城哥", "done": false}
+  ],
+  "roles": [
+    {"name": "LingLing", "team": "姊妹團", "duties": "聯絡化妝師 Emily 及姊妹化妝師；幫 Angela 著褂、除褂；保管金器及利是；Reception 點人名及保管女家人情。"},
+    {"name": "懿雅", "team": "姊妹團", "duties": "派手花及利是（化妝師、會場、MC、Deco、Photobooth、司機、律師）；收金器／利是貼 Label；保管新娘房鎖匙。"},
+    {"name": "Hilary", "team": "姊妹團", "duties": "準備敬茶用品及跪墊；擔紅遮送出門；保管 4 張身份證、證婚書、誓詞卡及 Angela 手機。"},
+    {"name": "Eunice", "team": "姊妹團", "duties": "點算物資；接新娘 Hold game & 做 MC；撒米；跟進會場／Deco／MC／Photobooth 到場；Reception 服務。"},
+    {"name": "阿蜆", "team": "姊妹團", "duties": "準備敬茶用品；派家人襟花／手花；手機側拍；保管兩紮捧花及泡泡槍。"},
+    {"name": "Lun", "team": "兄弟團", "duties": "保管少量備用利是；保管物資房卡、對戒及新郎手機；Reception 點人名及核對尾數。"},
+    {"name": "Darren", "team": "兄弟團", "duties": "保管利是袋及套房房卡；收齊 6 張房卡辦理 Check-out；Reception 保管男家人情。"},
+    {"name": "Frankie", "team": "兄弟團", "duties": "準備兄弟團花絮 Props；聯絡會場 Boey Lai 及 Deco Sasa 拎 2 紮感恩花。"},
+    {"name": "城哥", "team": "兄弟團", "duties": "聯絡男家家人；致電巴士司機；Check Photoslide / Seating Plan / Background Music USB；迎賓。"},
+    {"name": "Terry", "team": "兄弟團", "duties": "手機側拍；拎車過場及泊車；Reception 點人名及回程交通安排。"}
+  ],
+  "contacts": [
+    {"title": "攝影團隊：White Production", "person": "攝影師團隊 (共3位)", "phone": "待補", "note": "5:45am 到達黃金海岸酒店"},
+    {"title": "新娘化妝師：Emily", "person": "Emily", "phone": "待補", "note": "3:30am 到達黃金海岸酒店"},
+    {"title": "證婚律師：鄭國杰律師", "person": "鄭國杰律師", "phone": "93025693 / 91931787", "note": "確認 10:00am 到場 Briefing"},
+    {"title": "會場聯絡：黃金海岸遊艇會", "person": "Boey Lai", "phone": "2404 3280", "note": "場地協調及音樂／流程對接"},
+    {"title": "場地佈置：Deco", "person": "Sasa Chan", "phone": "6161 9322", "note": "9:00am 到場 Set up 草地及宴會廳"},
+    {"title": "MC", "person": "MC Jessica", "phone": "待補", "note": "證婚及午宴司儀"}
+  ],
+  "songs": [
+    {"scene": "戶外證婚進場", "song": "待定曲目 1", "note": "10:20am 測試音響"},
+    {"scene": "交換戒指／簽署婚書", "song": "待定曲目 2", "note": "背景輕柔配樂"},
+    {"scene": "拋花球／證婚退場", "song": "待定曲目 3", "note": "歡快節奏"},
+    {"scene": "午宴新人進場", "song": "待定曲目 4", "note": "由城哥交 USB 予場地"},
+    {"scene": "午宴敬酒／補奉茶", "song": "待定曲目 5", "note": "背景音樂循環"},
+    {"scene": "送客環節", "song": "待定曲目 6", "note": "溫馨收尾曲"}
+  ],
+  "angpao": [
+    {"id": "ap1", "name": "Angela 爸爸", "side": "女家", "amount": 0, "method": "利是", "note": ""},
+    {"id": "ap2", "name": "Angela 媽媽", "side": "女家", "amount": 0, "method": "利是", "note": ""},
+    {"id": "ap3", "name": "Angela 哥哥", "side": "女家", "amount": 0, "method": "利是", "note": ""},
+    {"id": "ap4", "name": "Amy", "side": "女家", "amount": 0, "method": "利是", "note": ""},
+    {"id": "ap5", "name": "Vincent 爸爸", "side": "男家", "amount": 0, "method": "利是", "note": ""},
+    {"id": "ap6", "name": "Vincent 媽媽", "side": "男家", "amount": 0, "method": "利是", "note": ""},
+    {"id": "ap7", "name": "Vincent 妹妹", "side": "男家", "amount": 0, "method": "利是", "note": ""},
+    {"id": "ap8", "name": "Vincent 細姨", "side": "男家", "amount": 0, "method": "利是", "note": ""},
+    {"id": "ap9", "name": "Vincent 姨丈", "side": "男家", "amount": 0, "method": "利是", "note": ""}
+  ]
+};
+
+let state = loadLocalState();
+let dbRef = null;
+let currentRundownPhase = "ALL";
+let currentTableFilter = "ALL";
+let currentMatCat = "ALL";
+let currentMatStatus = "ALL";
+
+function loadLocalState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      return Object.assign({}, JSON.parse(JSON.stringify(INITIAL_DATA)), parsed);
+    }
+  } catch (e) {}
+  return JSON.parse(JSON.stringify(INITIAL_DATA));
+}
+
+function saveState(pushCloud = true) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const el = document.getElementById("saveStatus");
+    if (el) el.textContent = "已自動儲存 (" + new Date().toLocaleTimeString("zh-HK", {hour: "2-digit", minute: "2-digit"}) + ")";
+  } catch (e) {}
+  if (pushCloud && dbRef) {
+    dbRef.set(state).catch(() => {});
+  }
+}
+
+function initFirebase() {
+  const badge = document.getElementById("syncBadge");
+  try {
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    dbRef = firebase.database().ref(DB_NODE);
+    dbRef.on("value", (snap) => {
+      const val = snap.val();
+      if (val && typeof val === "object") {
+        state = Object.assign({}, JSON.parse(JSON.stringify(INITIAL_DATA)), val);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        renderAll();
+      }
+      if (badge) {
+        badge.textContent = "雲端同步中";
+        badge.className = "sync-pill live";
+      }
+    }, () => {
+      if (badge) {
+        badge.textContent = "離線暫存";
+        badge.className = "sync-pill offline";
+      }
+    });
+  } catch (e) {
+    if (badge) {
+      badge.textContent = "離線暫存";
+      badge.className = "sync-pill offline";
+    }
+  }
+}
+
+function switchTab(tabName, btnEl) {
+  document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+  const target = document.getElementById("tab-" + tabName);
+  if (target) target.classList.add("active");
+  document.querySelectorAll("nav.tabbar button").forEach(b => b.classList.remove("active"));
+  if (btnEl) btnEl.classList.add("active");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function jumpOutdoor(keyword) {
+  const tabBtn = document.querySelector('nav.tabbar button[data-tab="rundown"]');
+  switchTab("rundown", tabBtn);
+  const matched = state.rundown.find(p => p.phase.includes(keyword));
+  currentRundownPhase = matched ? matched.phase : "ALL";
+  renderRundown();
+}
+
+function renderRundown() {
+  const filterWrap = document.getElementById("rundownFilters");
+  const container = document.getElementById("rundownContainer");
+  if (!filterWrap || !container) return;
+
+  const phases = ["ALL", ...state.rundown.map(p => p.phase)];
+  filterWrap.innerHTML = phases.map(ph => {
+    const active = currentRundownPhase === ph ? "active" : "";
+    const label = ph === "ALL" ? "全部時段" : ph;
+    return `<button class="chip ${active}" onclick="setRundownFilter('${ph.replace(/'/g, "\'")}')">${label}</button>`;
+  }).join("");
+
+  const list = currentRundownPhase === "ALL"
+    ? state.rundown
+    : state.rundown.filter(p => p.phase === currentRundownPhase);
+
+  container.innerHTML = list.map(phaseObj => {
+    const rows = phaseObj.items.map(item => {
+      const sisterHtml = (item.sister || []).map(s => `<div>姊妹：${escapeHtml(s)}</div>`).join("");
+      const brotherHtml = (item.brother || []).map(b => `<div>兄弟：${escapeHtml(b)}</div>`).join("");
+      return `
+        <div class="row-item">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
+            <div>
+              <span class="meta-tag">${escapeHtml(item.time)}</span>
+              <span class="${item.done ? "done-text" : ""}" style="font-weight:600; white-space:pre-line;">${escapeHtml(item.text)}</span>
+            </div>
+            <button class="status-btn ${item.done ? "ok" : ""}" onclick="toggleRundown('${phaseObj.phase.replace(/'/g, "\'")}', '${item.id}')">
+              ${item.done ? "已完成" : "待完成"}
+            </button>
+          </div>
+          ${item.material ? `<div style="margin-top:5px; font-size:12px; color:var(--muted); white-space:pre-line;">物資：${escapeHtml(item.material)}</div>` : ""}
+          ${(sisterHtml || brotherHtml) ? `<div class="duty-box">${sisterHtml}${brotherHtml}</div>` : ""}
+        </div>
+      `;
+    }).join("");
+    return `<div style="margin-bottom:14px;"><div style="font-weight:700; color:var(--accent); font-size:13px; margin-bottom:6px;">${escapeHtml(phaseObj.phase)}</div>${rows}</div>`;
+  }).join("");
+}
+
+function setRundownFilter(phase) {
+  currentRundownPhase = phase;
+  renderRundown();
+}
+
+function toggleRundown(phaseName, itemId) {
+  const ph = state.rundown.find(p => p.phase === phaseName);
+  if (!ph) return;
+  const it = ph.items.find(i => i.id === itemId);
+  if (!it) return;
+  it.done = !it.done;
+  saveState();
+  renderRundown();
+}
+
+function renderSeating() {
+  const stats = document.getElementById("seatingStats");
+  const chips = document.getElementById("tableFilterChips");
+  const container = document.getElementById("seatingContainer");
+  if (!stats || !chips || !container) return;
+
+  const total = state.seating.length;
+  const arrivedCount = state.seating.filter(g => g.arrived).length;
+  const maleCount = state.seating.filter(g => g.side === "男家").length;
+  const femaleCount = state.seating.filter(g => g.side === "女家").length;
+
+  stats.innerHTML = `
+    <div class="stat-box"><div class="stat-num">${total}</div><div class="stat-lbl">總人數</div></div>
+    <div class="stat-box"><div class="stat-num">${arrivedCount}</div><div class="stat-lbl">已到場</div></div>
+    <div class="stat-box"><div class="stat-num">${femaleCount}女 / ${maleCount}男</div><div class="stat-lbl">男女家分布</div></div>
+  `;
+
+  const tables = ["ALL", ...Array.from(new Set(state.seating.map(g => g.table)))];
+  chips.innerHTML = tables.map(t => {
+    const active = currentTableFilter === t ? "active" : "";
+    return `<button class="chip ${active}" onclick="setTableFilter('${t.replace(/'/g, "\'")}')">${t === "ALL" ? "全部枱號" : escapeHtml(t)}</button>`;
+  }).join("");
+
+  const q = (document.getElementById("seatingSearch")?.value || "").trim().toLowerCase();
+  const filtered = state.seating.filter(g => {
+    const matchTable = currentTableFilter === "ALL" || g.table === currentTableFilter;
+    const matchQ = !q || g.name.toLowerCase().includes(q) || g.table.toLowerCase().includes(q) || g.side.toLowerCase().includes(q);
+    return matchTable && matchQ;
+  });
+
+  container.innerHTML = filtered.length ? filtered.map(g => `
+    <div class="guest-row">
+      <div>
+        <div style="font-weight:600;">${escapeHtml(g.name)}</div>
+        <div style="font-size:12px; color:var(--muted);">
+          <span class="meta-tag">${escapeHtml(g.table)}</span>
+          <span>${escapeHtml(g.side)}</span>
+        </div>
+      </div>
+      <button class="status-btn ${g.arrived ? "ok" : ""}" onclick="toggleGuestArrived('${g.id}')">
+        ${g.arrived ? "已到場" : "未到場"}
+      </button>
+    </div>
+  `).join("") : `<div style="font-size:12px; color:var(--muted);">找不到符合條件的賓客</div>`;
+}
+
+function setTableFilter(t) {
+  currentTableFilter = t;
+  renderSeating();
+}
+
+function addGuest() {
+  const nameInput = document.getElementById("newGuestName");
+  const tableSelect = document.getElementById("newGuestTable");
+  const sideSelect = document.getElementById("newGuestSide");
+  const name = (nameInput?.value || "").trim();
+  if (!name) return;
+  state.seating.push({
+    id: "g_" + Date.now(),
+    name,
+    table: tableSelect.value,
+    side: sideSelect.value,
+    arrived: false
+  });
+  nameInput.value = "";
+  saveState();
+  renderSeating();
+}
+
+function toggleGuestArrived(id) {
+  const g = state.seating.find(item => item.id === id);
+  if (!g) return;
+  g.arrived = !g.arrived;
+  saveState();
+  renderSeating();
+}
+
+function renderCeremony() {
+  const teaEl = document.getElementById("teaContainer");
+  const photoEl = document.getElementById("photoContainer");
+  if (!teaEl || !photoEl) return;
+
+  teaEl.innerHTML = state.tea.map(t => {
+    const pills = (t.goldItems || []).map((gi, idx) => {
+      const key = `${t.id}_${idx}`;
+      const on = t.collected && t.collected[key] ? "on" : "";
+      return `<span class="gold-pill ${on}" onclick="toggleGoldPill('${t.id}', '${key}')">${escapeHtml(gi)}</span>`;
+    }).join("");
+    return `
+      <div class="row-item">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+          <div>
+            <span class="meta-tag">貼紙 ${escapeHtml(t.sticker)}</span>
+            <strong class="${t.done ? "done-text" : ""}">${escapeHtml(t.group)}</strong>
+          </div>
+          <button class="status-btn ${t.done ? "ok" : ""}" onclick="toggleTeaDone('${t.id}')">
+            ${t.done ? "已完成" : "待奉茶"}
+          </button>
+        </div>
+        <div class="gold-pills">${pills}</div>
+      </div>
+    `;
+  }).join("");
+
+  photoEl.innerHTML = state.photo.map(p => `
+    <div class="row-item">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+        <div>
+          <strong class="${p.done ? "done-text" : ""}">${escapeHtml(p.title)}</strong>
+          <span class="meta-tag" style="margin-left:6px;">預計 ${p.count} 人</span>
+        </div>
+        <button class="status-btn ${p.done ? "ok" : ""}" onclick="togglePhotoDone('${p.id}')">
+          ${p.done ? "已影完" : "未影"}
+        </button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function toggleTeaDone(id) {
+  const t = state.tea.find(item => item.id === id);
+  if (!t) return;
+  t.done = !t.done;
+  saveState();
+  renderCeremony();
+}
+
+function toggleGoldPill(teaId, key) {
+  const t = state.tea.find(item => item.id === teaId);
+  if (!t) return;
+  if (!t.collected) t.collected = {};
+  t.collected[key] = !t.collected[key];
+  saveState();
+  renderCeremony();
+}
+
+function togglePhotoDone(id) {
+  const p = state.photo.find(item => item.id === id);
+  if (!p) return;
+  p.done = !p.done;
+  saveState();
+  renderCeremony();
+}
+
+function renderMaterials() {
+  const stats = document.getElementById("materialsStats");
+  const chips = document.getElementById("materialFilterChips");
+  const container = document.getElementById("materialsContainer");
+  if (!stats || !chips || !container) return;
+
+  const total = state.materials.length;
+  const doneCount = state.materials.filter(m => m.done).length;
+  const todoCount = total - doneCount;
+
+  stats.innerHTML = `
+    <div class="stat-box"><div class="stat-num">${total}</div><div class="stat-lbl">總物資項</div></div>
+    <div class="stat-box"><div class="stat-num">${doneCount}</div><div class="stat-lbl">已備齊</div></div>
+    <div class="stat-box"><div class="stat-num">${todoCount}</div><div class="stat-lbl">未備齊</div></div>
+  `;
+
+  const cats = ["ALL", ...Array.from(new Set(state.materials.map(m => m.cat)))];
+  chips.innerHTML = cats.map(c => {
+    const active = currentMatCat === c ? "active" : "";
+    return `<button class="chip ${active}" onclick="setMatCat('${c.replace(/'/g, "\'")}')">${c === "ALL" ? "全部類別" : escapeHtml(c)}</button>`;
+  }).join("");
+
+  const q = (document.getElementById("matSearch")?.value || "").trim().toLowerCase();
+  const filtered = state.materials.filter(m => {
+    const matchCat = currentMatCat === "ALL" || m.cat === currentMatCat;
+    const matchStatus = currentMatStatus === "ALL" || (currentMatStatus === "TODO" && !m.done);
+    const matchQ = !q || m.item.toLowerCase().includes(q) || m.cat.toLowerCase().includes(q) || (m.owner || "").toLowerCase().includes(q);
+    return matchCat && matchStatus && matchQ;
+  });
+
+  container.innerHTML = filtered.map(m => `
+    <div class="row-item">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+        <div>
+          <span class="meta-tag">${escapeHtml(m.cat)}</span>
+          <strong class="${m.done ? "done-text" : ""}">${escapeHtml(m.item)}</strong>
+          <div style="font-size:12px; color:var(--muted); margin-top:2px;">
+            數量：${escapeHtml(m.qty || "-")} ｜ 負責人：${escapeHtml(m.owner || "-")}
+          </div>
+        </div>
+        <button class="status-btn ${m.done ? "ok" : ""}" onclick="toggleMaterial('${m.id}')">
+          ${m.done ? "已備齊" : "未備齊"}
+        </button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function setMatCat(cat) {
+  currentMatCat = cat;
+  renderMaterials();
+}
+
+function filterMatStatus(status) {
+  currentMatStatus = status;
+  renderMaterials();
+}
+
+function addMaterial() {
+  const catEl = document.getElementById("newMatCat");
+  const itemEl = document.getElementById("newMatItem");
+  const qtyEl = document.getElementById("newMatQty");
+  const ownerEl = document.getElementById("newMatOwner");
+  const item = (itemEl?.value || "").trim();
+  if (!item) return;
+  state.materials.push({
+    id: "m_" + Date.now(),
+    cat: catEl.value,
+    item,
+    qty: (qtyEl.value || "").trim() || "1",
+    owner: (ownerEl.value || "").trim() || "待定",
+    done: false
+  });
+  itemEl.value = "";
+  qtyEl.value = "";
+  ownerEl.value = "";
+  saveState();
+  renderMaterials();
+}
+
+function toggleMaterial(id) {
+  const m = state.materials.find(item => item.id === id);
+  if (!m) return;
+  m.done = !m.done;
+  saveState();
+  renderMaterials();
+}
+
+function renderInfo() {
+  const rolesEl = document.getElementById("rolesContainer");
+  const contactsEl = document.getElementById("contactsContainer");
+  const songsEl = document.getElementById("songsContainer");
+  if (!rolesEl || !contactsEl || !songsEl) return;
+
+  rolesEl.innerHTML = state.roles.map(r => `
+    <div class="row-item">
+      <div><span class="meta-tag">${escapeHtml(r.team)}</span><strong>${escapeHtml(r.name)}</strong></div>
+      <div style="font-size:12px; color:var(--muted); margin-top:3px;">${escapeHtml(r.duties)}</div>
+    </div>
+  `).join("");
+
+  contactsEl.innerHTML = state.contacts.map(c => `
+    <div class="row-item">
+      <div style="font-weight:600;">${escapeHtml(c.title)}</div>
+      <div style="font-size:12px; color:var(--muted); margin-top:2px;">
+        聯絡人：${escapeHtml(c.person)} ｜ 電話：${escapeHtml(c.phone)} ｜ ${escapeHtml(c.note)}
+      </div>
+    </div>
+  `).join("");
+
+  songsEl.innerHTML = state.songs.map(s => `
+    <div class="row-item">
+      <div><span class="meta-tag">${escapeHtml(s.scene)}</span><strong>${escapeHtml(s.song)}</strong></div>
+      <div style="font-size:12px; color:var(--muted); margin-top:2px;">${escapeHtml(s.note)}</div>
+    </div>
+  `).join("");
+}
+
+function unlockAngpaoTab() {
+  const input = document.getElementById("angpaoPinInput");
+  const err = document.getElementById("angpaoLockErr");
+  if ((input?.value || "").trim() === ANGPAO_PIN) {
+    document.body.classList.add("angpao-unlocked");
+    if (err) err.textContent = "";
+    if (input) input.value = "";
+    renderAngpao();
+  } else {
+    if (err) err.textContent = "密碼錯誤，請輸入 4 位數密碼（1122）";
+  }
+}
+
+function lockAngpaoTab() {
+  document.body.classList.remove("angpao-unlocked");
+}
+
+function renderAngpao() {
+  const stats = document.getElementById("angpaoStats");
+  const container = document.getElementById("angpaoContainer");
+  if (!stats || !container) return;
+
+  const list = state.angpao || [];
+  const totalAmt = list.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+  const femaleAmt = list.filter(i => i.side === "女家").reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+  const maleAmt = list.filter(i => i.side === "男家").reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+  const recordedCount = list.filter(i => (Number(i.amount) || 0) > 0).length;
+
+  stats.innerHTML = `
+    <div class="stat-box"><div class="stat-num">$${totalAmt.toLocaleString()}</div><div class="stat-lbl">人情總額</div></div>
+    <div class="stat-box"><div class="stat-num">$${femaleAmt.toLocaleString()}</div><div class="stat-lbl">女家總額</div></div>
+    <div class="stat-box"><div class="stat-num">$${maleAmt.toLocaleString()}</div><div class="stat-lbl">男家總額</div></div>
+    <div class="stat-box"><div class="stat-num">${recordedCount}/${list.length}</div><div class="stat-lbl">已登記筆數</div></div>
+  `;
+
+  container.innerHTML = list.map(item => `
+    <div class="row-item">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+        <div>
+          <span class="meta-tag">${escapeHtml(item.side)}</span>
+          <strong>${escapeHtml(item.name)}</strong>
+        </div>
+        <div style="display:flex; gap:6px; align-items:center;">
+          <input type="number" min="0" step="100" value="${Number(item.amount) || 0}" style="width:110px;" onchange="updateAngpaoAmount('${item.id}', this.value)">
+          <select onchange="updateAngpaoMethod('${item.id}', this.value)">
+            <option value="利是" ${item.method === "利是" ? "selected" : ""}>利是</option>
+            <option value="FPS" ${item.method === "FPS" ? "selected" : ""}>FPS</option>
+            <option value="PayMe" ${item.method === "PayMe" ? "selected" : ""}>PayMe</option>
+            <option value="銀行轉帳" ${item.method === "銀行轉帳" ? "selected" : ""}>銀行轉帳</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  `).join("");
+}
+
+function updateAngpaoAmount(id, val) {
+  const item = state.angpao.find(a => a.id === id);
+  if (!item) return;
+  item.amount = Math.max(0, Number(val) || 0);
+  saveState();
+  renderAngpao();
+}
+
+function updateAngpaoMethod(id, method) {
+  const item = state.angpao.find(a => a.id === id);
+  if (!item) return;
+  item.method = method;
+  saveState();
+}
+
+function exportJSON() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "wedding_hub_20261122_backup.json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function resetState() {
+  if (!confirm("確定要還原預設資料嗎？本機未匯出的修改將會覆蓋。")) return;
+  state = JSON.parse(JSON.stringify(INITIAL_DATA));
+  saveState();
+  renderAll();
+}
+
+function escapeHtml(str) {
+  return String(str ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function renderAll() {
+  renderRundown();
+  renderSeating();
+  renderCeremony();
+  renderMaterials();
+  renderInfo();
+  renderAngpao();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderAll();
+  initFirebase();
+});
+</script>
+</body>
+</html>
