@@ -1,0 +1,4356 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>2026.11.22 Angela &amp; Vincent Wedding Day Hub v14</title>
+<style>
+  :root {
+    --bg: #f6f4f0;
+    --card: #ffffff;
+    --ink: #1e1e1e;
+    --muted: #6b6760;
+    --accent: #8c5e3c;
+    --accent-soft: #f2e8df;
+    --ok: #2e7d5b;
+    --ok-bg: #e7f5ee;
+    --warn: #b26a00;
+    --warn-bg: #fff3e0;
+    --line: #e5e0d8;
+    --tab-h: 64px;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang HK", "Noto Sans TC", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    padding-bottom: calc(var(--tab-h) + 28px);
+    line-height: 1.45;
+  }
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+    padding: 12px 16px 10px;
+  }
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+  header h1 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .badge {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .sync-pill {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .sync-pill.live { background: var(--ok-bg); color: var(--ok); }
+  .sync-pill.offline { background: var(--warn-bg); color: var(--warn); }
+  .toolbar {
+    margin-top: 8px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .outdoor-bar {
+    margin-top: 8px;
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+  .outdoor-pill {
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--ink);
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .outdoor-pill:active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .btn {
+    border: none;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn:active { opacity: 0.85; }
+  .btn-secondary {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  main {
+    padding: 14px 14px 0;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  }
+  .card h2 {
+    margin: 0 0 10px;
+    font-size: 15px;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .mode-switch {
+    display: inline-flex;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 3px;
+    gap: 4px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .mode-btn {
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    padding: 6px 11px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .mode-btn.active {
+    background: var(--accent);
+    color: #fff;
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .stats-grid.four-col {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  @media (max-width: 520px) {
+    .stats-grid.four-col { grid-template-columns: repeat(2, 1fr); }
+  }
+  .stat-box {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 8px;
+    text-align: center;
+  }
+  .stat-num { font-size: 18px; font-weight: 700; color: var(--accent); }
+  .stat-lbl { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .filter-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+  .chip {
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--ink);
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .chip.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+    font-weight: 600;
+  }
+  input[type="text"], input[type="number"], input[type="password"], select {
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    font-size: 13px;
+    background: #fff;
+    color: var(--ink);
+  }
+  .row-item {
+    border-top: 1px solid var(--line);
+    padding: 10px 0;
+  }
+  .row-item:first-child { border-top: none; padding-top: 0; }
+  .meta-tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 7px;
+    border-radius: 6px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    margin-right: 4px;
+    font-weight: 600;
+  }
+  .side-tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 7px;
+    border-radius: 6px;
+    background: #eef2f7;
+    color: #3a4f66;
+    margin-right: 4px;
+    font-weight: 600;
+  }
+  .duty-box {
+    margin-top: 6px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: var(--bg);
+    font-size: 12px;
+  }
+  .duty-box div { margin-bottom: 3px; }
+  .guest-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 0;
+    border-top: 1px solid var(--line);
+    flex-wrap: wrap;
+  }
+  .guest-row:first-child { border-top: none; }
+  .status-btn {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 5px 9px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    background: #fff;
+    color: var(--muted);
+  }
+  .status-btn.ok {
+    background: var(--ok-bg);
+    color: var(--ok);
+    border-color: var(--ok);
+  }
+  .gold-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 6px;
+  }
+  .gold-pill {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    cursor: pointer;
+  }
+  .gold-pill.on {
+    background: var(--ok-bg);
+    color: var(--ok);
+    border-color: var(--ok);
+    font-weight: 600;
+  }
+  .lock-box {
+    background: var(--bg);
+    border: 1px dashed var(--accent);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+  .lock-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+  .lock-err {
+    color: #c62828;
+    font-size: 12px;
+    margin-top: 6px;
+    min-height: 16px;
+  }
+  nav.tabbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--tab-h);
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    z-index: 30;
+  }
+  nav.tabbar button {
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    cursor: pointer;
+    padding: 0 2px;
+  }
+  nav.tabbar button.active { color: var(--accent); }
+  .done-text { text-decoration: line-through; color: var(--muted); }
+  .angpao-private { display: none; }
+  body.angpao-unlocked .angpao-private { display: inline-flex; }
+  body.angpao-unlocked .angpao-private-block { display: block; }
+  .angpao-private-block { display: none; }
+  .seating-ledger-private { display: none; }
+  body.seating-ledger-unlocked .seating-ledger-private { display: block; }
+  body.seating-ledger-unlocked .seating-ledger-lock { display: none; }
+</style>
+</head>
+<body>
+<header>
+  <div class="header-top">
+    <h1>2026.11.22 Angela &amp; Vincent Hub</h1>
+    <div style="display:flex; gap:6px; align-items:center;">
+      <span id="syncBadge" class="sync-pill offline">離線暫存</span>
+      <span class="badge">黃金海岸 → 遊艇會</span>
+    </div>
+  </div>
+  <div class="toolbar">
+    <button type="button" class="btn btn-secondary" onclick="exportJSON()">匯出備份 JSON</button>
+    <button type="button" class="btn btn-secondary" onclick="resetState()">還原預設資料</button>
+    <span id="saveStatus">已自動儲存</span>
+  </div>
+  <div class="outdoor-bar">
+    <button type="button" class="outdoor-pill" onclick="jumpOutdoor('出門')">🚐 出門／敬茶</button>
+    <button type="button" class="outdoor-pill" onclick="jumpOutdoor('證婚')">💍 戶外證婚</button>
+    <button type="button" class="outdoor-pill" onclick="jumpOutdoor('午宴')">🥂 午宴／補奉茶</button>
+    <button type="button" class="outdoor-pill" onclick="jumpOutdoor('尾數')">📦 尾數／回程</button>
+  </div>
+</header>
+
+<main>
+  <!-- TAB 1: RUNDOWN -->
+  <section id="tab-rundown" class="panel active">
+    <div class="card">
+      <h2>Whole Day Rundown（拍攝：White Production）</h2>
+      <div class="filter-row" id="rundownFilters"></div>
+      <div id="rundownContainer"></div>
+    </div>
+  </section>
+
+  <!-- TAB 2: SEATING PLAN (雙版本：對外版 + 鎖定人情登記版) -->
+  <section id="tab-seating" class="panel">
+    <div class="stats-grid" id="seatingStats"></div>
+    <div class="card">
+      <h2>Seating Plan 座位表視角</h2>
+      <div class="mode-switch">
+        <button type="button" class="mode-btn active" id="btnSeatingPublic" onclick="setSeatingView('public')">對外座位表（無人情）</button>
+        <button type="button" class="mode-btn" id="btnSeatingLedger" onclick="setSeatingView('ledger')">🔒 座位表＋人情登記版</button>
+      </div>
+      <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;">
+        <input type="text" id="newGuestName" placeholder="賓客姓名" style="flex:1; min-width:120px;">
+        <select id="newGuestTable">
+          <option value="T.1 (Garden Room)">T.1 (Garden Room)</option>
+          <option value="T.2 (Garden Room)">T.2 (Garden Room)</option>
+          <option value="T.3 (Garden Room)">T.3 (Garden Room)</option>
+          <option value="T.4 (Garden Room)">T.4 (Garden Room)</option>
+          <option value="T.5 (Garden Room)">T.5 (Garden Room)</option>
+          <option value="T.6 (Garden Room)">T.6 (Garden Room)</option>
+          <option value="T.7 (The Deck)">T.7 (The Deck)</option>
+          <option value="T.8 (The Deck)">T.8 (The Deck)</option>
+          <option value="T.9 (The Deck)">T.9 (The Deck)</option>
+          <option value="T.10 (The Deck)">T.10 (The Deck)</option>
+          <option value="T.11 (The Deck)">T.11 (The Deck)</option>
+          <option value="T.12 (The Deck)">T.12 (The Deck)</option>
+        </select>
+        <select id="newGuestSide">
+          <option value="女家">女家</option>
+          <option value="男家">男家</option>
+          <option value="未標明">未標明</option>
+        </select>
+        <button type="button" class="btn" onclick="addGuest()">新增座位</button>
+      </div>
+      <div style="display:flex; gap:6px; margin-bottom:8px; flex-wrap:wrap;">
+        <input type="text" id="seatingSearch" placeholder="搜尋姓名、枱號或男女家..." oninput="renderSeating()" style="flex:1; min-width:150px;">
+        <div class="filter-row" id="tableFilterChips" style="margin-bottom:0;"></div>
+      </div>
+    </div>
+
+    <!-- 版本一：對外座位表（完全不含人情資訊） -->
+    <div class="card" id="seatingPublicCard">
+      <h2>Seating Plan 對外版（賓客／工作人員查閱）</h2>
+      <div style="font-size:12px; color:var(--muted); margin-bottom:8px;">
+        公開查閱版本，只顯示賓客姓名、所屬枱號、男女家歸屬及到場狀態，不含任何禮金／人情資料。
+      </div>
+      <div id="seatingPublicContainer"></div>
+    </div>
+
+    <!-- 版本二：上鎖座位表＋人情登記版（密碼 1122，畫面不顯示密碼） -->
+    <div class="card" id="seatingLedgerCard" style="display:none;">
+      <h2>🔒 Seating Plan 人情登記版</h2>
+      <div class="lock-box seating-ledger-lock" id="seatingLedgerLockBox">
+        <div style="font-size:13px; font-weight:600;">此座位表人情登記版已上鎖，請輸入 4 位數字密碼解鎖</div>
+        <div class="lock-row">
+          <input type="password" id="seatingPinInput" inputmode="numeric" maxlength="4" placeholder="輸入 4 位密碼" style="width:140px; text-align:center; letter-spacing:4px;" onkeyup="if(event.key==='Enter')unlockSeatingLedger()">
+          <button type="button" class="btn" onclick="unlockSeatingLedger()">解鎖登記</button>
+        </div>
+        <div class="lock-err" id="seatingLockErr"></div>
+      </div>
+
+      <div class="seating-ledger-private" id="seatingLedgerUnlocked">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
+          <div class="stats-grid four-col" id="seatingLedgerStats" style="flex:1; margin-bottom:0;"></div>
+          <button type="button" class="btn btn-secondary" onclick="lockSeatingLedger()">重新上鎖</button>
+        </div>
+        <div style="font-size:12px; color:var(--muted); margin-bottom:8px;">
+          可直接於每位賓客列旁填寫人情金額、付款方式及備註，即時同步。
+        </div>
+        <div id="seatingLedgerContainer"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 3: 奉茶 LIST & 大合照 LIST -->
+  <section id="tab-ceremony" class="panel">
+    <div class="card">
+      <h2>奉茶組合 List（奉茶紀錄表）</h2>
+      <div style="font-size:12px; color:var(--muted); margin-bottom:8px;">
+        建議預備號碼小貼紙（每個號碼約 6-8 個）貼於奉茶時收到的金器或利是上。
+      </div>
+      <div id="teaContainer"></div>
+    </div>
+    <div class="card">
+      <h2>大合照 List（敬酒／證婚大合照名單）</h2>
+      <div style="font-size:12px; color:var(--muted); margin-bottom:8px;">
+        列出預計人數（不計算新人），方便場地工作人員安排台上座椅數目。
+      </div>
+      <div id="photoContainer"></div>
+    </div>
+  </section>
+
+  <!-- TAB 4: 物資表 -->
+  <section id="tab-materials" class="panel">
+    <div class="stats-grid" id="materialsStats"></div>
+    <div class="card">
+      <h2>新增物資項目</h2>
+      <div style="display:flex; gap:6px; flex-wrap:wrap;">
+        <select id="newMatCat" style="min-width:130px;">
+          <option value="酒店房／出門物資">酒店房／出門物資</option>
+          <option value="敬茶用品">敬茶用品</option>
+          <option value="證婚及會場佈置">證婚及會場佈置</option>
+          <option value="宴會廳及互動物資">宴會廳及互動物資</option>
+          <option value="過場、送客及尾數物資">過場、送客及尾數物資</option>
+          <option value="自訂物資">自訂物資</option>
+        </select>
+        <input type="text" id="newMatItem" placeholder="物資名稱..." style="flex:1; min-width:130px;">
+        <input type="text" id="newMatQty" placeholder="數量 (如 1個)" style="width:95px;">
+        <input type="text" id="newMatOwner" placeholder="負責人" style="width:110px;">
+        <button type="button" class="btn" onclick="addMaterial()">新增</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2>物資逐一點算表（共 37 項細項）</h2>
+      <div style="display:flex; gap:6px; margin-bottom:8px; flex-wrap:wrap;">
+        <input type="text" id="matSearch" placeholder="搜尋物資、地點或負責人..." oninput="renderMaterials()" style="flex:1; min-width:150px;">
+        <button type="button" class="btn btn-secondary" onclick="filterMatStatus('ALL')" id="matBtnAll">全部</button>
+        <button type="button" class="btn btn-secondary" onclick="filterMatStatus('TODO')" id="matBtnTodo">未備齊</button>
+      </div>
+      <div class="filter-row" id="materialFilterChips"></div>
+      <div id="materialsContainer"></div>
+    </div>
+  </section>
+
+  <!-- TAB 5: 核心崗位 & 聯絡人 & 歌曲 -->
+  <section id="tab-info" class="panel">
+    <div class="card">
+      <h2>兄弟姊妹核心崗位</h2>
+      <div id="rolesContainer"></div>
+    </div>
+    <div class="card">
+      <h2>全日聯絡人名單（Full Contact List）</h2>
+      <div id="contactsContainer"></div>
+    </div>
+    <div class="card">
+      <h2>婚禮歌曲清單（需要歌曲）</h2>
+      <div id="songsContainer"></div>
+    </div>
+  </section>
+
+  <!-- TAB 6: 人情登記（密碼鎖 1122，畫面不顯示密碼） -->
+  <section id="tab-angpao" class="panel">
+    <div class="card">
+      <h2>🔒 人情登記分頁</h2>
+      <div class="lock-box" id="angpaoLockBox">
+        <div style="font-size:13px; font-weight:600;">此分頁已上鎖，只限負責收人情／核數人員輸入 4 位密碼解鎖</div>
+        <div class="lock-row">
+          <input type="password" id="angpaoPinInput" inputmode="numeric" maxlength="4" placeholder="輸入 4 位密碼" style="width:140px; text-align:center; letter-spacing:4px;" onkeyup="if(event.key==='Enter')unlockAngpaoTab()">
+          <button type="button" class="btn" onclick="unlockAngpaoTab()">解鎖人情分頁</button>
+          <button type="button" class="btn btn-secondary angpao-private" onclick="lockAngpaoTab()">重新上鎖</button>
+        </div>
+        <div class="lock-err" id="angpaoLockErr"></div>
+      </div>
+
+      <div class="angpao-private-block" id="angpaoUnlockedContent">
+        <div class="stats-grid four-col" id="angpaoStats"></div>
+        <div style="font-size:12px; color:var(--muted); margin-bottom:8px;">
+          可在此直接填寫或修改每位賓客的人情金額，即時同步至雲端及本機。
+        </div>
+        <div id="angpaoContainer"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<nav class="tabbar">
+  <button type="button" class="active" data-tab="rundown" onclick="switchTab('rundown', this)"><span>📅</span><span>Rundown</span></button>
+  <button type="button" data-tab="seating" onclick="switchTab('seating', this)"><span>🪑</span><span>Seating</span></button>
+  <button type="button" data-tab="ceremony" onclick="switchTab('ceremony', this)"><span>🍵</span><span>奉茶／合照</span></button>
+  <button type="button" data-tab="materials" onclick="switchTab('materials', this)"><span>📦</span><span>物資表</span></button>
+  <button type="button" data-tab="info" onclick="switchTab('info', this)"><span>📋</span><span>崗位／聯絡</span></button>
+  <button type="button" data-tab="angpao" onclick="switchTab('angpao', this)"><span>🔒</span><span>人情</span></button>
+</nav>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+<script>
+const HUB_PIN = "1122";
+const STORAGE_KEY = "wedding_hub_state_v14_1122";
+const DB_NODE = "wedding_1122_av_k9x2p7";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCBC-9kpUzDEL0iptoxkc95ysJVys23J8w",
+  authDomain: "wedding-1122-hub.firebaseapp.com",
+  databaseURL: "https://wedding-1122-hub-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "wedding-1122-hub",
+  storageBucket: "wedding-1122-hub.firebasestorage.app",
+  messagingSenderId: "591670742536",
+  appId: "1:591670742536:web:3e1b55a316f81e376d0bbd",
+  measurementId: "G-BLTRPKVFX9"
+};
+
+const INITIAL_DATA = {
+  "rundown": [
+    {
+      "phase": "03:00 – 06:00｜起床、早餐與化妝",
+      "items": [
+        {
+          "id": "rd_1",
+          "time": "03:00 - 06:00",
+          "text": "Angela 03:00 食早餐；03:30 化妝師 Emily 及助手到達開始化妝（約 2.5 小時）",
+          "material": "套房 - 新娘裙褂、褂鞋、飾物、護膚品、急救袋、飲用水吸管",
+          "sister": [
+            "LingLing：聯絡化妝師 Emily、姊妹化妝師"
+          ],
+          "brother": [],
+          "done": false
+        },
+        {
+          "id": "rd_2",
+          "time": "03:30 - 06:00",
+          "text": "姊妹化妝時間：03:30 令令、懿雅；04:15 Hilary、Eunice；05:00 阿蜆＋Angela 媽媽；05:45 Vincent＋Vincent 媽媽＋Vincent 妹妹（姊妹房 1 著馬掛＋繡球）",
+          "material": "姊妹房 1 - 食早餐及輪流化妝；套房 - 預備敬茶用品、酒店房佈置物資及道具",
+          "sister": [
+            "懿雅：派姊妹手花、派姊妹化妝師利是、提醒 Angela 派化妝師／助手利是",
+            "Hilary & 阿蜆：準備茶（茶葉、紅棗、蓮子）、跪墊、執枱",
+            "Eunice：點算物資（請帖、高踭鞋、花球、金器）"
+          ],
+          "brother": [
+            "Vincent：姊妹房 1 05:45 化妝 + 著馬掛 + 繡球"
+          ],
+          "done": false
+        }
+      ]
+    },
+    {
+      "phase": "06:00 – 07:00｜攝影花絮與出門準備",
+      "items": [
+        {
+          "id": "rd_3",
+          "time": "05:45 - 07:00",
+          "text": "05:45 攝影師 Eric（White Production）到達酒店拍花絮；兄弟 06:00–06:30 食早餐、06:30 Frankie + 城哥執兄弟 props、06:45 Terry 統籌兄弟到達換衫；07:00 前 Lun + Darren 迎接 Angela 爸爸、哥哥、Amy 到套房",
+          "material": "跪墊x2、斟茶茶具x2、茶葉、紅棗、蓮子、褂、褂鞋、紅傘x1、姊妹利是x5、姊妹禮物、兄弟利是x5、開門利是x2",
+          "sister": [
+            "Angela：派攝影師利是 x3"
+          ],
+          "brother": [
+            "Vincent：派襟花 x5、兄弟利是 x5、保管開門利是 x2；所有利是交 Darren 保管（利是袋交 Darren，少量備用交 Lun）"
+          ],
+          "done": false
+        },
+        {
+          "id": "rd_4",
+          "time": "跟進",
+          "text": "姊妹準備物資：攝影師拍花絮、姊妹團影相；Angela 著褂、派姊妹利是、拋彩條、props 影相（如 sunglasses）",
+          "material": "太陽眼鏡、彩條、Bag 3 中式拍攝道具",
+          "sister": [
+            "令令 & 懿雅：幫 Angela 著褂",
+            "阿蜆：派 2 襟花 2 手花給 Angela 家人"
+          ],
+          "brother": [],
+          "done": false
+        }
+      ]
+    },
+    {
+      "phase": "07:00 – 07:30｜接新娘環節",
+      "items": [
+        {
+          "id": "rd_5",
+          "time": "07:00 - 07:30",
+          "text": "接新娘環節：準備迎門、開門利是 x2、快玩 Game 1 個、新郎愛的宣言（5 分鐘，只有 Vincent 講）",
+          "material": "開門利是 x2、快玩 Game 道具、Bag 3 中式拍攝道具",
+          "sister": [
+            "令令 & 懿雅：收利是、Facetime Angela",
+            "Hilary & Eunice：Hold game 做 MC",
+            "阿蜆：手機側拍"
+          ],
+          "brother": [
+            "Vincent：派開門利是 x2、講愛的宣言",
+            "所有兄弟：玩 game"
+          ],
+          "done": false
+        }
+      ]
+    },
+    {
+      "phase": "07:30 – 07:45｜女家奉茶",
+      "items": [
+        {
+          "id": "rd_6",
+          "time": "07:30 - 07:45",
+          "text": "新人敬茶及拍照（Angela 父母、Angela 哥哥）",
+          "material": "跪墊x2、斟茶茶具x2、茶葉、紅棗、蓮子、紙杯、花車利是、金器袋",
+          "sister": [
+            "令令：幫戴金器",
+            "懿雅：收金器／利是、貼 Label、交姊妹房 1 房卡給 Angela 爸爸",
+            "Hilary：準備茶（紅棗、蓮子）",
+            "Eunice：協助遞茶、講吉利說話",
+            "阿蜆：手機影花絮"
+          ],
+          "brother": [
+            "Darren：保管套房房卡 x1",
+            "所有兄弟：講吉利說話 + 氣氛小組",
+            "Terry：手機影花絮",
+            "城哥：聯絡男家家人到套房"
+          ],
+          "done": false
+        }
+      ]
+    },
+    {
+      "phase": "07:45 – 08:00｜出門影相",
+      "items": [
+        {
+          "id": "rd_7",
+          "time": "07:45 - 08:00",
+          "text": "新人＋兄弟姊妹團＋女家家人出門；男家家人到套房準備",
+          "material": "紅傘 x1、撒米用米",
+          "sister": [
+            "Hilary：擔紅遮",
+            "Eunice：撒米（站新人斜後方往上方／紅遮頂拋灑，勿直接砸臉/頭）",
+            "阿蜆：手機影花絮"
+          ],
+          "brother": [],
+          "done": false
+        }
+      ]
+    },
+    {
+      "phase": "08:00 – 08:15｜男家奉茶",
+      "items": [
+        {
+          "id": "rd_8",
+          "time": "08:00 - 08:15",
+          "text": "新人敬茶及拍照（Vincent 父母、Vincent 細姨 & 姨丈）；Vincent 派利是給妹妹（Darren 遞利是給 Vincent）",
+          "material": "跪墊x2、斟茶茶具x2、茶葉、紅棗、蓮子、紙杯、金器袋",
+          "sister": [
+            "令令：幫戴金器",
+            "懿雅：收金器／利是、貼 Label",
+            "Hilary：備茶",
+            "Eunice：遞茶＋吉利說話",
+            "阿蜆：手機影花絮"
+          ],
+          "brother": [
+            "所有兄弟：講吉利說話 + 氣氛小組",
+            "Darren：遞妹妹利是給 Vincent",
+            "Terry：手機影花絮",
+            "Frankie：拎齊兄弟 props 準備拍攝"
+          ],
+          "done": false
+        }
+      ]
+    },
+    {
+      "phase": "08:15 – 08:45｜花絮拍攝與除褂",
+      "items": [
+        {
+          "id": "rd_9",
+          "time": "08:15 - 08:45",
+          "text": "08:15–08:30 新人拍攝花絮；08:30–08:45 Angela 除褂、除金器；Vincent 與兄弟拍攝",
+          "material": "金器袋、白熊結婚公仔",
+          "sister": [
+            "令令：Keep 金器＋利是",
+            "Hilary：幫除褂、收拾放物資房（Lun）、套房拎白熊結婚公仔",
+            "懿雅 & 阿蜆：收拾房間交房卡給 Darren",
+            "Eunice：Call Ray 幫手出車、收拾房間"
+          ],
+          "brother": [
+            "Vincent + 所有兄弟：拍攝"
+          ],
+          "done": false
+        }
+      ]
+    },
+    {
+      "phase": "08:45 – 10:00｜過場往黃金海岸遊艇會 & 轉證婚造型",
+      "items": [
+        {
+          "id": "rd_10",
+          "time": "08:45 - 10:00",
+          "text": "酒店過場：第1批（08:50出車、09:00到）Angela、Emily、令令、懿雅；第2批 Eunice、Angela 爸爸、哥哥、Amy；第3批 Grace、Hilary、阿蜆、Angela 媽媽（Ray 泊車，車匙交 Eunice）。兄弟過場：第1批 Frankie+攝影師（09:00）；第2批新郎家人3人+新郎（09:15）；第3批 Lun+Darren+Frankie+城哥（09:30）；第4批細姨＋姨丈（TBC）",
+          "material": "油畫、BB迎賓牌、相簿x1、簽名卷軸x1、簽名筆x5、白熊公仔、4張身份證、證婚套、誓詞卡、主捧花、次捧花、泡泡槍",
+          "sister": [
+            "懿雅：鎖金器入新娘房保險箱、Keep 新娘房鎖匙、派利是給會場/MC/Deco/Photobooth",
+            "Eunice：確認 MC Jessica、Deco（09:00）、Photobooth、律師（10:00）及 Boey Lai",
+            "令令 + Eunice：放油畫、BB迎賓牌、迎賓枱／相簿枱、白熊公仔",
+            "Hilary：保管4張身份證、證婚套、誓詞卡、Angela 電話",
+            "阿蜆：保管主捧花、次捧花、泡泡槍、Angela 電話"
+          ],
+          "brother": [
+            "Vincent + Lun：換白色西裝、拎戒指；Lun Keep 物資房卡＋對戒＋新郎手機",
+            "Darren：收齊6張房卡 Check out",
+            "Frankie：聯絡 Boey Lai 及 Deco Sasa 拎 2 紮感恩花",
+            "城哥：致電巴士司機（09:30出車）、Check Photoslide/Seating Plan/背景音樂 USB"
+          ],
+          "done": false
+        }
+      ]
+    },
+    {
+      "phase": "10:00 – 10:30｜Reception 投入服務與證婚預備",
+      "items": [
+        {
+          "id": "rd_11",
+          "time": "10:00 - 10:30",
+          "text": "10:00 前 Stand by：點人名、派菲林相機＋任務卡（小梁、Franklin、Maurice、Cecilia、Jennifer）；10:20 叫賓客到戶外草地就座",
+          "material": "菲林相機 x5＋任務卡、4張身份證、證婚書、誓詞卡",
+          "sister": [
+            "Eunice + 令令 + 懿雅：點人名、令令 Keep 女家人情、派菲林相機、懿雅派司機及律師利是",
+            "Hilary：交4張身份證給律師、放證婚書於證婚枱、拍戴頭紗花絮後帶 Angela 媽媽就座"
+          ],
+          "brother": [
+            "Darren + Lun + Terry：點人名、Darren Keep 男家人情、派菲林相機",
+            "Vincent + 城哥：迎賓"
+          ],
+          "done": false
+        }
+      ]
+    },
+    {
+      "phase": "10:30 – 11:30｜證婚儀式",
+      "items": [
+        {
+          "id": "rd_12",
+          "time": "10:30 - 11:30",
+          "text": "司儀致歡迎辭 → 新郎進場 → 外父帶新娘進場 → 交接 → 宣讀誓辭 → 交換戒指 → 揭頭紗 → 吻賀 → 簽紙 → 新人與四大長老合照 → March out → Re-March in → 拋花球 → 切真餅 → 合照時間",
+          "material": "結婚戒指、結婚戒指盒、證婚套、誓詞卡、次捧花、泡泡槍、魚子醬、回禮小禮物",
+          "sister": [
+            "Hilary：遞誓詞卡及戒指、證婚後保管證書套/誓詞套/HKID",
+            "Eunice + 懿雅：Re-March in 放泡泡",
+            "阿蜆：遞拋花球專用捧花"
+          ],
+          "brother": [
+            "Lun：遞新郎誓詞卡及戒指",
+            "Terry + Darren：Re-March in 放泡泡；Terry 側拍",
+            "城哥 + Darren：檢查每枱魚子醬及回禮小禮物"
+          ],
+          "done": false
+        }
+      ]
+    },
+    {
+      "phase": "11:30 – 15:30+｜換造型、午宴、旅遊巴與尾數結算",
+      "items": [
+        {
+          "id": "rd_13",
+          "time": "11:30 - 14:15",
+          "text": "11:30 換午宴造型；12:00 開席 → 成長片段 → 進場 → 切 Dummy cake → 合巹交杯＋世紀之吻 → 致謝辭 → 送感恩花 2 束 → 6 人祝酒 → 12:30 自助餐 → 12:45 補奉茶（男家x7、女家x9） → 13:15 刮刮卡 → 13:30 合照 → ~13:45 早拍午播 → 敬酒 → 14:00 收 Guest Book → 14:15 歡送賓客",
+          "material": "紙杯、紅棗、蓮子、刮刮卡＋硬幣、小遊戲獎品、感恩花 x2、Guest Book、菲林相機 x5",
+          "sister": [
+            "阿蜆：陪 Angela 換造型及補奉茶、遞 Angela 電話",
+            "Eunice + Hilary：交宴會廳物資、準備刮刮卡＋禮物；Eunice 回收菲林相機",
+            "令令 + 懿雅：收保管人情袋放入新娘房"
+          ],
+          "brother": [
+            "Lun：陪 Vincent 換造型及補奉茶、遞 Vincent 電話及誓詞卡x2、回收菲林相機",
+            "Frankie：準備感恩花 2 束、確認早拍午播時間",
+            "Darren：交人情袋、14:00 收 Photobooth Guest Book",
+            "Terry + 城哥：刮刮卡遞禮物"
+          ],
+          "done": false
+        },
+        {
+          "id": "rd_14",
+          "time": "14:30 - 15:30+",
+          "text": "14:30 兩架 50 座旅遊巴開出（1. 沙田火車站、2. 旺角海景中心）；14:45–15:30 兄弟姊妹補影團隊相；15:30 付尾數（Deco、化妝師、攝影師、會場）及返酒店物資房",
+          "material": "兩架 50 座旅遊巴、金器、人情、證書套、誓詞套、剩餘利是",
+          "sister": [
+            "Angela + Eunice + Hilary：跟車（Angela Keep 金器/人情/證書套/誓詞套/剩餘利是）"
+          ],
+          "brother": [
+            "Terry + Vincent：拎車",
+            "城哥 + Lun + Frankie + Darren：跟車搬物資"
+          ],
+          "done": false
+        }
+      ]
+    }
+  ],
+  "seating": [
+    {
+      "id": "g1",
+      "name": "Vincent",
+      "table": "T.1 (Garden Room)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g2",
+      "name": "鴻爸",
+      "table": "T.1 (Garden Room)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g3",
+      "name": "大舅父",
+      "table": "T.1 (Garden Room)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g4",
+      "name": "舅母",
+      "table": "T.1 (Garden Room)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g5",
+      "name": "細舅父",
+      "table": "T.1 (Garden Room)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g6",
+      "name": "大伯",
+      "table": "T.1 (Garden Room)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g7",
+      "name": "Angela",
+      "table": "T.1 (Garden Room)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g8",
+      "name": "鴻媽",
+      "table": "T.1 (Garden Room)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g9",
+      "name": "貞",
+      "table": "T.1 (Garden Room)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g10",
+      "name": "德仔",
+      "table": "T.1 (Garden Room)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g11",
+      "name": "公公",
+      "table": "T.1 (Garden Room)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g12",
+      "name": "妹妹",
+      "table": "T.1 (Garden Room)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g13",
+      "name": "崔仲棋",
+      "table": "T.5 (Garden Room)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g14",
+      "name": "林浩民",
+      "table": "T.5 (Garden Room)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g15",
+      "name": "崔峻偉",
+      "table": "T.5 (Garden Room)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g16",
+      "name": "張金發",
+      "table": "T.5 (Garden Room)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g17",
+      "name": "張金華",
+      "table": "T.5 (Garden Room)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g18",
+      "name": "張金池",
+      "table": "T.5 (Garden Room)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g19",
+      "name": "崔潤婷",
+      "table": "T.5 (Garden Room)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g20",
+      "name": "victor",
+      "table": "T.5 (Garden Room)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g21",
+      "name": "張金發仔",
+      "table": "T.5 (Garden Room)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g22",
+      "name": "張金發老婆",
+      "table": "T.5 (Garden Room)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g23",
+      "name": "張金華老婆",
+      "table": "T.5 (Garden Room)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g24",
+      "name": "心媽",
+      "table": "T.2 (Garden Room)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g25",
+      "name": "公公",
+      "table": "T.2 (Garden Room)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g26",
+      "name": "姨媽",
+      "table": "T.2 (Garden Room)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g27",
+      "name": "黃智姬",
+      "table": "T.2 (Garden Room)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g28",
+      "name": "華小霞",
+      "table": "T.2 (Garden Room)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g29",
+      "name": "劉敏",
+      "table": "T.2 (Garden Room)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g30",
+      "name": "姨婆",
+      "table": "T.2 (Garden Room)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g31",
+      "name": "鄭惠連 表姨媽",
+      "table": "T.2 (Garden Room)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g32",
+      "name": "鄭惠霞 表姨媽",
+      "table": "T.2 (Garden Room)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g33",
+      "name": "余蘭",
+      "table": "T.2 (Garden Room)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g34",
+      "name": "鄭妙淮",
+      "table": "T.2 (Garden Room)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g35",
+      "name": "彭偉豪",
+      "table": "T.2 (Garden Room)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g36",
+      "name": "BB",
+      "table": "T.6 (Garden Room)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g37",
+      "name": "欣表姐",
+      "table": "T.6 (Garden Room)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g38",
+      "name": "Edmond表姐夫",
+      "table": "T.6 (Garden Room)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g39",
+      "name": "佩表姐",
+      "table": "T.6 (Garden Room)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g40",
+      "name": "Sam表姐夫",
+      "table": "T.6 (Garden Room)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g41",
+      "name": "表嫂",
+      "table": "T.6 (Garden Room)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g42",
+      "name": "子聰表哥",
+      "table": "T.6 (Garden Room)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g43",
+      "name": "心爸",
+      "table": "T.3 (Garden Room)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g44",
+      "name": "叔叔",
+      "table": "T.3 (Garden Room)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g45",
+      "name": "嬸嬸",
+      "table": "T.3 (Garden Room)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g46",
+      "name": "哥",
+      "table": "T.3 (Garden Room)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g47",
+      "name": "Amy",
+      "table": "T.3 (Garden Room)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g48",
+      "name": "珍嬸嬸",
+      "table": "T.3 (Garden Room)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g49",
+      "name": "嫲嫲",
+      "table": "T.3 (Garden Room)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g50",
+      "name": "鄧慶田 二叔公",
+      "table": "T.3 (Garden Room)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g51",
+      "name": "二叔婆",
+      "table": "T.3 (Garden Room)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g52",
+      "name": "鄧澤田 三叔公",
+      "table": "T.3 (Garden Room)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g53",
+      "name": "堂弟(俊賢)",
+      "table": "T.3 (Garden Room)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g54",
+      "name": "鄧兆裕 叔叔",
+      "table": "T.3 (Garden Room)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g55",
+      "name": "鄧巧賢 姑婆",
+      "table": "T.7 (The Deck)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g56",
+      "name": "姐姐",
+      "table": "T.7 (The Deck)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g57",
+      "name": "候玉梅 表姑媽",
+      "table": "T.7 (The Deck)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g58",
+      "name": "候玉華 表姑媽",
+      "table": "T.7 (The Deck)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g59",
+      "name": "陳麗",
+      "table": "T.7 (The Deck)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g60",
+      "name": "陳麗男朋友",
+      "table": "T.7 (The Deck)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g61",
+      "name": "鄧偉康 表叔",
+      "table": "T.7 (The Deck)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g62",
+      "name": "鄧偉國 表叔",
+      "table": "T.7 (The Deck)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g63",
+      "name": "蓮姑婆",
+      "table": "T.7 (The Deck)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g64",
+      "name": "候玉珍 表姑媽",
+      "table": "T.7 (The Deck)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g65",
+      "name": "均嬋",
+      "table": "T.7 (The Deck)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g66",
+      "name": "懿雅",
+      "table": "T.7 (The Deck)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g67",
+      "name": "hayley",
+      "table": "T.8 (The Deck)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g68",
+      "name": "cecilia",
+      "table": "T.8 (The Deck)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g69",
+      "name": "yu",
+      "table": "T.8 (The Deck)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g70",
+      "name": "mandy",
+      "table": "T.8 (The Deck)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g71",
+      "name": "大頭",
+      "table": "T.8 (The Deck)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g72",
+      "name": "SAM",
+      "table": "T.8 (The Deck)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g73",
+      "name": "To",
+      "table": "T.8 (The Deck)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g74",
+      "name": "becky",
+      "table": "T.8 (The Deck)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g75",
+      "name": "janice",
+      "table": "T.8 (The Deck)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g76",
+      "name": "Kenneth",
+      "table": "T.8 (The Deck)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g77",
+      "name": "城哥",
+      "table": "T.8 (The Deck)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g78",
+      "name": "Terry",
+      "table": "T.8 (The Deck)",
+      "side": "男家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g79",
+      "name": "老闆",
+      "table": "T.9 (The Deck)",
+      "side": "未標明",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g80",
+      "name": "Maurice",
+      "table": "T.9 (The Deck)",
+      "side": "未標明",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g81",
+      "name": "Mabel",
+      "table": "T.9 (The Deck)",
+      "side": "未標明",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g82",
+      "name": "Harry",
+      "table": "T.9 (The Deck)",
+      "side": "未標明",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g83",
+      "name": "Hilary",
+      "table": "T.9 (The Deck)",
+      "side": "未標明",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g84",
+      "name": "令令",
+      "table": "T.9 (The Deck)",
+      "side": "未標明",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g85",
+      "name": "劉小姐",
+      "table": "T.9 (The Deck)",
+      "side": "未標明",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g86",
+      "name": "Carrie",
+      "table": "T.9 (The Deck)",
+      "side": "未標明",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g87",
+      "name": "Helen",
+      "table": "T.9 (The Deck)",
+      "side": "未標明",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g88",
+      "name": "Helen仔仔",
+      "table": "T.9 (The Deck)",
+      "side": "未標明",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g89",
+      "name": "Eunice",
+      "table": "T.9 (The Deck)",
+      "side": "未標明",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g90",
+      "name": "阿蜆",
+      "table": "T.9 (The Deck)",
+      "side": "未標明",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g91",
+      "name": "Jennifer",
+      "table": "T.10 (The Deck)",
+      "side": "未標明",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g92",
+      "name": "momo",
+      "table": "T.10 (The Deck)",
+      "side": "未標明",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g93",
+      "name": "kenny",
+      "table": "T.10 (The Deck)",
+      "side": "未標明",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g94",
+      "name": "monkey",
+      "table": "T.10 (The Deck)",
+      "side": "未標明",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g95",
+      "name": "kachun",
+      "table": "T.10 (The Deck)",
+      "side": "未標明",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g96",
+      "name": "Lun",
+      "table": "T.10 (The Deck)",
+      "side": "未標明",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g97",
+      "name": "frankie",
+      "table": "T.10 (The Deck)",
+      "side": "未標明",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g98",
+      "name": "darren",
+      "table": "T.10 (The Deck)",
+      "side": "未標明",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g99",
+      "name": "Ray",
+      "table": "T.11 (The Deck)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g100",
+      "name": "Franklin",
+      "table": "T.11 (The Deck)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g101",
+      "name": "Jimmy",
+      "table": "T.11 (The Deck)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g102",
+      "name": "小梁",
+      "table": "T.11 (The Deck)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g103",
+      "name": "Millie",
+      "table": "T.11 (The Deck)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g104",
+      "name": "Grace",
+      "table": "T.11 (The Deck)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g105",
+      "name": "Jennifer",
+      "table": "T.11 (The Deck)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g106",
+      "name": "Amanda",
+      "table": "T.11 (The Deck)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g107",
+      "name": "Bill",
+      "table": "T.11 (The Deck)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g108",
+      "name": "Nikko",
+      "table": "T.11 (The Deck)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    },
+    {
+      "id": "g109",
+      "name": "JC",
+      "table": "T.11 (The Deck)",
+      "side": "女家",
+      "arrived": false,
+      "angpao": 0,
+      "method": "利是",
+      "note": ""
+    }
+  ],
+  "tea": [
+    {
+      "id": "t01",
+      "code": "01",
+      "group": "Angela 爸爸 媽媽（出門）",
+      "sticker": "01",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t02",
+      "code": "02",
+      "group": "Angela 哥哥（出門）",
+      "sticker": "02",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t03",
+      "code": "03",
+      "group": "Vincent 爸爸 媽媽（出門）",
+      "sticker": "03",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t04",
+      "code": "04",
+      "group": "Vincent 細姨 姨丈（出門）",
+      "sticker": "04",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t05",
+      "code": "05",
+      "group": "Vincent 公公（場地｜紙杯 1）",
+      "sticker": "05",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t06",
+      "code": "06",
+      "group": "Vincent 大舅父大舅母（場地｜紙杯 2）",
+      "sticker": "06",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t07",
+      "code": "07",
+      "group": "Vincent 細舅父（場地｜紙杯 1）",
+      "sticker": "07",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t08",
+      "code": "08",
+      "group": "Vincent 大伯父（場地｜紙杯 1）",
+      "sticker": "08",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t09",
+      "code": "09",
+      "group": "Vincent 張金華表舅父（場地｜紙杯 2）",
+      "sticker": "09",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t10",
+      "code": "10",
+      "group": "Vincent 張金發表舅父（場地｜紙杯 2）",
+      "sticker": "10",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t11",
+      "code": "11",
+      "group": "Vincent 張金池表舅父（場地｜紙杯 1）",
+      "sticker": "11",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t12",
+      "code": "12",
+      "group": "Angela 嫲嫲（場地｜紙杯 1）",
+      "sticker": "12",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t13",
+      "code": "13",
+      "group": "Angela 二叔公 + 二叔婆（場地｜紙杯 2）",
+      "sticker": "13",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t14",
+      "code": "14",
+      "group": "Angela 三叔公（場地｜紙杯 1）",
+      "sticker": "14",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t15",
+      "code": "15",
+      "group": "Angela 鄧巧賢姑婆（場地｜紙杯 1）",
+      "sticker": "15",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t16",
+      "code": "16",
+      "group": "Angela 蓮姑婆（場地｜紙杯 1）",
+      "sticker": "16",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t17",
+      "code": "17",
+      "group": "Angela 姨婆（場地｜紙杯 1）",
+      "sticker": "17",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t18",
+      "code": "18",
+      "group": "Angela 叔叔  +  嬸嬸（場地｜紙杯 2）",
+      "sticker": "18",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t19",
+      "code": "19",
+      "group": "Angela 公公（場地｜紙杯 1）",
+      "sticker": "19",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t20",
+      "code": "20",
+      "group": "Angela 姨媽（場地｜紙杯 1）",
+      "sticker": "20",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t21",
+      "code": "21",
+      "group": "（未填寫 #21）（場地）",
+      "sticker": "21",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t22",
+      "code": "22",
+      "group": "（未填寫 #22）（場地）",
+      "sticker": "22",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t23",
+      "code": "23",
+      "group": "（未填寫 #23）（場地）",
+      "sticker": "23",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t24",
+      "code": "24",
+      "group": "（未填寫 #24）（場地）",
+      "sticker": "24",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t25",
+      "code": "25",
+      "group": "（未填寫 #25）（場地）",
+      "sticker": "25",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t26",
+      "code": "26",
+      "group": "（未填寫 #26）（場地）",
+      "sticker": "26",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t27",
+      "code": "27",
+      "group": "（未填寫 #27）（場地）",
+      "sticker": "27",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t28",
+      "code": "28",
+      "group": "（未填寫 #28）（場地）",
+      "sticker": "28",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t29",
+      "code": "29",
+      "group": "（未填寫 #29）（場地）",
+      "sticker": "29",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t30",
+      "code": "30",
+      "group": "（未填寫 #30）（場地）",
+      "sticker": "30",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t31",
+      "code": "31",
+      "group": "（未填寫 #31）（場地）",
+      "sticker": "31",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t32",
+      "code": "32",
+      "group": "（未填寫 #32）（場地）",
+      "sticker": "32",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t33",
+      "code": "33",
+      "group": "（未填寫 #33）（場地）",
+      "sticker": "33",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t34",
+      "code": "34",
+      "group": "（未填寫 #34）（場地）",
+      "sticker": "34",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t35",
+      "code": "35",
+      "group": "（未填寫 #35）（場地）",
+      "sticker": "35",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t36",
+      "code": "36",
+      "group": "（未填寫 #36）（場地）",
+      "sticker": "36",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t37",
+      "code": "37",
+      "group": "（未填寫 #37）（場地）",
+      "sticker": "37",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t38",
+      "code": "38",
+      "group": "（未填寫 #38）（場地）",
+      "sticker": "38",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    },
+    {
+      "id": "t39",
+      "code": "39",
+      "group": "（未填寫 #39）（場地）",
+      "sticker": "39",
+      "done": false,
+      "goldItems": [
+        "龍鳳手鐲",
+        "戒指",
+        "手鏈",
+        "頸鏈",
+        "耳環",
+        "豬牌",
+        "利是"
+      ]
+    }
+  ],
+  "photo": [
+    {
+      "id": "p4",
+      "title": "#1 新郎新娘雙方家長 (雙方父母)",
+      "count": 4,
+      "done": false
+    },
+    {
+      "id": "p5",
+      "title": "#2 新郎家人(爸媽＋妹妹)",
+      "count": 3,
+      "done": false
+    },
+    {
+      "id": "p6",
+      "title": "#3 新郎爸爸親友 — 新郎家人(爸媽＋妹妹) + 爸爸親友",
+      "count": 15,
+      "done": false
+    },
+    {
+      "id": "p7",
+      "title": "#11 新郎媽媽親友 — 新郎家人(爸媽＋妹妹) + 媽媽親友",
+      "count": 22,
+      "done": false
+    },
+    {
+      "id": "p8",
+      "title": "#23 新郎呂潤財中學朋友 (連兄弟)",
+      "count": 8,
+      "done": false
+    },
+    {
+      "id": "p9",
+      "title": "#24 新郎祟真中學朋友 (連兄弟)",
+      "count": 4,
+      "done": false
+    },
+    {
+      "id": "p10",
+      "title": "#25 新郎大學朋友",
+      "count": 8,
+      "done": false
+    },
+    {
+      "id": "p11",
+      "title": "#4 #4（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p12",
+      "title": "#5 #5（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p13",
+      "title": "#6 #6（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p14",
+      "title": "#7 #7（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p15",
+      "title": "#8 #8（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p16",
+      "title": "#9 #9（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p17",
+      "title": "#10 新娘家人 — 爸爸、媽媽",
+      "count": 2,
+      "done": false
+    },
+    {
+      "id": "p18",
+      "title": "#12 新娘 + 爸爸/嫲嫲邊大合照 — 爸爸、哥哥、Amy、嫲嫲、叔叔、嬸嬸、俊賢、姨婆、鄧巧賢姑婆、候玉梅表姑媽、候玉華表姑媽、候玉珍表姑媽、鄧慶田二叔公、二叔婆、鄧偉康表叔、鄧偉國表叔、鄧澤田三叔公、蓮姑婆、鄧兆裕叔叔、珍嬸嬸",
+      "count": 20,
+      "done": false
+    },
+    {
+      "id": "p19",
+      "title": "#13 新娘媽媽親人 — 媽媽、公公、姨媽、鄭惠連表姨媽、鄭惠霞表姨媽",
+      "count": 5,
+      "done": false
+    },
+    {
+      "id": "p20",
+      "title": "#14 新娘媽媽朋友 — 媽媽、黃智姬、劉敏、鄭妙淮、余蘭、華小霞、彭偉豪",
+      "count": 7,
+      "done": false
+    },
+    {
+      "id": "p21",
+      "title": "#15 新娘中學朋友 — 令令、懿雅、均嬋、陳麗、黃澤明",
+      "count": 5,
+      "done": false
+    },
+    {
+      "id": "p22",
+      "title": "#16 新娘大學朋友 — Eunice、Hilary、小梁、Millie、Nikko、Bill、JC",
+      "count": 7,
+      "done": false
+    },
+    {
+      "id": "p23",
+      "title": "#17 新娘同事 — 老闆、劉小姐、Ray、Maurice、Mabel、Harry、Carrie、Helen、Helen仔仔 (Nardo & Vincy 証婚only)",
+      "count": 9,
+      "done": false
+    },
+    {
+      "id": "p24",
+      "title": "#18 新娘行山Group — Ray、Grace、Jimmy、Amanda、Franklin、Jennifer、Eunice",
+      "count": 7,
+      "done": false
+    },
+    {
+      "id": "p25",
+      "title": "#19 other 新娘朋友 — 阿蜆",
+      "count": 1,
+      "done": false
+    },
+    {
+      "id": "p26",
+      "title": "#20 #20（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p27",
+      "title": "#21 伴郎伴娘及兄弟姊妹團",
+      "count": 10,
+      "done": false
+    },
+    {
+      "id": "p28",
+      "title": "#22 #22（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p29",
+      "title": "#26 #26（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p30",
+      "title": "#27 #27（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p31",
+      "title": "#28 #28（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p32",
+      "title": "#29 #29（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p33",
+      "title": "#30 #30（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p34",
+      "title": "#31 #31（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p35",
+      "title": "#32 #32（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p36",
+      "title": "#33 #33（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p37",
+      "title": "#34 #34（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p38",
+      "title": "#35 #35（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p39",
+      "title": "#36 #36（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p40",
+      "title": "#37 #37（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p41",
+      "title": "#38 #38（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p42",
+      "title": "#39 #39（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p43",
+      "title": "#40 #40（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p44",
+      "title": "#41 #41（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p45",
+      "title": "#42 #42（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p46",
+      "title": "#43 #43（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p47",
+      "title": "#44 #44（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p48",
+      "title": "#45 #45（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p49",
+      "title": "#47 #47（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p50",
+      "title": "#48 #48（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p51",
+      "title": "#49 #49（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p52",
+      "title": "#50 #50（未填寫群組）",
+      "count": 0,
+      "done": false
+    },
+    {
+      "id": "p53",
+      "title": "#51 其他來賓及好友",
+      "count": 0,
+      "done": false
+    }
+  ],
+  "materials": [
+    {
+      "id": "m1",
+      "cat": "酒店房／出門物資",
+      "item": "新娘裙褂、褂鞋、飾物",
+      "qty": "1套",
+      "owner": "LingLing / 懿雅",
+      "done": false
+    },
+    {
+      "id": "m2",
+      "cat": "酒店房／出門物資",
+      "item": "新娘護膚品、急救袋、飲用水吸管",
+      "qty": "1set",
+      "owner": "LingLing / 阿蜆",
+      "done": false
+    },
+    {
+      "id": "m3",
+      "cat": "酒店房／出門物資",
+      "item": "新郎馬掛、繡球、襟花 x5",
+      "qty": "1套",
+      "owner": "Vincent",
+      "done": false
+    },
+    {
+      "id": "m4",
+      "cat": "酒店房／出門物資",
+      "item": "Angela 家人 2 襟花 2 手花",
+      "qty": "4個",
+      "owner": "阿蜆",
+      "done": false
+    },
+    {
+      "id": "m5",
+      "cat": "酒店房／出門物資",
+      "item": "姊妹手花",
+      "qty": "5個",
+      "owner": "懿雅",
+      "done": false
+    },
+    {
+      "id": "m6",
+      "cat": "酒店房／出門物資",
+      "item": "紅傘 x1、撒米用米",
+      "qty": "1set",
+      "owner": "Hilary / Eunice",
+      "done": false
+    },
+    {
+      "id": "m7",
+      "cat": "酒店房／出門物資",
+      "item": "開門利是 x2",
+      "qty": "2封",
+      "owner": "Vincent / Darren",
+      "done": false
+    },
+    {
+      "id": "m8",
+      "cat": "酒店房／出門物資",
+      "item": "兄弟利是 x5 + 姊妹利是 x5 + 姊妹禮物",
+      "qty": "1set",
+      "owner": "Vincent / 懿雅",
+      "done": false
+    },
+    {
+      "id": "m9",
+      "cat": "酒店房／出門物資",
+      "item": "花車利是、攝影師利是 x3",
+      "qty": "1set",
+      "owner": "Angela / 懿雅",
+      "done": false
+    },
+    {
+      "id": "m10",
+      "cat": "酒店房／出門物資",
+      "item": "會場／MC／Deco／Photobooth／巴士司機／律師利是",
+      "qty": "1set",
+      "owner": "懿雅 + Eunice",
+      "done": false
+    },
+    {
+      "id": "m11",
+      "cat": "酒店房／出門物資",
+      "item": "接新娘快玩 Game 道具",
+      "qty": "1set",
+      "owner": "Hilary & Eunice",
+      "done": false
+    },
+    {
+      "id": "m12",
+      "cat": "酒店房／出門物資",
+      "item": "Bag 3（新郎兄弟中式拍攝道具）、兄弟花絮 props（黑超／扇等）",
+      "qty": "1set",
+      "owner": "Frankie + 城哥",
+      "done": false
+    },
+    {
+      "id": "m13",
+      "cat": "酒店房／出門物資",
+      "item": "太陽眼鏡、彩條",
+      "qty": "1set",
+      "owner": "令令 & 懿雅",
+      "done": false
+    },
+    {
+      "id": "m14",
+      "cat": "酒店房／出門物資",
+      "item": "高踭鞋、婚紗 x2、禮服 x1、Backup 鞋",
+      "qty": "1set",
+      "owner": "LingLing / 懿雅",
+      "done": false
+    },
+    {
+      "id": "m15",
+      "cat": "敬茶用品",
+      "item": "跪墊 x2、斟茶茶具 x2",
+      "qty": "2set",
+      "owner": "Hilary & 阿蜆",
+      "done": false
+    },
+    {
+      "id": "m16",
+      "cat": "敬茶用品",
+      "item": "茶葉、紅棗、蓮子、紙杯",
+      "qty": "1set",
+      "owner": "Hilary & 阿蜆",
+      "done": false
+    },
+    {
+      "id": "m17",
+      "cat": "敬茶用品",
+      "item": "金器、金器袋、貼 Label 貼紙（號碼小貼紙）",
+      "qty": "1set",
+      "owner": "懿雅 / 令令",
+      "done": false
+    },
+    {
+      "id": "m18",
+      "cat": "證婚及會場佈置",
+      "item": "4 張身份證（Angela、Vincent、Angela 媽媽、Vincent 爸爸）",
+      "qty": "4張",
+      "owner": "Hilary",
+      "done": false
+    },
+    {
+      "id": "m19",
+      "cat": "證婚及會場佈置",
+      "item": "證婚套（內放證婚書）、誓詞卡／誓詞套",
+      "qty": "1set",
+      "owner": "Hilary",
+      "done": false
+    },
+    {
+      "id": "m20",
+      "cat": "證婚及會場佈置",
+      "item": "結婚戒指、結婚戒指盒",
+      "qty": "1set",
+      "owner": "Lun / Hilary",
+      "done": false
+    },
+    {
+      "id": "m21",
+      "cat": "證婚及會場佈置",
+      "item": "Angela 電話、Vincent 電話",
+      "qty": "2部",
+      "owner": "阿蜆 / Lun",
+      "done": false
+    },
+    {
+      "id": "m22",
+      "cat": "證婚及會場佈置",
+      "item": "主捧花（進場用）、次捧花（拋花球用）",
+      "qty": "2紮",
+      "owner": "阿蜆",
+      "done": false
+    },
+    {
+      "id": "m23",
+      "cat": "證婚及會場佈置",
+      "item": "泡泡槍 x2（及備用）",
+      "qty": "2+支",
+      "owner": "阿蜆 / Eunice / 懿雅 / Terry / Darren",
+      "done": false
+    },
+    {
+      "id": "m24",
+      "cat": "證婚及會場佈置",
+      "item": "油畫、BB 迎賓牌、相簿 x1、簽名卷軸 x1、簽名筆 x5",
+      "qty": "1set",
+      "owner": "令令 & Eunice",
+      "done": false
+    },
+    {
+      "id": "m25",
+      "cat": "證婚及會場佈置",
+      "item": "白熊結婚公仔、文具雜項物資",
+      "qty": "1set",
+      "owner": "令令 & Eunice",
+      "done": false
+    },
+    {
+      "id": "m26",
+      "cat": "宴會廳及互動物資",
+      "item": "菲林相機 x5＋任務卡（小梁、Franklin、Maurice、Cecilia、Jennifer）",
+      "qty": "5套",
+      "owner": "Eunice / Darren",
+      "done": false
+    },
+    {
+      "id": "m27",
+      "cat": "宴會廳及互動物資",
+      "item": "背景音樂／Photoslide／Seating Plan USB",
+      "qty": "1個",
+      "owner": "城哥",
+      "done": false
+    },
+    {
+      "id": "m28",
+      "cat": "宴會廳及互動物資",
+      "item": "感恩花 x2（送奶奶＋外母）",
+      "qty": "2束",
+      "owner": "Frankie",
+      "done": false
+    },
+    {
+      "id": "m29",
+      "cat": "宴會廳及互動物資",
+      "item": "每枱物品：魚子醬、回禮小禮物",
+      "qty": "每枱",
+      "owner": "城哥 + Darren",
+      "done": false
+    },
+    {
+      "id": "m30",
+      "cat": "宴會廳及互動物資",
+      "item": "刮刮卡＋硬幣（每枱 2–3 個）＋小遊戲獎品",
+      "qty": "1set",
+      "owner": "Eunice + Hilary / Terry + 城哥",
+      "done": false
+    },
+    {
+      "id": "m31",
+      "cat": "宴會廳及互動物資",
+      "item": "Photobooth 道具／Guest Book（1 本）",
+      "qty": "1set",
+      "owner": "Darren",
+      "done": false
+    },
+    {
+      "id": "m32",
+      "cat": "宴會廳及互動物資",
+      "item": "賓客名單、人情袋",
+      "qty": "1set",
+      "owner": "令令 / Darren / 懿雅",
+      "done": false
+    },
+    {
+      "id": "m33",
+      "cat": "過場、送客及尾數物資",
+      "item": "兩架 50 座旅遊巴（1. 沙田火車站、2. 旺角海景中心）",
+      "qty": "2架",
+      "owner": "城哥 / Terry",
+      "done": false
+    },
+    {
+      "id": "m34",
+      "cat": "Deco 佈置清單",
+      "item": "證婚草地：絲花拱門（＋人名牌）、地花 8 個",
+      "qty": "1set",
+      "owner": "Sasa Chan / 令令",
+      "done": false
+    },
+    {
+      "id": "m35",
+      "cat": "Deco 佈置清單",
+      "item": "證婚草地：迎賓枱佈置、Welcome board 1 個、證婚枱花 1 個",
+      "qty": "1set",
+      "owner": "Sasa Chan / 令令",
+      "done": false
+    },
+    {
+      "id": "m36",
+      "cat": "Deco 佈置清單",
+      "item": "室內宴會廳：8x16 尺布藝（包柱花 1 對＋地花 1 對）",
+      "qty": "1set",
+      "owner": "Sasa Chan / 令令",
+      "done": false
+    },
+    {
+      "id": "m37",
+      "cat": "Deco 佈置清單",
+      "item": "室內宴會廳：全頂花藝、掛吊燈左右各 1 組、DieCut 人名牌",
+      "qty": "1set",
+      "owner": "Sasa Chan / 令令",
+      "done": false
+    }
+  ],
+  "roles": [
+    {
+      "name": "Eunice",
+      "team": "姊妹團",
+      "duties": "姊妹團總協調／場外聯絡／新娘隨身支援第二人選；點算物資；接新娘 Hold game & 做 MC；撒米；跟進會場／Deco／MC／Photobooth 到場；Reception 點人名及派菲林相機。"
+    },
+    {
+      "name": "Hilary",
+      "team": "姊妹團",
+      "duties": "Timekeeper ＋ 接新娘遊戲主持；準備敬茶用品及跪墊；擔紅遮送出門；保管 4 張身份證、證婚套／證婚書、誓詞卡及 Angela 電話；證婚遞誓詞卡／戒指。"
+    },
+    {
+      "name": "令令",
+      "team": "姊妹團",
+      "duties": "Deco 主管／迎賓；幫 Angela 著褂、除褂及戴金器；保管金器＋利是；放油畫／BB 迎賓牌／相簿／簽名卷軸／白熊公仔；Reception 保管女家人情。"
+    },
+    {
+      "name": "懿雅",
+      "team": "姊妹團",
+      "duties": "財務主管／迎賓；派姊妹手花及各類利是（化妝師、會場、MC、Deco、Photobooth、司機、律師）；收金器／利是貼 Label；保管新娘房鎖匙。"
+    },
+    {
+      "name": "阿蜆",
+      "team": "姊妹團",
+      "duties": "新娘全日貼身助理（隨身照顧）／花絮拍攝擔當；派家人襟花／手花；保管主捧花、次捧花、泡泡槍及 Angela 電話；陪 Angela 換造型及補奉茶。"
+    },
+    {
+      "name": "Frankie",
+      "team": "兄弟團",
+      "duties": "兄弟總聯絡人／場外聯絡＋會場總對接人；執兄弟團花絮 props；聯絡會場 Boey Lai 及 Deco Sasa 拎 2 紮感恩花；確認早拍午播時間。"
+    },
+    {
+      "name": "Darren",
+      "team": "兄弟團",
+      "duties": "利是主管／迎賓 ＋ Timekeeper；保管利是袋及套房房卡；收齊 6 張房卡 Check out；Reception 保管男家人情；檢查每枱魚子醬及回禮；收 Guest Book。"
+    },
+    {
+      "name": "Lun",
+      "team": "兄弟團",
+      "duties": "新郎貼身助手／迎賓；保管少量備用利是、物資房卡、對戒及新郎手機；證婚遞戒指及誓詞卡；陪 Vincent 換造型及補奉茶；回收菲林相機。"
+    },
+    {
+      "name": "城哥",
+      "team": "兄弟團",
+      "duties": "音效影片／新郎隨身支援第二人選／迎賓；聯絡男家家人；致電巴士司機；Check Photoslide / Seating Plan / 背景音樂 USB；檢查魚子醬及回禮。"
+    },
+    {
+      "name": "Terry",
+      "team": "兄弟團",
+      "duties": "花絮拍攝擔當／人員＋物資運輸總管；統籌兄弟到達換衫；拎車過場及泊車；Reception 點人名；證婚放泡泡及側拍；回程交通安排。"
+    }
+  ],
+  "contacts": [
+    {
+      "title": "家人：Angela爸爸",
+      "person": "Angela爸爸",
+      "phone": "9432 8215",
+      "note": "女家家人"
+    },
+    {
+      "title": "家人：Angela媽媽",
+      "person": "Angela媽媽",
+      "phone": "9278 9503",
+      "note": "女家家人"
+    },
+    {
+      "title": "家人：Angela 哥哥",
+      "person": "Angela 哥哥",
+      "phone": "6823 7328",
+      "note": "女家家人"
+    },
+    {
+      "title": "家人：Vincent 爸爸",
+      "person": "Vincent 爸爸",
+      "phone": "9680 2313",
+      "note": "男家家人"
+    },
+    {
+      "title": "家人：Vincent 媽媽",
+      "person": "Vincent 媽媽",
+      "phone": "9215 3134",
+      "note": "男家家人"
+    },
+    {
+      "title": "家人：Vincent 妹妹",
+      "person": "Vincent 妹妹",
+      "phone": "6875 5602",
+      "note": "男家家人"
+    },
+    {
+      "title": "兄弟姊妹：Eunice",
+      "person": "Eunice",
+      "phone": "9237 4673",
+      "note": "姊妹團總協調"
+    },
+    {
+      "title": "兄弟姊妹：Hilary",
+      "person": "Hilary",
+      "phone": "6135 5870",
+      "note": "Timekeeper / 遊戲主持"
+    },
+    {
+      "title": "兄弟姊妹：令令",
+      "person": "令令",
+      "phone": "6436 7824",
+      "note": "Deco 主管"
+    },
+    {
+      "title": "兄弟姊妹：懿雅",
+      "person": "懿雅",
+      "phone": "6055 4224",
+      "note": "財務主管"
+    },
+    {
+      "title": "兄弟姊妹：阿蜆",
+      "person": "阿蜆",
+      "phone": "6503 7133",
+      "note": "新娘貼身助理"
+    },
+    {
+      "title": "兄弟姊妹：Frankie",
+      "person": "Frankie",
+      "phone": "6828 7436",
+      "note": "兄弟總聯絡人"
+    },
+    {
+      "title": "兄弟姊妹：Darren",
+      "person": "Darren",
+      "phone": "6687 2909",
+      "note": "利是主管 / Timekeeper"
+    },
+    {
+      "title": "兄弟姊妹：Lun",
+      "person": "Lun",
+      "phone": "6777 6493",
+      "note": "新郎貼身助手"
+    },
+    {
+      "title": "兄弟姊妹：城哥",
+      "person": "城哥",
+      "phone": "6225 4023",
+      "note": "音效影片"
+    },
+    {
+      "title": "兄弟姊妹：Terry",
+      "person": "Terry",
+      "phone": "6200 8051",
+      "note": "花絮 / 物資運輸總管"
+    },
+    {
+      "title": "攝影團隊：White Production",
+      "person": "攝影師 Eric",
+      "phone": "9014 6503",
+      "note": "5:45am 到達黃金海岸酒店（前一日傳房號／登記人）"
+    },
+    {
+      "title": "新娘化妝師：Emily",
+      "person": "Emily",
+      "phone": "9622 5590",
+      "note": "3:30am 到達黃金海岸酒店"
+    },
+    {
+      "title": "證婚律師：鄭國杰律師",
+      "person": "鄭國杰律師",
+      "phone": "93025693 / 91931787",
+      "note": "確認 10:00am 到場 Briefing"
+    },
+    {
+      "title": "會場聯絡：黃金海岸遊艇會",
+      "person": "Boey Lai",
+      "phone": "2404 3280",
+      "note": "場地協調及音樂／流程對接"
+    },
+    {
+      "title": "場地佈置：Deco",
+      "person": "Sasa Chan",
+      "phone": "6161 9322",
+      "note": "9:00am 到場 Set up 草地及宴會廳"
+    },
+    {
+      "title": "MC",
+      "person": "MC Jessica",
+      "phone": "6216 0464",
+      "note": "證婚及午宴司儀"
+    },
+    {
+      "title": "Photobooth",
+      "person": "Photobooth 團隊",
+      "phone": "待補",
+      "note": "證婚及午宴互動"
+    }
+  ],
+  "songs": [
+    {
+      "scene": "新郎進場 及 外父帶新娘進場 – 1首",
+      "song": "證婚儀式 – 1-2 首",
+      "note": ""
+    },
+    {
+      "scene": "新郎進場 及 外父帶新娘進場 – 1首",
+      "song": "證婚March out & re march in – 1首",
+      "note": ""
+    },
+    {
+      "scene": "午宴2nd進場 – 1首",
+      "song": "敬酒 – 5首",
+      "note": ""
+    },
+    {
+      "scene": "午宴2nd進場 – 1首",
+      "song": "送客 – 5首",
+      "note": ""
+    },
+    {
+      "scene": "證婚場地背景音樂 – Keep loop (10-20首)",
+      "song": "Elliot James Reay - I think they call this love",
+      "note": "https://youtu.be/MxfbUPpwDlw?si=zVZ0ZeWHm4ThgotZ"
+    },
+    {
+      "scene": "證婚場地背景音樂 – Keep loop (10-20首)",
+      "song": "Henry - It's you",
+      "note": "https://youtu.be/pmrCXt4lNyA?si=7D7YhVm2DgnDOwoo"
+    },
+    {
+      "scene": "證婚場地背景音樂 – Keep loop (10-20首)",
+      "song": "You're still the one (covered version) (cut away last 5 seconds)",
+      "note": "https://youtu.be/jUrKa6thMCU?si=u1lR9snbAFFciRYY"
+    },
+    {
+      "scene": "證婚場地背景音樂 – Keep loop (10-20首)",
+      "song": "Until I found you (Em Beihold Version)",
+      "note": "https://youtu.be/kPlSyYtE63M?si=qj15_oUSVCxXK61A"
+    },
+    {
+      "scene": "證婚場地背景音樂 – Keep loop (10-20首)",
+      "song": "Disney Movie - John Michael Howell & ZVC",
+      "note": "https://www.youtube.com/watch?v=0yp8QBVUdOA&list=RD0yp8QBVUdOA&start_radio=1"
+    },
+    {
+      "scene": "證婚場地背景音樂 – Keep loop (10-20首)",
+      "song": "不是因為天氣晴朗才愛你 - 理想混蛋",
+      "note": "https://www.youtube.com/watch?v=9_068Ekk_fs&list=RD9_068Ekk_fs&start_radio=1"
+    },
+    {
+      "scene": "證婚場地背景音樂 – Keep loop (10-20首)",
+      "song": "直到我遇見你 - 李友廷",
+      "note": "https://www.youtube.com/watch?v=2F2HmPgxgEQ&list=RD2F2HmPgxgEQ&start_radio=1"
+    },
+    {
+      "scene": "證婚場地背景音樂 – Keep loop (10-20首)",
+      "song": "星晴 - 周杰倫",
+      "note": "https://www.youtube.com/watch?v=ma6ug3RVHyw&list=RDma6ug3RVHyw&start_radio=1"
+    },
+    {
+      "scene": "證婚場地背景音樂 – Keep loop (10-20首)",
+      "song": "Lover - Taylor Swift",
+      "note": "drive"
+    },
+    {
+      "scene": "證婚場地背景音樂 – Keep loop (10-20首)",
+      "song": "24/7, 365 - elijah woods (Cover version)",
+      "note": "downloaded"
+    },
+    {
+      "scene": "證婚場地背景音樂 – Keep loop (10-20首)",
+      "song": "給千億顆星選中的二人 - Ian Chan",
+      "note": "https://drive.google.com/drive/folders/1kpAYMJMYlx2_TM903fEa6U0yu6RgICWp"
+    },
+    {
+      "scene": "證婚場地背景音樂 – Keep loop (10-20首)",
+      "song": "陪著你走 - 小塵埃",
+      "note": "https://drive.google.com/drive/folders/1kpAYMJMYlx2_TM903fEa6U0yu6RgICWp"
+    },
+    {
+      "scene": "證婚場地背景音樂 – Keep loop (10-20首)",
+      "song": "The Rose - Bette Midler",
+      "note": "downloaded"
+    },
+    {
+      "scene": "證婚場地背景音樂 – Keep loop (10-20首)",
+      "song": "Best Part (feat. H.E.R) - Daniel Caesar",
+      "note": "https://youtu.be/vBy7FaapGRo?si=oKhLbsX8aRitVwTa"
+    },
+    {
+      "scene": "證婚場地背景音樂 – Keep loop (10-20首)",
+      "song": "想和你看五月的晚霞 - 陳華",
+      "note": "https://youtu.be/B7kKeTRV0Xs?si=QE8yk041i2zwCEgF"
+    },
+    {
+      "scene": "證婚場地背景音樂 – Keep loop (10-20首)",
+      "song": "A little love",
+      "note": "drive"
+    },
+    {
+      "scene": "證婚場地背景音樂 – Keep loop (10-20首)",
+      "song": "Supernatural",
+      "note": "https://youtu.be/xoQUcMHsihk?si=S6XtvRVBInjfnvAw"
+    },
+    {
+      "scene": "新郎進場",
+      "song": "Nothing's Gonna Change My Love For You - Music Travel Love ft. Bugoy Drilon",
+      "note": "https://www.youtube.com/watch?v=bTCJ2ehryj8&list=RDbTCJ2ehryj8&start_radio=1"
+    },
+    {
+      "scene": "新郎進場",
+      "song": "Viva la Vida | Coldplay | Astoria String Quartet Cover",
+      "note": "https://www.youtube.com/watch?v=qdg1MuoJl-8&list=RDqdg1MuoJl-8&start_radio=1"
+    },
+    {
+      "scene": "新娘進場",
+      "song": "Crazy Rich Asians Official Soundtrack | Can’t Help Falling In Love - Kina Grannis | WaterTower (Start from 00:45)",
+      "note": "https://www.youtube.com/watch?v=GR6L_C0Ii6s&list=RDGR6L_C0Ii6s&start_radio=1"
+    },
+    {
+      "scene": "証婚",
+      "song": "Yiruma - River Flows in You",
+      "note": "youtube.com/watch?si=HsaHfZjaR05PxZnU&v=fiBvOKmuWKg&feature=youtu.be"
+    },
+    {
+      "scene": "証婚",
+      "song": "Tangled - I See The Light (Piano Cover by Riyandi Kusuma)",
+      "note": "https://www.youtube.com/watch?v=GRbwRW0NUlE"
+    },
+    {
+      "scene": "証婚",
+      "song": "Beautiful in White x Canon in D (Piano Cover by Riyandi Kusuma)",
+      "note": "https://www.youtube.com/watch?v=tX73H2FRcK8&list=RDtX73H2FRcK8&start_radio=1"
+    },
+    {
+      "scene": "証婚",
+      "song": "March out & re-march in",
+      "note": ""
+    },
+    {
+      "scene": "証婚",
+      "song": "Start of Something New 全新的開始",
+      "note": "https://www.youtube.com/watch?v=qzrcBQp7GgA"
+    },
+    {
+      "scene": "午宴進場",
+      "song": "周杰倫結婚進行曲",
+      "note": "https://drive.google.com/drive/folders/155_56MazzGjFotNM412D6E_jK8B_TNgc"
+    },
+    {
+      "scene": "午宴進場",
+      "song": "Beautiful In White | Instrumental Orchestra Version",
+      "note": "https://www.youtube.com/watch?v=idfnoMuigSA&list=RDidfnoMuigSA&start_radio=1"
+    },
+    {
+      "scene": "午宴進場",
+      "song": "宴會 Keep Loop:",
+      "note": ""
+    },
+    {
+      "scene": "午宴進場",
+      "song": "【卡農 in Love】”Canon in Love” Official MV - 蔡佩軒 Ariel Tsai",
+      "note": "https://www.youtube.com/watch?v=YaJ_lYFgr6c&list=RDYaJ_lYFgr6c&start_radio=1"
+    },
+    {
+      "scene": "午宴進場",
+      "song": "馮允謙 Jay Fung - 給你幸福 所以幸福",
+      "note": "https://www.youtube.com/watch?v=urqtwluKdsM&list=PLkJIFUxoszgQg4-8AV6RNyCxOGhHKQD-H"
+    },
+    {
+      "scene": "午宴進場",
+      "song": "Aladdin - A Whole New World (Piano Cover by Riyandi Kusuma)",
+      "note": "https://www.youtube.com/watch?v=ENAORMUEa_M&list=RDENAORMUEa_M&start_radio=1"
+    },
+    {
+      "scene": "午宴進場",
+      "song": "yung kai - blue",
+      "note": "https://www.youtube.com/watch?v=IpFX2vq8HKw&list=RDbTCJ2ehryj8&index=20"
+    },
+    {
+      "scene": "午宴進場",
+      "song": "Goblin 도깨비 OST (Chanyeol, Punch) - Stay with me",
+      "note": "https://www.youtube.com/watch?v=wdHeiVf0mds&list=RD2rn-vMbFglI&index=3"
+    },
+    {
+      "scene": "午宴進場",
+      "song": "CHEN(첸) Punch(펀치) - Everytime",
+      "note": "https://www.youtube.com/watch?v=Vj-JE5IbdCw&list=RDVj-JE5IbdCw&start_radio=1"
+    },
+    {
+      "scene": "午宴進場",
+      "song": "馮允謙 Jay Fung - 報復式浪漫 (feat. ‪@moontang929‬) Sweeetly",
+      "note": "https://www.youtube.com/watch?v=zCdChkETXJk&list=RDzCdChkETXJk&start_radio=1"
+    },
+    {
+      "scene": "午宴進場",
+      "song": "Can You Feel The Love Tonight (The Lion King) - Elton John (Boyce Avenue ft. Connie Talbot cover)",
+      "note": "https://www.youtube.com/watch?v=1sioip9Uc4o&list=RD2rn-vMbFglI&index=8"
+    },
+    {
+      "scene": "午宴進場",
+      "song": "Alex Warren - Carry You Home",
+      "note": "https://youtu.be/wPV8eGbbcIA?si=-ecyLdq2zWdaX9ou"
+    },
+    {
+      "scene": "午宴進場",
+      "song": "關於我們 - 周柏豪",
+      "note": "https://youtu.be/Nk3wZ3Ystos?si=V4dJT0-WuWoboRXy"
+    },
+    {
+      "scene": "午宴進場",
+      "song": "世一 - MC Cheung",
+      "note": "https://drive.google.com/drive/folders/1kpAYMJMYlx2_TM903fEa6U0yu6RgICWp"
+    },
+    {
+      "scene": "午宴進場",
+      "song": "無名指 - Ian Chan",
+      "note": "https://drive.google.com/drive/folders/1kpAYMJMYlx2_TM903fEa6U0yu6RgICWp"
+    },
+    {
+      "scene": "午宴進場",
+      "song": "10,000 hours Dan+ Shay & Justin Bieber",
+      "note": "https://youtu.be/D7cSpwelMvQ?si=vpXYElMloC7Luhc5"
+    },
+    {
+      "scene": "午宴進場",
+      "song": "千分之一 - 黃鴻升",
+      "note": "https://youtu.be/_Pqi6udc6Oo?si=2_2woaxdvULJnUop"
+    },
+    {
+      "scene": "午宴進場",
+      "song": "Say you won't let go - James Arthur",
+      "note": "https://youtu.be/5TJB7IDc87A?si=mztP4i-k2SBBvdpQ"
+    },
+    {
+      "scene": "午宴進場",
+      "song": "少女 - 林宥嘉 (0:07 - 4:05）",
+      "note": "https://youtu.be/Vs9A65M3v-k?si=rnKOE-1oyO8_rsE-"
+    },
+    {
+      "scene": "午宴進場",
+      "song": "Perfect - ed sheeran",
+      "note": "https://youtu.be/817P8W8-mGE?si=1IM-Bn2kMXCIv8GE"
+    },
+    {
+      "scene": "午宴進場",
+      "song": "我的宣言 - 周柏豪",
+      "note": "drive"
+    },
+    {
+      "scene": "午宴進場",
+      "song": "Enchanted- Taylor swift",
+      "note": "https://youtu.be/igIfiqqVHtA?si=qmvUMKfdCNvwdg6z"
+    },
+    {
+      "scene": "午宴進場",
+      "song": "Die with a smile",
+      "note": "https://youtu.be/igIfiqqVHtA?si=cQYOzusC6_9tHH_P"
+    },
+    {
+      "scene": "午宴進場",
+      "song": "Ed Sheeran - Photograph",
+      "note": "https://youtu.be/KKQl-pIRQMY?si=KMo6vRrazsNEZiAN"
+    },
+    {
+      "scene": "午宴進場",
+      "song": "Ordinary",
+      "note": "https://youtu.be/A8dH4cKGa6s?si=LcB_Wi6V5jIVqoaL"
+    },
+    {
+      "scene": "午宴進場",
+      "song": "Risk it all",
+      "note": "https://youtu.be/WYGbVpBP5jw?si=QHrXGP_L0Ilnp7cn"
+    },
+    {
+      "scene": "敬酒",
+      "song": "Jason Mraz - Have It All (Official Video)",
+      "note": "https://www.youtube.com/watch?v=BFkTu8Y1KLs"
+    },
+    {
+      "scene": "敬酒",
+      "song": "2084 - Dear Jane",
+      "note": "https://www.youtube.com/watch?v=8pLx4qn88gc&list=RD8pLx4qn88gc&start_radio=1"
+    },
+    {
+      "scene": "敬酒",
+      "song": "戀愛ing - 五月天",
+      "note": "https://www.youtube.com/watch?v=iSkRGgYSQfY&list=RDiSkRGgYSQfY&start_radio=1"
+    },
+    {
+      "scene": "敬酒",
+      "song": "Sugar - Maroon 5",
+      "note": "https://www.youtube.com/watch?v=Y-pEoGvuWKk&list=RDY-pEoGvuWKk&start_radio=1"
+    },
+    {
+      "scene": "敬酒",
+      "song": "ICHIBAN GIRLS - 旋轉木馬",
+      "note": "https://www.youtube.com/watch?v=YjKifCk-RU0&list=RDYjKifCk-RU0&start_radio=1"
+    },
+    {
+      "scene": "送客",
+      "song": "Michael Giacchino - Married Life",
+      "note": "https://www.youtube.com/watch?v=2rn-vMbFglI&list=RD2rn-vMbFglI&start_radio=1"
+    },
+    {
+      "scene": "送客",
+      "song": "Joe Hisaishi - 人生的旋轉木馬（選自“霍爾的移動城堡“）",
+      "note": "https://www.youtube.com/watch?v=f7SS57LFPco&list=RDf7SS57LFPco&start_radio=1"
+    },
+    {
+      "scene": "送客",
+      "song": "Another Day of Sun - La La Land",
+      "note": "https://youtu.be/WxCz0UNUNeQ?si=ioym-Acd9gaGccbl"
+    },
+    {
+      "scene": "送客",
+      "song": "A million dreams - the greatest showman",
+      "note": "https://youtu.be/Sr3X0DCXI-M?si=cMeE_m5ugRsLqthf"
+    },
+    {
+      "scene": "送客",
+      "song": "Every day",
+      "note": ""
+    }
+  ],
+  "angpao": []
+};
+let state = loadLocalState();
+let dbRef = null;
+let currentRundownPhase = "ALL";
+let currentTableFilter = "ALL";
+let currentMatCat = "ALL";
+let currentMatStatus = "ALL";
+let currentSeatingView = "public";
+
+function loadLocalState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      return Object.assign({}, JSON.parse(JSON.stringify(INITIAL_DATA)), parsed);
+    }
+  } catch (e) {}
+  return JSON.parse(JSON.stringify(INITIAL_DATA));
+}
+
+function saveState(pushCloud = true) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const el = document.getElementById("saveStatus");
+    if (el) el.textContent = "已自動儲存 (" + new Date().toLocaleTimeString("zh-HK", {hour: "2-digit", minute: "2-digit"}) + ")";
+  } catch (e) {}
+  if (pushCloud && dbRef) {
+    dbRef.set(state).catch(() => {});
+  }
+}
+
+function initFirebase() {
+  const badge = document.getElementById("syncBadge");
+  try {
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    dbRef = firebase.database().ref(DB_NODE);
+    dbRef.on("value", (snap) => {
+      const val = snap.val();
+      if (val && typeof val === "object") {
+        state = Object.assign({}, JSON.parse(JSON.stringify(INITIAL_DATA)), val);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        renderAll();
+      }
+      if (badge) {
+        badge.textContent = "雲端同步中";
+        badge.className = "sync-pill live";
+      }
+    }, () => {
+      if (badge) {
+        badge.textContent = "離線暫存";
+        badge.className = "sync-pill offline";
+      }
+    });
+  } catch (e) {
+    if (badge) {
+      badge.textContent = "離線暫存";
+      badge.className = "sync-pill offline";
+    }
+  }
+}
+
+function switchTab(tabName, btnEl) {
+  document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+  const target = document.getElementById("tab-" + tabName);
+  if (target) target.classList.add("active");
+  document.querySelectorAll("nav.tabbar button").forEach(b => b.classList.remove("active"));
+  if (btnEl) btnEl.classList.add("active");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function jumpOutdoor(keyword) {
+  const tabBtn = document.querySelector('nav.tabbar button[data-tab="rundown"]');
+  switchTab("rundown", tabBtn);
+  const matched = state.rundown.find(p => p.phase.includes(keyword));
+  currentRundownPhase = matched ? matched.phase : "ALL";
+  renderRundown();
+}
+
+function renderRundown() {
+  const filterWrap = document.getElementById("rundownFilters");
+  const container = document.getElementById("rundownContainer");
+  if (!filterWrap || !container) return;
+
+  const phases = ["ALL", ...state.rundown.map(p => p.phase)];
+  filterWrap.innerHTML = phases.map(ph => {
+    const active = currentRundownPhase === ph ? "active" : "";
+    const label = ph === "ALL" ? "全部時段" : ph;
+    return `<button type="button" class="chip ${active}" onclick="setRundownFilter('${escapeAttr(ph)}')">${escapeHtml(label)}</button>`;
+  }).join("");
+
+  const list = currentRundownPhase === "ALL"
+    ? state.rundown
+    : state.rundown.filter(p => p.phase === currentRundownPhase);
+
+  container.innerHTML = list.map(phaseObj => {
+    const rows = phaseObj.items.map(item => {
+      const sisterHtml = (item.sister || []).map(s => `<div>姊妹：${escapeHtml(s)}</div>`).join("");
+      const brotherHtml = (item.brother || []).map(b => `<div>兄弟：${escapeHtml(b)}</div>`).join("");
+      return `
+        <div class="row-item">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
+            <div>
+              <span class="meta-tag">${escapeHtml(item.time)}</span>
+              <span class="${item.done ? "done-text" : ""}" style="font-weight:600; white-space:pre-line;">${escapeHtml(item.text)}</span>
+            </div>
+            <button type="button" class="status-btn ${item.done ? "ok" : ""}" onclick="toggleRundown('${escapeAttr(phaseObj.phase)}', '${escapeAttr(item.id)}')">
+              ${item.done ? "已完成" : "待完成"}
+            </button>
+          </div>
+          ${item.material ? `<div style="margin-top:5px; font-size:12px; color:var(--muted); white-space:pre-line;">物資：${escapeHtml(item.material)}</div>` : ""}
+          ${(sisterHtml || brotherHtml) ? `<div class="duty-box">${sisterHtml}${brotherHtml}</div>` : ""}
+        </div>
+      `;
+    }).join("");
+    return `<div style="margin-bottom:14px;"><div style="font-weight:700; color:var(--accent); font-size:13px; margin-bottom:6px;">${escapeHtml(phaseObj.phase)}</div>${rows}</div>`;
+  }).join("");
+}
+
+function setRundownFilter(phase) {
+  currentRundownPhase = phase;
+  renderRundown();
+}
+
+function toggleRundown(phaseName, itemId) {
+  const ph = state.rundown.find(p => p.phase === phaseName);
+  if (!ph) return;
+  const it = ph.items.find(i => i.id === itemId);
+  if (!it) return;
+  it.done = !it.done;
+  saveState();
+  renderRundown();
+}
+
+function setSeatingView(view) {
+  currentSeatingView = view;
+  const btnPub = document.getElementById("btnSeatingPublic");
+  const btnLed = document.getElementById("btnSeatingLedger");
+  const cardPub = document.getElementById("seatingPublicCard");
+  const cardLed = document.getElementById("seatingLedgerCard");
+  if (btnPub) btnPub.classList.toggle("active", view === "public");
+  if (btnLed) btnLed.classList.toggle("active", view === "ledger");
+  if (cardPub) cardPub.style.display = view === "public" ? "block" : "none";
+  if (cardLed) cardLed.style.display = view === "ledger" ? "block" : "none";
+  renderSeating();
+}
+
+function unlockSeatingLedger() {
+  const input = document.getElementById("seatingPinInput");
+  const err = document.getElementById("seatingLockErr");
+  if ((input?.value || "").trim() === HUB_PIN) {
+    document.body.classList.add("seating-ledger-unlocked");
+    if (err) err.textContent = "";
+    if (input) input.value = "";
+    renderSeating();
+  } else {
+    if (err) err.textContent = "密碼錯誤，請重新輸入";
+  }
+}
+
+function lockSeatingLedger() {
+  document.body.classList.remove("seating-ledger-unlocked");
+}
+
+function renderSeating() {
+  const stats = document.getElementById("seatingStats");
+  const chips = document.getElementById("tableFilterChips");
+  const pubContainer = document.getElementById("seatingPublicContainer");
+  const ledContainer = document.getElementById("seatingLedgerContainer");
+  const ledStats = document.getElementById("seatingLedgerStats");
+  if (!stats || !chips || !pubContainer) return;
+
+  const total = state.seating.length;
+  const arrivedCount = state.seating.filter(g => g.arrived).length;
+  const maleCount = state.seating.filter(g => g.side === "男家").length;
+  const femaleCount = state.seating.filter(g => g.side === "女家").length;
+
+  stats.innerHTML = `
+    <div class="stat-box"><div class="stat-num">${total}</div><div class="stat-lbl">總人數</div></div>
+    <div class="stat-box"><div class="stat-num">${arrivedCount}</div><div class="stat-lbl">已到場</div></div>
+    <div class="stat-box"><div class="stat-num">${femaleCount}女 / ${maleCount}男</div><div class="stat-lbl">男女家分布</div></div>
+  `;
+
+  const tables = ["ALL", ...Array.from(new Set(state.seating.map(g => g.table)))];
+  chips.innerHTML = tables.map(t => {
+    const active = currentTableFilter === t ? "active" : "";
+    return `<button type="button" class="chip ${active}" onclick="setTableFilter('${escapeAttr(t)}')">${t === "ALL" ? "全部枱號" : escapeHtml(t)}</button>`;
+  }).join("");
+
+  const q = (document.getElementById("seatingSearch")?.value || "").trim().toLowerCase();
+  const filtered = state.seating.filter(g => {
+    const matchTable = currentTableFilter === "ALL" || g.table === currentTableFilter;
+    const matchQ = !q || g.name.toLowerCase().includes(q) || g.table.toLowerCase().includes(q) || g.side.toLowerCase().includes(q);
+    return matchTable && matchQ;
+  });
+
+  pubContainer.innerHTML = filtered.length ? filtered.map(g => `
+    <div class="guest-row">
+      <div>
+        <div style="font-weight:600;">${escapeHtml(g.name)}</div>
+        <div style="font-size:12px; color:var(--muted);">
+          <span class="meta-tag">${escapeHtml(g.table)}</span>
+          <span class="side-tag">${escapeHtml(g.side)}</span>
+        </div>
+      </div>
+      <button type="button" class="status-btn ${g.arrived ? "ok" : ""}" onclick="toggleGuestArrived('${escapeAttr(g.id)}')">
+        ${g.arrived ? "已到場" : "未到場"}
+      </button>
+    </div>
+  `).join("") : `<div style="font-size:12px; color:var(--muted);">找不到符合條件的賓客</div>`;
+
+  if (ledStats) {
+    const totalAmt = state.seating.reduce((s, g) => s + (Number(g.angpao) || 0), 0);
+    const femaleAmt = state.seating.filter(g => g.side === "女家").reduce((s, g) => s + (Number(g.angpao) || 0), 0);
+    const maleAmt = state.seating.filter(g => g.side === "男家").reduce((s, g) => s + (Number(g.angpao) || 0), 0);
+    const paidCount = state.seating.filter(g => (Number(g.angpao) || 0) > 0).length;
+    ledStats.innerHTML = `
+      <div class="stat-box"><div class="stat-num">$${totalAmt.toLocaleString()}</div><div class="stat-lbl">座位人情總額</div></div>
+      <div class="stat-box"><div class="stat-num">$${femaleAmt.toLocaleString()}</div><div class="stat-lbl">女家小計</div></div>
+      <div class="stat-box"><div class="stat-num">$${maleAmt.toLocaleString()}</div><div class="stat-lbl">男家小計</div></div>
+      <div class="stat-box"><div class="stat-num">${paidCount}/${total}</div><div class="stat-lbl">已錄筆數</div></div>
+    `;
+  }
+
+  if (ledContainer) {
+    ledContainer.innerHTML = filtered.length ? filtered.map(g => `
+      <div class="guest-row">
+        <div>
+          <div style="font-weight:600;">${escapeHtml(g.name)}</div>
+          <div style="font-size:12px; color:var(--muted);">
+            <span class="meta-tag">${escapeHtml(g.table)}</span>
+            <span class="side-tag">${escapeHtml(g.side)}</span>
+          </div>
+        </div>
+        <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+          <input type="number" min="0" step="100" value="${Number(g.angpao) || 0}" style="width:105px;" onchange="updateGuestAngpao('${escapeAttr(g.id)}', this.value)">
+          <select onchange="updateGuestMethod('${escapeAttr(g.id)}', this.value)">
+            <option value="利是" ${(g.method || "利是") === "利是" ? "selected" : ""}>利是</option>
+            <option value="FPS" ${g.method === "FPS" ? "selected" : ""}>FPS</option>
+            <option value="PayMe" ${g.method === "PayMe" ? "selected" : ""}>PayMe</option>
+            <option value="銀行轉帳" ${g.method === "銀行轉帳" ? "selected" : ""}>銀行轉帳</option>
+          </select>
+          <input type="text" value="${escapeAttr(g.note || "")}" placeholder="備註" style="width:110px;" onchange="updateGuestNote('${escapeAttr(g.id)}', this.value)">
+        </div>
+      </div>
+    `).join("") : `<div style="font-size:12px; color:var(--muted);">找不到符合條件的賓客</div>`;
+  }
+}
+
+function setTableFilter(t) {
+  currentTableFilter = t;
+  renderSeating();
+}
+
+function addGuest() {
+  const nameInput = document.getElementById("newGuestName");
+  const tableSelect = document.getElementById("newGuestTable");
+  const sideSelect = document.getElementById("newGuestSide");
+  const name = (nameInput?.value || "").trim();
+  if (!name) return;
+  state.seating.push({
+    id: "g_" + Date.now(),
+    name,
+    table: tableSelect.value,
+    side: sideSelect.value,
+    arrived: false,
+    angpao: 0,
+    method: "利是",
+    note: ""
+  });
+  nameInput.value = "";
+  saveState();
+  renderSeating();
+}
+
+function toggleGuestArrived(id) {
+  const g = state.seating.find(item => item.id === id);
+  if (!g) return;
+  g.arrived = !g.arrived;
+  saveState();
+  renderSeating();
+}
+
+function updateGuestAngpao(id, val) {
+  const g = state.seating.find(item => item.id === id);
+  if (!g) return;
+  g.angpao = Math.max(0, Number(val) || 0);
+  saveState();
+  renderSeating();
+}
+
+function updateGuestMethod(id, method) {
+  const g = state.seating.find(item => item.id === id);
+  if (!g) return;
+  g.method = method;
+  saveState();
+}
+
+function updateGuestNote(id, note) {
+  const g = state.seating.find(item => item.id === id);
+  if (!g) return;
+  g.note = note;
+  saveState();
+}
+
+function renderCeremony() {
+  const teaEl = document.getElementById("teaContainer");
+  const photoEl = document.getElementById("photoContainer");
+  if (!teaEl || !photoEl) return;
+
+  teaEl.innerHTML = state.tea.map(t => {
+    const pills = (t.goldItems || []).map((gi, idx) => {
+      const key = `${t.id}_${idx}`;
+      const on = t.collected && t.collected[key] ? "on" : "";
+      return `<span class="gold-pill ${on}" onclick="toggleGoldPill('${escapeAttr(t.id)}', '${escapeAttr(key)}')">${escapeHtml(gi)}</span>`;
+    }).join("");
+    return `
+      <div class="row-item">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+          <div>
+            <span class="meta-tag">貼紙 ${escapeHtml(t.sticker)}</span>
+            <strong class="${t.done ? "done-text" : ""}">${escapeHtml(t.group)}</strong>
+          </div>
+          <button type="button" class="status-btn ${t.done ? "ok" : ""}" onclick="toggleTeaDone('${escapeAttr(t.id)}')">
+            ${t.done ? "已完成" : "待奉茶"}
+          </button>
+        </div>
+        <div class="gold-pills">${pills}</div>
+      </div>
+    `;
+  }).join("");
+
+  photoEl.innerHTML = state.photo.map(p => `
+    <div class="row-item">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+        <div>
+          <strong class="${p.done ? "done-text" : ""}">${escapeHtml(p.title)}</strong>
+          <span class="meta-tag" style="margin-left:6px;">預計 ${p.count} 人</span>
+        </div>
+        <button type="button" class="status-btn ${p.done ? "ok" : ""}" onclick="togglePhotoDone('${escapeAttr(p.id)}')">
+          ${p.done ? "已影完" : "未影"}
+        </button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function toggleTeaDone(id) {
+  const t = state.tea.find(item => item.id === id);
+  if (!t) return;
+  t.done = !t.done;
+  saveState();
+  renderCeremony();
+}
+
+function toggleGoldPill(teaId, key) {
+  const t = state.tea.find(item => item.id === teaId);
+  if (!t) return;
+  if (!t.collected) t.collected = {};
+  t.collected[key] = !t.collected[key];
+  saveState();
+  renderCeremony();
+}
+
+function togglePhotoDone(id) {
+  const p = state.photo.find(item => item.id === id);
+  if (!p) return;
+  p.done = !p.done;
+  saveState();
+  renderCeremony();
+}
+
+function renderMaterials() {
+  const stats = document.getElementById("materialsStats");
+  const chips = document.getElementById("materialFilterChips");
+  const container = document.getElementById("materialsContainer");
+  if (!stats || !chips || !container) return;
+
+  const total = state.materials.length;
+  const doneCount = state.materials.filter(m => m.done).length;
+  const todoCount = total - doneCount;
+
+  stats.innerHTML = `
+    <div class="stat-box"><div class="stat-num">${total}</div><div class="stat-lbl">總物資項</div></div>
+    <div class="stat-box"><div class="stat-num">${doneCount}</div><div class="stat-lbl">已備齊</div></div>
+    <div class="stat-box"><div class="stat-num">${todoCount}</div><div class="stat-lbl">未備齊</div></div>
+  `;
+
+  const cats = ["ALL", ...Array.from(new Set(state.materials.map(m => m.cat)))];
+  chips.innerHTML = cats.map(c => {
+    const active = currentMatCat === c ? "active" : "";
+    return `<button type="button" class="chip ${active}" onclick="setMatCat('${escapeAttr(c)}')">${c === "ALL" ? "全部類別" : escapeHtml(c)}</button>`;
+  }).join("");
+
+  const q = (document.getElementById("matSearch")?.value || "").trim().toLowerCase();
+  const filtered = state.materials.filter(m => {
+    const matchCat = currentMatCat === "ALL" || m.cat === currentMatCat;
+    const matchStatus = currentMatStatus === "ALL" || (currentMatStatus === "TODO" && !m.done);
+    const matchQ = !q || m.item.toLowerCase().includes(q) || m.cat.toLowerCase().includes(q) || (m.owner || "").toLowerCase().includes(q);
+    return matchCat && matchStatus && matchQ;
+  });
+
+  container.innerHTML = filtered.map(m => `
+    <div class="row-item">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+        <div>
+          <span class="meta-tag">${escapeHtml(m.cat)}</span>
+          <strong class="${m.done ? "done-text" : ""}">${escapeHtml(m.item)}</strong>
+          <div style="font-size:12px; color:var(--muted); margin-top:2px;">
+            數量：${escapeHtml(m.qty || "-")} ｜ 負責人：${escapeHtml(m.owner || "-")}
+          </div>
+        </div>
+        <button type="button" class="status-btn ${m.done ? "ok" : ""}" onclick="toggleMaterial('${escapeAttr(m.id)}')">
+          ${m.done ? "已備齊" : "未備齊"}
+        </button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function setMatCat(cat) {
+  currentMatCat = cat;
+  renderMaterials();
+}
+
+function filterMatStatus(status) {
+  currentMatStatus = status;
+  renderMaterials();
+}
+
+function addMaterial() {
+  const catEl = document.getElementById("newMatCat");
+  const itemEl = document.getElementById("newMatItem");
+  const qtyEl = document.getElementById("newMatQty");
+  const ownerEl = document.getElementById("newMatOwner");
+  const item = (itemEl?.value || "").trim();
+  if (!item) return;
+  state.materials.push({
+    id: "m_" + Date.now(),
+    cat: catEl.value,
+    item,
+    qty: (qtyEl.value || "").trim() || "1",
+    owner: (ownerEl.value || "").trim() || "待定",
+    done: false
+  });
+  itemEl.value = "";
+  qtyEl.value = "";
+  ownerEl.value = "";
+  saveState();
+  renderMaterials();
+}
+
+function toggleMaterial(id) {
+  const m = state.materials.find(item => item.id === id);
+  if (!m) return;
+  m.done = !m.done;
+  saveState();
+  renderMaterials();
+}
+
+function renderInfo() {
+  const rolesEl = document.getElementById("rolesContainer");
+  const contactsEl = document.getElementById("contactsContainer");
+  const songsEl = document.getElementById("songsContainer");
+  if (!rolesEl || !contactsEl || !songsEl) return;
+
+  rolesEl.innerHTML = state.roles.map(r => `
+    <div class="row-item">
+      <div><span class="meta-tag">${escapeHtml(r.team)}</span><strong>${escapeHtml(r.name)}</strong></div>
+      <div style="font-size:12px; color:var(--muted); margin-top:3px;">${escapeHtml(r.duties)}</div>
+    </div>
+  `).join("");
+
+  contactsEl.innerHTML = state.contacts.map(c => `
+    <div class="row-item">
+      <div style="font-weight:600;">${escapeHtml(c.title)}</div>
+      <div style="font-size:12px; color:var(--muted); margin-top:2px;">
+        聯絡人：${escapeHtml(c.person)} ｜ 電話：${escapeHtml(c.phone)} ｜ ${escapeHtml(c.note)}
+      </div>
+    </div>
+  `).join("");
+
+  songsEl.innerHTML = state.songs.map(s => `
+    <div class="row-item">
+      <div><span class="meta-tag">${escapeHtml(s.scene)}</span><strong>${escapeHtml(s.song)}</strong></div>
+      <div style="font-size:12px; color:var(--muted); margin-top:2px;">${escapeHtml(s.note)}</div>
+    </div>
+  `).join("");
+}
+
+function unlockAngpaoTab() {
+  const input = document.getElementById("angpaoPinInput");
+  const err = document.getElementById("angpaoLockErr");
+  if ((input?.value || "").trim() === HUB_PIN) {
+    document.body.classList.add("angpao-unlocked");
+    if (err) err.textContent = "";
+    if (input) input.value = "";
+    renderAngpao();
+  } else {
+    if (err) err.textContent = "密碼錯誤，請重新輸入";
+  }
+}
+
+function lockAngpaoTab() {
+  document.body.classList.remove("angpao-unlocked");
+}
+
+function renderAngpao() {
+  const stats = document.getElementById("angpaoStats");
+  const container = document.getElementById("angpaoContainer");
+  if (!stats || !container) return;
+
+  const list = (state.angpao && state.angpao.length) ? state.angpao : state.seating;
+  const totalAmt = list.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+  const femaleAmt = list.filter(i => i.side === "女家").reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+  const maleAmt = list.filter(i => i.side === "男家").reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+  const arrivedCount = list.filter(i => i.arrived).length;
+
+  stats.innerHTML = `
+    <div class="stat-box"><div class="stat-num">$${totalAmt.toLocaleString()}</div><div class="stat-lbl">人情總額</div></div>
+    <div class="stat-box"><div class="stat-num">$${femaleAmt.toLocaleString()}</div><div class="stat-lbl">女家總額</div></div>
+    <div class="stat-box"><div class="stat-num">$${maleAmt.toLocaleString()}</div><div class="stat-lbl">男家總額</div></div>
+    <div class="stat-box"><div class="stat-num">${arrivedCount}/${list.length}</div><div class="stat-lbl">已出席點名</div></div>
+  `;
+
+  container.innerHTML = list.map(item => `
+    <div class="row-item">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+        <div>
+          <span class="meta-tag">${escapeHtml(item.table || item.side)}</span>
+          <span class="side-tag">${escapeHtml(item.side)}</span>
+          <strong>${escapeHtml(item.name)}</strong>
+        </div>
+        <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+          <button type="button" class="status-btn ${item.arrived ? "ok" : ""}" onclick="toggleAngpaoAttendance('${escapeAttr(item.id)}')">
+            ${item.arrived ? "✓ 已出席" : "未出席"}
+          </button>
+          <input type="number" min="0" step="100" value="${Number(item.amount) || 0}" style="width:110px;" onchange="updateAngpaoAmount('${escapeAttr(item.id)}', this.value)">
+          <select onchange="updateAngpaoMethod('${escapeAttr(item.id)}', this.value)">
+            <option value="利是" ${item.method === "利是" ? "selected" : ""}>利是</option>
+            <option value="FPS" ${item.method === "FPS" ? "selected" : ""}>FPS</option>
+            <option value="PayMe" ${item.method === "PayMe" ? "selected" : ""}>PayMe</option>
+            <option value="銀行轉帳" ${item.method === "銀行轉帳" ? "selected" : ""}>銀行轉帳</option>
+          </select>
+          <input type="text" value="${escapeAttr(item.note || "")}" placeholder="備註" style="width:110px;" onchange="updateAngpaoNote('${escapeAttr(item.id)}', this.value)">
+        </div>
+      </div>
+    </div>
+  `).join("");
+}
+
+function toggleAngpaoAttendance(id) {
+  const g = state.seating.find(item => item.id === id);
+  if (g) g.arrived = !g.arrived;
+  if (state.angpao && state.angpao.length) {
+    const a = state.angpao.find(item => item.id === id);
+    if (a) a.arrived = !a.arrived;
+  }
+  saveState();
+  renderAngpao();
+  renderSeating();
+}
+
+function getAngpaoTarget(id) {
+  if (state.angpao && state.angpao.length) {
+    return state.angpao.find(a => a.id === id);
+  }
+  return state.seating.find(g => g.id === id);
+}
+
+function updateAngpaoAmount(id, val) {
+  const item = state.angpao.find(a => a.id === id);
+  if (!item) return;
+  item.amount = Math.max(0, Number(val) || 0);
+  saveState();
+  renderAngpao();
+}
+
+function updateAngpaoMethod(id, method) {
+  const item = state.angpao.find(a => a.id === id);
+  if (!item) return;
+  item.method = method;
+  saveState();
+}
+
+function updateAngpaoNote(id, note) {
+  const item = state.angpao.find(a => a.id === id);
+  if (!item) return;
+  item.note = note;
+  saveState();
+}
+
+function updateAngpaoAmount(id, val) {
+  const item = getAngpaoTarget(id);
+  if (!item) return;
+  item.amount = Math.max(0, Number(val) || 0);
+  saveState();
+  renderAngpao();
+}
+
+function updateAngpaoMethod(id, method) {
+  const item = getAngpaoTarget(id);
+  if (!item) return;
+  item.method = method;
+  saveState();
+}
+
+function updateAngpaoNote(id, note) {
+  const item = getAngpaoTarget(id);
+  if (!item) return;
+  item.note = note;
+  saveState();
+}
+
+function exportJSON() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "wedding_hub_20261122_backup.json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function resetState() {
+  if (!confirm("確定要還原預設資料嗎？本機未匯出的修改將會覆蓋。")) return;
+  state = JSON.parse(JSON.stringify(INITIAL_DATA));
+  saveState();
+  renderAll();
+}
+
+function escapeHtml(str) {
+  return String(str ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function escapeAttr(str) {
+  return String(str ?? "")
+    .replace(/\\/g, "\\\\")
+    .replace(/'/g, "\\'")
+    .replace(/"/g, "&quot;");
+}
+
+function renderAll() {
+  renderRundown();
+  renderSeating();
+  renderCeremony();
+  renderMaterials();
+  renderInfo();
+  renderAngpao();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderAll();
+  initFirebase();
+});
+</script>
+</body>
+</html>
