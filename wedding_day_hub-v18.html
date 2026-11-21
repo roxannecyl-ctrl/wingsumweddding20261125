@@ -35,7 +35,7 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang HK", "Noto Sans TC", sans-serif;
       background: var(--bg);
       color: var(--ink);
-      padding-bottom: 88px;
+      padding-bottom: 92px;
       line-height: 1.5;
     }
 
@@ -89,11 +89,16 @@
       font-weight: 600;
       transition: all 0.15s ease;
       touch-action: manipulation;
+      user-select: none;
     }
 
     button:hover {
       border-color: var(--accent);
       background: var(--accent-soft);
+    }
+
+    button:active {
+      transform: scale(0.98);
     }
 
     button.primary {
@@ -512,6 +517,7 @@
       transition: opacity 0.25s;
       z-index: 10000;
       white-space: nowrap;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
     }
 
     .gift-toast.show {
@@ -608,7 +614,7 @@
     <h2 style="margin:6px 0 4px;font-size:1.15rem;color:var(--accent-dark);">Wedding 1122 兄弟姊妹 Hub</h2>
     <p style="margin:0;font-size:0.82rem;color:var(--muted);">v18 Master · 請輸入通行密碼（預設：1122）</p>
     <input type="password" id="passInput" placeholder="輸入密碼" />
-    <button type="button" class="primary" style="width:100%;padding:10px;" onclick="unlockApp()">進入指揮中心</button>
+    <button type="button" class="primary" style="width:100%;padding:10px;" id="btnUnlockMain">進入指揮中心</button>
     <div id="lockError" style="color:var(--danger);font-size:0.78rem;margin-top:8px;"></div>
   </div>
 </div>
@@ -684,7 +690,7 @@
       <div id="gift-lock-view" class="gift-lock-screen">
         <div style="font-size:2rem;margin-bottom:8px;">🔐</div>
         <h3 style="margin:0 0 6px;font-size:1.05rem;">人情與金器紀錄</h3>
-        <p style="margin:0 0 16px;font-size:0.82rem;color:var(--muted);">此分頁受密碼保護，請輸入密碼以檢視或登記</p>
+        <p style="margin:0 0 16px;font-size:0.82rem;color:var(--muted);">此分頁受密碼保護，請輸入密碼 <code>1122chkd</code> 解鎖</p>
         <form id="giftUnlockForm" style="display:flex;gap:8px;justify-content:center;">
           <input type="password" id="gift-password-input" style="width:160px;text-align:center;letter-spacing:2px;" placeholder="輸入密碼" autocomplete="off" />
           <button type="submit" class="primary">解鎖</button>
@@ -922,7 +928,6 @@
   const GIFT_TAB_PASSWORD = "1122chkd";
   const STORAGE_KEY_GIFT_RECORDS = "wedding_gift_records_v18_fixed";
 
-  let memoryState = {};
   let memoryGiftRecords = [];
   let memoryGiftUnlocked = false;
   let currentGiftFilter = "all";
@@ -1199,7 +1204,7 @@
     photos: [
       { id: "p1", code: "#1", group: "一對新人 + 雙方父母", members: "Vincent, Angela, 黃健仁, 崔時芬, Angela 爸爸, Angela 媽媽" },
       { id: "p2", code: "#2", group: "男家核心親屬", members: "大伯父 黃立仁、伯母、叔叔 鄧志雄、嬸嬸、姨婆 黃滿容" },
-      { id": "p3", code: "#3", group: "女家核心親屬", members: "Angela 嫲嫲、姨媽、姨丈、舅父、舅母" },
+      { id: "p3", code: "#3", group: "女家核心親屬", members: "Angela 嫲嫲、姨媽、姨丈、舅父、舅母" },
       { id: "p4", code: "#4", group: "姊妹團合照", members: "Hilary, Eunice, 阿蜆, 懿雅 等全體姊妹" },
       { id: "p5", code: "#5", group: "新郎呂潤財中學朋友", members: "Jennifer Momo Mile Kenny Ka Chun Lun Darren Frankie" },
       { id: "p6", code: "#6", group: "兄弟團合照", members: "Lun, Darren, 城哥, Terry 等全體兄弟" },
@@ -1210,7 +1215,7 @@
       { id: "p11", code: "#11", group: "Garden Room T.6 親友", members: "T.6 賓客群組（含 黃月澄👶🏻）" },
       { id: "p12", code: "#12", group: "The Deck T.7 好友", members: "T.7 賓客群組（Hilary, Eunice 等）" },
       { id: "p13", code: "#13", group: "The Deck T.8 好友", members: "T.8 賓客群組" },
-      { id": "p14", code: "#14", group: "The Deck T.9 賓客", members: "Ms. Cecilia Lau, Maurice, Harry, Ling Ling, Julianne, Susanna, Carrie, Mabel, Helen, Fred👶🏻, John Wong, Chan Lai" },
+      { id: "p14", code: "#14", group: "The Deck T.9 賓客", members: "Ms. Cecilia Lau, Maurice, Harry, Ling Ling, Julianne, Susanna, Carrie, Mabel, Helen, Fred👶🏻, John Wong, Chan Lai" },
       { id: "p15", code: "#15", group: "The Deck T.10 賓客", members: "城哥, Terry 及 T.10 賓客" },
       { id: "p16", code: "#16", group: "The Deck T.11 賓客", members: "T.11 賓客群組" },
       { id: "p17", code: "#17", group: "證婚 Only 賓客", members: "Nardo, Vincy, Mr. Tom Ho, Ms. Cecilia Lau" },
@@ -1268,7 +1273,6 @@
   memoryGiftRecords = safeGet(STORAGE_KEY_GIFT_RECORDS, []);
 
   function persistState() {
-    memoryState = Object.assign({}, state);
     safeSet(STORAGE_KEY, state);
   }
 
@@ -1290,7 +1294,7 @@
     clearTimeout(toast._timer);
     toast._timer = setTimeout(function () {
       toast.classList.remove("show");
-    }, 2200);
+    }, 2000);
   }
 
   function switchTab(tabId) {
@@ -1303,6 +1307,14 @@
     document.querySelectorAll("#bottomNav .nav-btn").forEach(function (b) {
       b.classList.toggle("active", b.getAttribute("data-tab") === tabId);
     });
+    const labels = {
+      "tab-seating": "座位表",
+      "tab-rundown": "Rundown",
+      "tab-tea": "奉茶金器",
+      "tab-photos": "大合照",
+      "tab-angpao": "派利是"
+    };
+    showToast("已切換至：" + (labels[tabId] || tabId));
   }
 
   function switchSeatingSubTab(subTab) {
@@ -1318,6 +1330,13 @@
 
     if (subTab === "tables") renderTablesOverview();
     if (subTab === "gift") checkGiftLockState();
+    showToast(subTab === "gift" ? "人情紀錄（需密碼 1122chkd）" : "已切換子分頁");
+  }
+
+  function getEffectiveGuest(g) {
+    const seatVal = state.guestSeatingOverride[g.id] || g.seatingStatus;
+    const angVal = state.guestAngpaoOverride[g.id] || g.angpaoStatus;
+    return Object.assign({}, g, { effSeat: seatVal, effAngpao: angVal });
   }
 
   function renderTablesOverview() {
@@ -1348,30 +1367,26 @@
     }).join("");
   }
 
-  function getEffectiveGuest(g) {
-    const seatVal = state.guestSeatingOverride[g.id] || g.seatingStatus;
-    const angVal = state.guestAngpaoOverride[g.id] || g.angpaoStatus;
-    return Object.assign({}, g, { effSeat: seatVal, effAngpao: angVal });
-  }
-
   function cycleGuestSeat(id) {
     const base = INITIAL_DATA.guestsMaster.find(function (x) { return x.id === id; });
     const cur = state.guestSeatingOverride[id] || (base ? base.seatingStatus : "已入座");
-    state.guestSeatingOverride[id] = cur === "已入座" ? "沒有（證婚only）" : "已入座";
+    const next = cur === "已入座" ? "沒有（證婚only）" : "已入座";
+    state.guestSeatingOverride[id] = next;
     persistState();
     renderSeating();
     renderTablesOverview();
-    showToast("已更新入座狀態");
+    showToast((base ? base.name : "") + " 入座：" + next);
   }
 
   function cycleGuestAngpao(id) {
     const base = INITIAL_DATA.guestsMaster.find(function (x) { return x.id === id; });
     const cur = state.guestAngpaoOverride[id] || (base ? base.angpaoStatus : "未收");
-    state.guestAngpaoOverride[id] = cur === "已收" ? "未收" : "已收";
+    const next = cur === "已收" ? "未收" : "已收";
+    state.guestAngpaoOverride[id] = next;
     persistState();
     renderSeating();
     renderTablesOverview();
-    showToast("已更新人情狀態");
+    showToast((base ? base.name : "") + " 人情：" + next);
   }
 
   function renderSeating() {
@@ -1872,7 +1887,6 @@
     renderAngpao();
   }
 
-  // 事件委派與綁定
   document.addEventListener("click", function (e) {
     const target = e.target.closest("button");
     if (!target) return;
@@ -1921,12 +1935,14 @@
         p.classList.toggle("active", p.getAttribute("data-filter") === filterVal);
       });
       renderGiftList();
+      showToast("已切換篩選");
       return;
     }
 
     const quickAmt = target.getAttribute("data-amt");
     if (quickAmt) {
       document.getElementById("form-amount").value = quickAmt;
+      showToast("已填入 HK$" + quickAmt);
       return;
     }
 
@@ -1947,6 +1963,7 @@
         b.classList.toggle("active", b.getAttribute("data-dist") === distVal);
       });
       renderAngpao();
+      showToast("篩選負責人：" + (distVal === "ALL" ? "全部" : distVal));
       return;
     }
 
@@ -1974,6 +1991,18 @@
     }
   });
 
+  document.getElementById("btnUnlockMain").addEventListener("click", function () {
+    const val = (document.getElementById("passInput").value || "").trim();
+    if (val === PASSCODE) {
+      state.unlocked = true;
+      persistState();
+      document.getElementById("lockScreen").style.display = "none";
+      showToast("已進入指揮中心");
+    } else {
+      document.getElementById("lockError").textContent = "密碼錯誤，請再試一次（預設：1122）";
+    }
+  });
+
   document.getElementById("btnResetState").addEventListener("click", function () {
     state = getDefaultState();
     persistState();
@@ -1987,19 +2016,8 @@
     document.getElementById("lockScreen").style.display = "flex";
     document.getElementById("passInput").value = "";
     document.getElementById("lockError").textContent = "";
+    showToast("已鎖定畫面");
   });
-
-  window.unlockApp = function () {
-    const val = (document.getElementById("passInput").value || "").trim();
-    if (val === PASSCODE) {
-      state.unlocked = true;
-      persistState();
-      document.getElementById("lockScreen").style.display = "none";
-      showToast("已進入指揮中心");
-    } else {
-      document.getElementById("lockError").textContent = "密碼錯誤，請再試一次（預設：1122）";
-    }
-  };
 
   document.getElementById("giftUnlockForm").addEventListener("submit", unlockGiftTab);
   document.getElementById("btnAddGiftQuick").addEventListener("click", function () { openGiftModal(null, null); });
