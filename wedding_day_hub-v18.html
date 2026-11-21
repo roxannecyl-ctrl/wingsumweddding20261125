@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wedding 1122 · 兄弟姊妹指揮中心 (v17)</title>
+  <title>Wedding 1122 · 兄弟姊妹指揮中心 (v18)</title>
   <style>
     :root {
       --bg: #faf7f4;
@@ -20,6 +20,9 @@
       --warn-bg: #fff5e5;
       --tag-bg: #f1ece7;
       --shadow: 0 4px 18px rgba(44, 36, 32, 0.06);
+      --gold: #b8860b;
+      --gold-light: #fdf8eb;
+      --danger: #c62828;
     }
 
     * {
@@ -188,7 +191,7 @@
       align-items: center;
     }
 
-    input[type="search"], select {
+    input[type="search"], input[type="text"], input[type="number"], input[type="password"], select {
       font-family: inherit;
       padding: 7px 11px;
       border: 1px solid var(--border);
@@ -318,28 +321,205 @@
       margin-top: 3px;
     }
 
-    .contact-row {
+    /* Seating Sub-tabs & 人情紀錄樣式 */
+    .sp-subtabs-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+      flex-wrap: wrap;
+    }
+
+    .sp-subtab-btn {
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .sp-subtab-btn.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .gift-lock-screen {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 20px;
+      text-align: center;
+      max-width: 380px;
+      margin: 24px auto;
+      box-shadow: var(--shadow);
+    }
+
+    .gift-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    @media (max-width: 520px) {
+      .gift-summary-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .gift-stat-value {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .gift-filter-pills {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      margin-bottom: 12px;
+    }
+
+    .gift-pill {
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #fff;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      color: var(--muted);
+    }
+
+    .gift-pill.active {
+      background: var(--gold);
+      color: #fff;
+      border-color: var(--gold);
+    }
+
+    .gift-item-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 10px;
-      padding: 9px 0;
-      border-bottom: 1px solid #f2eae4;
+      box-shadow: var(--shadow);
     }
 
-    .contact-row:last-child {
-      border-bottom: none;
+    .gift-item-card.recorded {
+      border-left: 4px solid var(--success);
     }
 
-    .phone-link {
+    .gift-amount-highlight {
+      font-size: 0.92rem;
       font-weight: 700;
-      color: var(--accent-dark);
-      text-decoration: none;
-      background: var(--accent-soft);
-      padding: 5px 10px;
+      color: var(--success);
+    }
+
+    .gift-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .gift-modal-backdrop.open {
+      display: flex;
+    }
+
+    @media (min-width: 600px) {
+      .gift-modal-backdrop {
+        align-items: center;
+      }
+    }
+
+    .gift-modal {
+      background: #fff;
+      width: 100%;
+      max-width: 480px;
+      border-radius: 20px 20px 0 0;
+      padding: 20px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    @media (min-width: 600px) {
+      .gift-modal {
+        border-radius: 16px;
+      }
+    }
+
+    .gift-form-group {
+      margin-bottom: 14px;
+    }
+
+    .gift-form-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--ink);
+    }
+
+    .gift-form-input {
+      width: 100%;
+      padding: 9px 12px;
+      font-size: 0.9rem;
+      border: 1px solid var(--border);
       border-radius: 8px;
-      font-size: 0.84rem;
-      white-space: nowrap;
+    }
+
+    .gift-chips-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .gift-chip {
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #fafafa;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .gift-chip.selected {
+      background: var(--gold-light);
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    .gift-toast {
+      position: fixed;
+      bottom: 84px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #2c2420;
+      color: #fff;
+      padding: 9px 16px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+      z-index: 10000;
+    }
+
+    .gift-toast.show {
+      opacity: 1;
     }
 
     nav.bottom-nav {
@@ -380,7 +560,6 @@
       background: var(--accent-soft);
     }
 
-    /* Lock screen */
     #lockScreen {
       position: fixed;
       inset: 0;
@@ -431,17 +610,17 @@
   <div class="lock-box">
     <div style="font-size:1.6rem;">💍</div>
     <h2 style="margin:6px 0 4px;font-size:1.15rem;color:var(--accent-dark);">Wedding 1122 兄弟姊妹 Hub</h2>
-    <p style="margin:0;font-size:0.82rem;color:var(--muted);">v17 Master · 請輸入通行密碼（預設：1122）</p>
+    <p style="margin:0;font-size:0.82rem;color:var(--muted);">v18 Master · 請輸入通行密碼（預設：1122）</p>
     <input type="password" id="passInput" placeholder="輸入密碼" />
     <button class="primary" style="width:100%;padding:10px;" onclick="unlockApp()">進入指揮中心</button>
-    <div id="lockError" style="color:#c62828;font-size:0.78rem;margin-top:8px;"></div>
+    <div id="lockError" style="color:var(--danger);font-size:0.78rem;margin-top:8px;"></div>
   </div>
 </div>
 
 <header>
   <div class="header-top">
     <div>
-      <div class="brand-title">💍 Wedding 1122 指揮中心 · v17</div>
+      <div class="brand-title">💍 Wedding 1122 指揮中心 · v18</div>
       <div class="brand-sub">完整賓客（含人情＆入座狀態）· 全日 Rundown（98 條）· 奉茶 20 組 · 合照 18 組 · 利是 71 封</div>
     </div>
     <div class="header-actions">
@@ -454,44 +633,111 @@
 <main>
   <!-- TAB 1: SEATING & GUESTS -->
   <section id="tab-seating" class="tab-panel active">
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-label">已入座賓客</div>
-        <div class="stat-value" id="statSeatedCount">0 人</div>
-        <div class="stat-note">已編枱午宴／全場賓客</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">入座：沒有（證婚only）</div>
-        <div class="stat-value" id="statNoSeatCount">0 人</div>
-        <div class="stat-note">可篩選或於每位賓客即時切換</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">人情紀錄（已收）</div>
-        <div class="stat-value" id="statAngpaoReceived">0 位</div>
-        <div class="stat-note">支援切換「已收／未收」即時記錄</div>
-      </div>
+    <div class="sp-subtabs-bar">
+      <button type="button" class="sp-subtab-btn active" id="subtab-btn-guests" onclick="switchSeatingSubTab('guests')">
+        🪑 賓客與枱號名單
+      </button>
+      <button type="button" class="sp-subtab-btn" id="subtab-btn-tables" onclick="switchSeatingSubTab('tables')">
+        🗺️ 枱號總覽 (T.1–T.11)
+      </button>
+      <button type="button" class="sp-subtab-btn" id="subtab-btn-gift" onclick="switchSeatingSubTab('gift')">
+        🔒 人情紀錄
+      </button>
     </div>
 
-    <div class="toolbar">
-      <input type="search" id="seatingSearch" placeholder="搜尋賓客姓名、枱號（T.1–T.11）、男/女家、人情或備註..." oninput="renderSeating()" />
-      <select id="sideFilter" onchange="renderSeating()">
-        <option value="ALL">全部（男家／女家）</option>
-        <option value="男家">男家</option>
-        <option value="女家">女家</option>
-      </select>
-      <select id="seatingStatusFilter" onchange="renderSeating()">
-        <option value="ALL">入座狀態：全部</option>
-        <option value="已入座">已入座</option>
-        <option value="沒有（證婚only）">沒有（證婚only）</option>
-      </select>
-      <select id="angpaoStatusFilter" onchange="renderSeating()">
-        <option value="ALL">人情紀錄：全部</option>
-        <option value="已收">人情：已收</option>
-        <option value="未收">人情：未收</option>
-      </select>
+    <div id="seating-subview-guests">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">已入座賓客</div>
+          <div class="stat-value" id="statSeatedCount">0 人</div>
+          <div class="stat-note">已編枱午宴／全場賓客</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">入座：沒有（證婚only）</div>
+          <div class="stat-value" id="statNoSeatCount">0 人</div>
+          <div class="stat-note">可篩選或於每位賓客即時切換</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">人情紀錄（已收）</div>
+          <div class="stat-value" id="statAngpaoReceived">0 位</div>
+          <div class="stat-note">支援切換「已收／未收」即時記錄</div>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <input type="search" id="seatingSearch" placeholder="搜尋賓客姓名、枱號（T.1–T.11）、男/女家、人情或備註..." oninput="renderSeating()" />
+        <select id="sideFilter" onchange="renderSeating()">
+          <option value="ALL">全部（男家／女家）</option>
+          <option value="男家">男家</option>
+          <option value="女家">女家</option>
+        </select>
+        <select id="seatingStatusFilter" onchange="renderSeating()">
+          <option value="ALL">入座狀態：全部</option>
+          <option value="已入座">已入座</option>
+          <option value="沒有（證婚only）">沒有（證婚only）</option>
+        </select>
+        <select id="angpaoStatusFilter" onchange="renderSeating()">
+          <option value="ALL">人情紀錄：全部</option>
+          <option value="已收">人情：已收</option>
+          <option value="未收">人情：未收</option>
+        </select>
+      </div>
+
+      <div id="seatingList" class="table-grid"></div>
     </div>
 
-    <div id="seatingList" class="table-grid"></div>
+    <div id="seating-subview-tables" style="display:none;">
+      <div id="tablesOverviewList" class="table-grid"></div>
+    </div>
+
+    <div id="seating-subview-gift" style="display:none;">
+      <div id="gift-lock-view" class="gift-lock-screen">
+        <div style="font-size:2rem;margin-bottom:8px;">🔐</div>
+        <h3 style="margin:0 0 6px;font-size:1.05rem;">人情與金器紀錄</h3>
+        <p style="margin:0 0 16px;font-size:0.82rem;color:var(--muted);">此分頁受密碼保護，請輸入密碼以檢視或登記</p>
+        <form style="display:flex;gap:8px;justify-content:center;" onsubmit="unlockGiftTab(event)">
+          <input type="password" id="gift-password-input" style="width:160px;text-align:center;letter-spacing:2px;" placeholder="輸入密碼" autocomplete="off" />
+          <button type="submit" class="primary">解鎖</button>
+        </form>
+        <div id="gift-lock-error" style="color:var(--danger);font-size:0.78rem;margin-top:8px;min-height:18px;"></div>
+      </div>
+
+      <div id="gift-main-view" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+          <button type="button" class="primary" onclick="openGiftModal()">＋ 臨時／快速登記</button>
+          <div style="display:flex;gap:6px;">
+            <button type="button" onclick="exportGiftCSV()">匯出 CSV</button>
+            <button type="button" onclick="lockGiftTab()">🔒 鎖定</button>
+          </div>
+        </div>
+
+        <div class="gift-summary-grid">
+          <div class="stat-card" style="text-align:center;">
+            <div class="stat-label">已登記賓客</div>
+            <div class="gift-stat-value" id="stat-gift-count">0 / 0</div>
+          </div>
+          <div class="stat-card" style="text-align:center;">
+            <div class="stat-label">現金／轉帳總額</div>
+            <div class="gift-stat-value" id="stat-gift-cash">HK$0</div>
+          </div>
+          <div class="stat-card" style="text-align:center;">
+            <div class="stat-label">金器／禮物筆數</div>
+            <div class="gift-stat-value" id="stat-gift-gold">0 份</div>
+          </div>
+        </div>
+
+        <input type="search" id="gift-search-input" style="width:100%;margin-bottom:10px;" placeholder="🔍 搜尋賓客姓名、桌號（如 T.1 / 證婚only）或金器備註..." oninput="renderGiftList()" />
+
+        <div class="gift-filter-pills">
+          <button type="button" class="gift-pill active" data-filter="all" onclick="setGiftFilter('all', this)">全部名單</button>
+          <button type="button" class="gift-pill" data-filter="unrecorded" onclick="setGiftFilter('unrecorded', this)">未登記</button>
+          <button type="button" class="gift-pill" data-filter="recorded" onclick="setGiftFilter('recorded', this)">已登記</button>
+          <button type="button" class="gift-pill" data-filter="gold" onclick="setGiftFilter('gold', this)">有金器／禮物</button>
+        </div>
+
+        <div id="gift-list-container"></div>
+      </div>
+    </div>
   </section>
 
   <!-- TAB 2: RUNDOWN -->
@@ -568,7 +814,7 @@
     <div id="photoList"></div>
   </section>
 
-  <!-- TAB 5: ANGPAO (NEW IN v17) -->
+  <!-- TAB 5: ANGPAO -->
   <section id="tab-angpao" class="tab-panel">
     <div class="stats-grid">
       <div class="stat-card">
@@ -601,6 +847,66 @@
   </section>
 </main>
 
+<!-- 登記／編輯人情彈窗 Modal -->
+<div id="gift-modal-backdrop" class="gift-modal-backdrop" onclick="closeGiftModalOnBackdrop(event)">
+  <div class="gift-modal">
+    <div class="card-header">
+      <strong style="font-size:1rem;" id="gift-modal-title">登記人情</strong>
+      <button type="button" onclick="closeGiftModal()">✕</button>
+    </div>
+    <form onsubmit="saveGiftRecord(event)">
+      <input type="hidden" id="edit-record-id" />
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:8px;" class="gift-form-group">
+        <div>
+          <label class="gift-form-label">賓客姓名 / 稱呼 *</label>
+          <input type="text" id="form-guest-name" class="gift-form-input" placeholder="例如：陳大文 / 姑媽" required />
+        </div>
+        <div>
+          <label class="gift-form-label">桌號 / 組別</label>
+          <input type="text" id="form-guest-table" class="gift-form-input" placeholder="例如：T.1" />
+        </div>
+      </div>
+
+      <div class="gift-form-group">
+        <label class="gift-form-label">人情金額 (HKD)</label>
+        <input type="number" id="form-amount" class="gift-form-input" placeholder="0（純送金器可留空或填 0）" min="0" step="1" />
+        <div class="gift-chips-grid">
+          <button type="button" class="gift-chip" onclick="setQuickAmount(500)">$500</button>
+          <button type="button" class="gift-chip" onclick="setQuickAmount(800)">$800</button>
+          <button type="button" class="gift-chip" onclick="setQuickAmount(1000)">$1,000</button>
+          <button type="button" class="gift-chip" onclick="setQuickAmount(1500)">$1,500</button>
+          <button type="button" class="gift-chip" onclick="setQuickAmount(2000)">$2,000</button>
+          <button type="button" class="gift-chip" onclick="setQuickAmount(3000)">$3,000</button>
+          <button type="button" class="gift-chip" onclick="setQuickAmount(5000)">$5,000</button>
+        </div>
+      </div>
+
+      <div class="gift-form-group">
+        <label class="gift-form-label">收禮方式</label>
+        <div class="gift-chips-grid" id="payment-method-chips">
+          <button type="button" class="gift-chip selected" data-method="現金／利是" onclick="selectPaymentMethod(this)">現金／利是</button>
+          <button type="button" class="gift-chip" data-method="FPS 轉數快" onclick="selectPaymentMethod(this)">FPS 轉數快</button>
+          <button type="button" class="gift-chip" data-method="PayMe" onclick="selectPaymentMethod(this)">PayMe</button>
+          <button type="button" class="gift-chip" data-method="銀行轉帳" onclick="selectPaymentMethod(this)">銀行轉帳</button>
+          <button type="button" class="gift-chip" data-method="純金器／禮物" onclick="selectPaymentMethod(this)">純金器／禮物</button>
+        </div>
+      </div>
+
+      <div class="gift-form-group">
+        <label class="gift-form-label">金器 / 禮物 / 備註（選填）</label>
+        <input type="text" id="form-gift-note" class="gift-form-input" placeholder="例如：龍鳳鈪一對、金豬牌、代父母交" />
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:16px;">
+        <button type="button" id="btn-delete-record" style="display:none;color:var(--danger);border-color:#f3d2d2;" onclick="deleteCurrentRecord()">刪除紀錄</button>
+        <button type="submit" class="primary" style="flex:1;padding:11px;font-size:0.92rem;">儲存紀錄</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="gift-toast" class="gift-toast"></div>
+
 <nav class="bottom-nav">
   <button class="nav-btn active" data-tab="tab-seating" onclick="switchTab('tab-seating', this)">
     <span class="icon">🪑</span><span>座位表</span>
@@ -620,8 +926,14 @@
 </nav>
 
 <script>
-  const STORAGE_KEY = "wedding_hub_state_v17_3_1122";
+  const STORAGE_KEY = "wedding_hub_state_v18_1122";
   const PASSCODE = "1122";
+  const GIFT_TAB_PASSWORD = "1122chkd";
+  const STORAGE_KEY_GIFT_RECORDS = "wedding_gift_records_v18";
+  const SESSION_KEY_GIFT_UNLOCKED = "wedding_gift_unlocked_v18";
+
+  let currentGiftFilter = "all";
+  let selectedPaymentMethod = "現金／利是";
 
   const INITIAL_DATA = {
     seating: [
@@ -2080,1119 +2392,122 @@
             "note": "",
             "ownerFilter": "姊妹：Angela + Eunice + Hilary / 兄弟：城哥 + Lun + Frankie + Darren"
       }
-],
+    ],
+
     guestsMaster: [
-      {
-            "id": "g_男家_4_3",
-            "side": "男家",
-            "name": "新郎 Vincent",
-            "table": "T.1",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_5_3",
-            "side": "男家",
-            "name": "新娘 Angela",
-            "table": "T.1",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_6_3",
-            "side": "男家",
-            "name": "爸爸 黃健仁",
-            "table": "T.1",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_7_3",
-            "side": "男家",
-            "name": "媽媽 崔時芬",
-            "table": "T.1",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_8_3",
-            "side": "男家",
-            "name": "妹妹 黃詠珊",
-            "table": "T.1",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_9_3",
-            "side": "男家",
-            "name": "公公 崔蘇",
-            "table": "T.1",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_10_3",
-            "side": "男家",
-            "name": "大舅父 崔永明",
-            "table": "T.1",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_11_3",
-            "side": "男家",
-            "name": "大舅母 劉桂芬",
-            "table": "T.1",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_12_3",
-            "side": "男家",
-            "name": "細姨 崔時貞",
-            "table": "T.1",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_13_3",
-            "side": "男家",
-            "name": "姨丈 宋海德",
-            "table": "T.1",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_14_3",
-            "side": "男家",
-            "name": "細舅父 崔永生",
-            "table": "T.1",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_15_3",
-            "side": "男家",
-            "name": "大伯父 黃立仁",
-            "table": "T.1",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "已收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_16_3",
-            "side": "男家",
-            "name": "表哥 崔仲琪",
-            "table": "T.5",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_17_3",
-            "side": "男家",
-            "name": "表妹 崔潤霆",
-            "table": "T.5",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_18_3",
-            "side": "男家",
-            "name": "表妹夫 Victor",
-            "table": "T.5",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_19_3",
-            "side": "男家",
-            "name": "表哥 林浩民",
-            "table": "T.5",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_20_3",
-            "side": "男家",
-            "name": "表弟 崔竣瑋",
-            "table": "T.5",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_21_3",
-            "side": "男家",
-            "name": "表舅父 張金發",
-            "table": "T.5",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_22_3",
-            "side": "男家",
-            "name": "張金發太太",
-            "table": "T.5",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_23_3",
-            "side": "男家",
-            "name": "張金發兒子",
-            "table": "T.5",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_24_3",
-            "side": "男家",
-            "name": "表舅父 張金華",
-            "table": "T.5",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_25_3",
-            "side": "男家",
-            "name": "張金華太太",
-            "table": "T.5",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_26_3",
-            "side": "男家",
-            "name": "表舅父 張金池",
-            "table": "T.5",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_27_3",
-            "side": "男家",
-            "name": "表姐 Anna",
-            "table": "T.6",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_28_3",
-            "side": "男家",
-            "name": "表姐夫Edmond",
-            "table": "T.6",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_29_3",
-            "side": "男家",
-            "name": "表姐 Joyce",
-            "table": "T.6",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_30_3",
-            "side": "男家",
-            "name": "二表姐夫Sam",
-            "table": "T.6",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_31_3",
-            "side": "男家",
-            "name": "表哥 黃子聰",
-            "table": "T.6",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_32_3",
-            "side": "男家",
-            "name": "表嫂 勞綺琼",
-            "table": "T.6",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_33_3",
-            "side": "男家",
-            "name": "表姪 黃月澄👶🏻",
-            "table": "T.6",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_4_10",
-            "side": "男家",
-            "name": "Cecilia*",
-            "table": "T.8",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": true
-      },
-      {
-            "id": "g_男家_5_10",
-            "side": "男家",
-            "name": "Hayley",
-            "table": "T.8",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_6_10",
-            "side": "男家",
-            "name": "Mandy",
-            "table": "T.8",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_7_10",
-            "side": "男家",
-            "name": "Janice",
-            "table": "T.8",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "當日派",
-            "film": false
-      },
-      {
-            "id": "g_男家_8_10",
-            "side": "男家",
-            "name": "Becky",
-            "table": "T.8",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "當日派",
-            "film": false
-      },
-      {
-            "id": "g_男家_9_10",
-            "side": "男家",
-            "name": "Yu",
-            "table": "T.8",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_10_10",
-            "side": "男家",
-            "name": "To",
-            "table": "T.8",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "當日派",
-            "film": false
-      },
-      {
-            "id": "g_男家_11_10",
-            "side": "男家",
-            "name": "Kenneth",
-            "table": "T.8",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_12_10",
-            "side": "男家",
-            "name": "大頭",
-            "table": "T.8",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_13_10",
-            "side": "男家",
-            "name": "Sam",
-            "table": "T.8",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_14_10",
-            "side": "男家",
-            "name": "城哥",
-            "table": "T.10",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_15_10",
-            "side": "男家",
-            "name": "Frankie",
-            "table": "T.10",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_16_10",
-            "side": "男家",
-            "name": "Darren",
-            "table": "T.10",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_17_10",
-            "side": "男家",
-            "name": "Lun",
-            "table": "T.10",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_18_10",
-            "side": "男家",
-            "name": "Terry",
-            "table": "T.10",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_男家_19_10",
-            "side": "男家",
-            "name": "Jennifer*",
-            "table": "T.10",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": true
-      },
-      {
-            "id": "g_男家_20_10",
-            "side": "男家",
-            "name": "Momo",
-            "table": "T.10",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "當日派",
-            "film": false
-      },
-      {
-            "id": "g_男家_21_10",
-            "side": "男家",
-            "name": "Monkey",
-            "table": "T.10",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "當日派",
-            "film": false
-      },
-      {
-            "id": "g_男家_22_10",
-            "side": "男家",
-            "name": "Ka Chun",
-            "table": "T.10",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "當日派",
-            "film": false
-      },
-      {
-            "id": "g_男家_23_10",
-            "side": "男家",
-            "name": "Kenny",
-            "table": "T.10",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "當日派",
-            "film": false
-      },
-      {
-            "id": "g_女家_4_17",
-            "side": "女家",
-            "name": "爸爸 鄧志偉",
-            "table": "T.3",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_5_17",
-            "side": "女家",
-            "name": "媽媽 張美蘭",
-            "table": "T.2",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_6_17",
-            "side": "女家",
-            "name": "哥哥 鄧浩東",
-            "table": "T.3",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_7_17",
-            "side": "女家",
-            "name": "Amy",
-            "table": "T.3",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_8_17",
-            "side": "女家",
-            "name": "嫲嫲 黃素玲",
-            "table": "T.3",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_9_17",
-            "side": "女家",
-            "name": "姨婆 黃滿容",
-            "table": "T.2",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "已收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_10_17",
-            "side": "女家",
-            "name": "叔叔 鄧志雄",
-            "table": "T.3",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "已收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_11_17",
-            "side": "女家",
-            "name": "嬸嬸 宋莉娜",
-            "table": "T.3",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_12_17",
-            "side": "女家",
-            "name": "堂弟 鄧焌賢",
-            "table": "T.3",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_13_17",
-            "side": "女家",
-            "name": "公公 張進安",
-            "table": "T.2",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_14_17",
-            "side": "女家",
-            "name": "姨媽 張秋蘭",
-            "table": "T.2",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_15_17",
-            "side": "女家",
-            "name": "表姨媽 鄭惠連",
-            "table": "T.2",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_16_17",
-            "side": "女家",
-            "name": "表姨媽 鄭惠霞",
-            "table": "T.2",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_17_17",
-            "side": "女家",
-            "name": "黃智姬 小姐",
-            "table": "T.2",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_18_17",
-            "side": "女家",
-            "name": "劉敏 小姐",
-            "table": "T.2",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_19_17",
-            "side": "女家",
-            "name": "鄭妙淮 小姐",
-            "table": "T.2",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_20_17",
-            "side": "女家",
-            "name": "余蘭 小姐",
-            "table": "T.2",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_21_17",
-            "side": "女家",
-            "name": "華小霞 小姐",
-            "table": "T.2",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_22_17",
-            "side": "女家",
-            "name": "彭偉豪 先生",
-            "table": "T.2",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_23_17",
-            "side": "女家",
-            "name": "嬸嬸 郭弄珍",
-            "table": "T.3",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_24_17",
-            "side": "女家",
-            "name": "表妹 鄧柏殷",
-            "table": "T.3",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_25_17",
-            "side": "女家",
-            "name": "姑婆 鄧巧賢",
-            "table": "T.7",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_26_17",
-            "side": "女家",
-            "name": "姐姐",
-            "table": "T.7",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_27_17",
-            "side": "女家",
-            "name": "表姑媽 候玉梅",
-            "table": "T.7",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_28_17",
-            "side": "女家",
-            "name": "表姑媽 候玉華",
-            "table": "T.7",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_29_17",
-            "side": "女家",
-            "name": "表姑媽 候玉珍",
-            "table": "T.7",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_30_17",
-            "side": "女家",
-            "name": "二叔公 鄧慶田",
-            "table": "T.3",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_31_17",
-            "side": "女家",
-            "name": "二叔婆 張燕琼",
-            "table": "T.3",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_32_17",
-            "side": "女家",
-            "name": "堂叔 鄧偉康",
-            "table": "T.7",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_33_17",
-            "side": "女家",
-            "name": "堂叔 鄧偉國",
-            "table": "T.7",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_34_17",
-            "side": "女家",
-            "name": "三叔公 鄧澤田",
-            "table": "T.3",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_35_17",
-            "side": "女家",
-            "name": "姑婆 鄧肖蓮",
-            "table": "T.7",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_4_24",
-            "side": "女家",
-            "name": "Nardo",
-            "table": "證婚only",
-            "seatingStatus": "沒有（證婚only）",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_5_24",
-            "side": "女家",
-            "name": "Vincy",
-            "table": "證婚only",
-            "seatingStatus": "沒有（證婚only）",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_6_24",
-            "side": "女家",
-            "name": "小梁*",
-            "table": "T.11",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": true
-      },
-      {
-            "id": "g_女家_7_24",
-            "side": "女家",
-            "name": "Millie",
-            "table": "T.11",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_8_24",
-            "side": "女家",
-            "name": "Nikko",
-            "table": "T.11",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_9_24",
-            "side": "女家",
-            "name": "Bill",
-            "table": "T.11",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_10_24",
-            "side": "女家",
-            "name": "JC",
-            "table": "T.11",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_11_24",
-            "side": "女家",
-            "name": "Grace",
-            "table": "T.11",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_12_24",
-            "side": "女家",
-            "name": "Ray",
-            "table": "T.11",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_13_24",
-            "side": "女家",
-            "name": "Amanda",
-            "table": "T.11",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_14_24",
-            "side": "女家",
-            "name": "Jimmy",
-            "table": "T.11",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_15_24",
-            "side": "女家",
-            "name": "Jennifer",
-            "table": "T.11",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_16_24",
-            "side": "女家",
-            "name": "Franklin*",
-            "table": "T.11",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": true
-      },
-      {
-            "id": "g_女家_17_24",
-            "side": "女家",
-            "name": "Eunice",
-            "table": "T.7",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_18_24",
-            "side": "女家",
-            "name": "Hilary",
-            "table": "T.7",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_19_24",
-            "side": "女家",
-            "name": "阿蜆",
-            "table": "T.7",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_20_24",
-            "side": "女家",
-            "name": "令令",
-            "table": "T.9",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_21_24",
-            "side": "女家",
-            "name": "懿雅",
-            "table": "T.9",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_22_24",
-            "side": "女家",
-            "name": "Susanna",
-            "table": "T.9",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_23_24",
-            "side": "女家",
-            "name": "陳麗",
-            "table": "T.9",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_24_24",
-            "side": "女家",
-            "name": "黃澤明",
-            "table": "T.9",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_25_24",
-            "side": "女家",
-            "name": "Maurice*",
-            "table": "T.9",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": true
-      },
-      {
-            "id": "g_女家_26_24",
-            "side": "女家",
-            "name": "Mabel",
-            "table": "T.9",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_27_24",
-            "side": "女家",
-            "name": "Harry",
-            "table": "T.9",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_28_24",
-            "side": "女家",
-            "name": "Carrie",
-            "table": "T.9",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_29_24",
-            "side": "女家",
-            "name": "Helen",
-            "table": "T.9",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_30_24",
-            "side": "女家",
-            "name": "Fred👶🏻",
-            "table": "T.9",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_31_24",
-            "side": "女家",
-            "name": "Ms. Cecilia Lau",
-            "table": "T.9",
-            "seatingStatus": "已入座",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      },
-      {
-            "id": "g_女家_32_24",
-            "side": "女家",
-            "name": "Mr. Tom Ho",
-            "table": "無枱號",
-            "seatingStatus": "沒有（證婚only）",
-            "angpaoStatus": "未收",
-            "cardStatus": "",
-            "film": false
-      }
-],
+      { "id": "g_男家_4_3", "side": "男家", "name": "新郎 Vincent", "table": "T.1", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_5_3", "side": "男家", "name": "新娘 Angela", "table": "T.1", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_6_3", "side": "男家", "name": "爸爸 黃健仁", "table": "T.1", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_7_3", "side": "男家", "name": "媽媽 崔時芬", "table": "T.1", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_8_3", "side": "男家", "name": "妹妹 黃詠珊", "table": "T.1", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_9_3", "side": "男家", "name": "公公 崔蘇", "table": "T.1", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_10_3", "side": "男家", "name": "大舅父 崔永明", "table": "T.1", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_11_3", "side": "男家", "name": "大舅母 劉桂芬", "table": "T.1", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_12_3", "side": "男家", "name": "細姨 崔時貞", "table": "T.1", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_13_3", "side": "男家", "name": "姨丈 宋海德", "table": "T.1", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_14_3", "side": "男家", "name": "細舅父 崔永生", "table": "T.1", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_15_3", "side": "男家", "name": "大伯父 黃立仁", "table": "T.1", "seatingStatus": "已入座", "angpaoStatus": "已收", "cardStatus": "", "film": false },
+      { "id": "g_男家_16_3", "side": "男家", "name": "表哥 崔仲琪", "table": "T.5", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_17_3", "side": "男家", "name": "表妹 崔潤霆", "table": "T.5", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_18_3", "side": "男家", "name": "表妹夫 Victor", "table": "T.5", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_19_3", "side": "男家", "name": "表哥 林浩民", "table": "T.5", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_20_3", "side": "男家", "name": "表弟 崔竣瑋", "table": "T.5", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_21_3", "side": "男家", "name": "表舅父 張金發", "table": "T.5", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_22_3", "side": "男家", "name": "張金發太太", "table": "T.5", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_23_3", "side": "男家", "name": "張金發兒子", "table": "T.5", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_24_3", "side": "男家", "name": "表舅父 張金華", "table": "T.5", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_25_3", "side": "男家", "name": "張金華太太", "table": "T.5", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_26_3", "side": "男家", "name": "表舅父 張金池", "table": "T.5", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_27_3", "side": "男家", "name": "表姐 Anna", "table": "T.6", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_28_3", "side": "男家", "name": "表姐夫Edmond", "table": "T.6", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_29_3", "side": "男家", "name": "表姐 Joyce", "table": "T.6", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_30_3", "side": "男家", "name": "二表姐夫Sam", "table": "T.6", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_31_3", "side": "男家", "name": "表哥 黃子聰", "table": "T.6", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_32_3", "side": "男家", "name": "表嫂 勞綺琼", "table": "T.6", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_33_3", "side": "男家", "name": "表姪 黃月澄👶🏻", "table": "T.6", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_4_10", "side": "男家", "name": "Cecilia*", "table": "T.8", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": true },
+      { "id": "g_男家_5_10", "side": "男家", "name": "Hayley", "table": "T.8", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_6_10", "side": "男家", "name": "Mandy", "table": "T.8", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_7_10", "side": "男家", "name": "Janice", "table": "T.8", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "當日派", "film": false },
+      { "id": "g_男家_8_10", "side": "男家", "name": "Becky", "table": "T.8", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "當日派", "film": false },
+      { "id": "g_男家_9_10", "side": "男家", "name": "Yu", "table": "T.8", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_10_10", "side": "男家", "name": "To", "table": "T.8", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "當日派", "film": false },
+      { "id": "g_男家_11_10", "side": "男家", "name": "Kenneth", "table": "T.8", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_12_10", "side": "男家", "name": "大頭", "table": "T.8", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_13_10", "side": "男家", "name": "Sam", "table": "T.8", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_14_10", "side": "男家", "name": "城哥", "table": "T.10", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_15_10", "side": "男家", "name": "Frankie", "table": "T.10", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_16_10", "side": "男家", "name": "Darren", "table": "T.10", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_17_10", "side": "男家", "name": "Lun", "table": "T.10", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_18_10", "side": "男家", "name": "Terry", "table": "T.10", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_男家_19_10", "side": "男家", "name": "Jennifer*", "table": "T.10", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": true },
+      { "id": "g_男家_20_10", "side": "男家", "name": "Momo", "table": "T.10", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "當日派", "film": false },
+      { "id": "g_男家_21_10", "side": "男家", "name": "Monkey", "table": "T.10", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "當日派", "film": false },
+      { "id": "g_男家_22_10", "side": "男家", "name": "Ka Chun", "table": "T.10", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "當日派", "film": false },
+      { "id": "g_男家_23_10", "side": "男家", "name": "Kenny", "table": "T.10", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "當日派", "film": false },
+      { "id": "g_女家_4_17", "side": "女家", "name": "爸爸 鄧志偉", "table": "T.3", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_5_17", "side": "女家", "name": "媽媽 張美蘭", "table": "T.2", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_6_17", "side": "女家", "name": "哥哥 鄧浩東", "table": "T.3", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_7_17", "side": "女家", "name": "Amy", "table": "T.3", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_8_17", "side": "女家", "name": "嫲嫲 黃素玲", "table": "T.3", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_9_17", "side": "女家", "name": "姨婆 黃滿容", "table": "T.2", "seatingStatus": "已入座", "angpaoStatus": "已收", "cardStatus": "", "film": false },
+      { "id": "g_女家_10_17", "side": "女家", "name": "叔叔 鄧志雄", "table": "T.3", "seatingStatus": "已入座", "angpaoStatus": "已收", "cardStatus": "", "film": false },
+      { "id": "g_女家_11_17", "side": "女家", "name": "嬸嬸 宋莉娜", "table": "T.3", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_12_17", "side": "女家", "name": "堂弟 鄧焌賢", "table": "T.3", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_13_17", "side": "女家", "name": "公公 張進安", "table": "T.2", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_14_17", "side": "女家", "name": "姨媽 張秋蘭", "table": "T.2", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_15_17", "side": "女家", "name": "表姨媽 鄭惠連", "table": "T.2", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_16_17", "side": "女家", "name": "表姨媽 鄭惠霞", "table": "T.2", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_17_17", "side": "女家", "name": "黃智姬 小姐", "table": "T.2", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_18_17", "side": "女家", "name": "劉敏 小姐", "table": "T.2", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_19_17", "side": "女家", "name": "鄭妙淮 小姐", "table": "T.2", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_20_17", "side": "女家", "name": "余蘭 小姐", "table": "T.2", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_21_17", "side": "女家", "name": "華小霞 小姐", "table": "T.2", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_22_17", "side": "女家", "name": "彭偉豪 先生", "table": "T.2", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_23_17", "side": "女家", "name": "嬸嬸 郭弄珍", "table": "T.3", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_24_17", "side": "女家", "name": "表妹 鄧柏殷", "table": "T.3", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_25_17", "side": "女家", "name": "姑婆 鄧巧賢", "table": "T.7", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_26_17", "side": "女家", "name": "姐姐", "table": "T.7", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_27_17", "side": "女家", "name": "表姑媽 候玉梅", "table": "T.7", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_28_17", "side": "女家", "name": "表姑媽 候玉華", "table": "T.7", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_29_17", "side": "女家", "name": "表姑媽 候玉珍", "table": "T.7", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_30_17", "side": "女家", "name": "二叔公 鄧慶田", "table": "T.3", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_31_17", "side": "女家", "name": "二叔婆 張燕琼", "table": "T.3", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_32_17", "side": "女家", "name": "堂叔 鄧偉康", "table": "T.7", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_33_17", "side": "女家", "name": "堂叔 鄧偉國", "table": "T.7", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_34_17", "side": "女家", "name": "三叔公 鄧澤田", "table": "T.3", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_35_17", "side": "女家", "name": "姑婆 鄧肖蓮", "table": "T.7", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_4_24", "side": "女家", "name": "Nardo", "table": "證婚only", "seatingStatus": "沒有（證婚only）", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_5_24", "side": "女家", "name": "Vincy", "table": "證婚only", "seatingStatus": "沒有（證婚only）", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_6_24", "side": "女家", "name": "小梁*", "table": "T.11", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": true },
+      { "id": "g_女家_7_24", "side": "女家", "name": "Millie", "table": "T.11", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_8_24", "side": "女家", "name": "Nikko", "table": "T.11", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_9_24", "side": "女家", "name": "Bill", "table": "T.11", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_10_24", "side": "女家", "name": "JC", "table": "T.11", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_11_24", "side": "女家", "name": "Grace", "table": "T.11", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_12_24", "side": "女家", "name": "Ray", "table": "T.11", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_13_24", "side": "女家", "name": "Amanda", "table": "T.11", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_14_24", "side": "女家", "name": "Jimmy", "table": "T.11", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_15_24", "side": "女家", "name": "Jennifer", "table": "T.11", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_16_24", "side": "女家", "name": "Franklin*", "table": "T.11", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": true },
+      { "id": "g_女家_17_24", "side": "女家", "name": "Eunice", "table": "T.7", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_18_24", "side": "女家", "name": "Hilary", "table": "T.7", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_19_24", "side": "女家", "name": "阿蜆", "table": "T.7", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_20_24", "side": "女家", "name": "令令", "table": "T.9", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_21_24", "side": "女家", "name": "懿雅", "table": "T.9", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_22_24", "side": "女家", "name": "Susanna", "table": "T.9", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_23_24", "side": "女家", "name": "陳麗", "table": "T.9", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_24_24", "side": "女家", "name": "黃澤明", "table": "T.9", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_25_24", "side": "女家", "name": "Maurice*", "table": "T.9", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": true },
+      { "id": "g_女家_26_24", "side": "女家", "name": "Mabel", "table": "T.9", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_27_24", "side": "女家", "name": "Harry", "table": "T.9", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_28_24", "side": "女家", "name": "Carrie", "table": "T.9", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_29_24", "side": "女家", "name": "Helen", "table": "T.9", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_30_24", "side": "女家", "name": "Fred👶🏻", "table": "T.9", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_31_24", "side": "女家", "name": "Ms. Cecilia Lau", "table": "T.9", "seatingStatus": "已入座", "angpaoStatus": "未收", "cardStatus": "", "film": false },
+      { "id": "g_女家_32_24", "side": "女家", "name": "Mr. Tom Ho", "table": "無枱號", "seatingStatus": "沒有（證婚only）", "angpaoStatus": "未收", "cardStatus": "", "film": false }
+    ],
+
     tea: [
       { id: "t1", seq: "#1", stage: "出門", target: "Angela 爸爸、Angela 媽媽", jewelry: "手鏈×2、頸鏈×2" },
       { id: "t2", seq: "#2", stage: "出門", target: "Angela 嫲嫲", jewelry: "戒指×3、手鏈×1、頸鏈×1" },
@@ -3210,10 +2525,10 @@
       { id: "t14", seq: "#14", stage: "場地", target: "女家長輩組 A", jewelry: "長輩金器" },
       { id: "t15", seq: "#15", stage: "場地", target: "男家長輩組 C", jewelry: "長輩金器" },
       { id: "t16", seq: "#16", stage: "場地", target: "女家長輩組 B", jewelry: "長輩金器" },
-      { id: "t17", seq: "#17", stage: "場地", target: "男家長輩組 D", jewelry: "長輩金器" },
+      { id": "t17", seq: "#17", stage: "場地", target: "男家長輩組 D", jewelry: "長輩金器" },
       { id: "t18", seq: "#18", stage: "場地", target: "女家長輩組 C", jewelry: "長輩金器" },
-      { id: "t19", seq: "#19", stage: "場地", target: "男家長輩組 E", jewelry: "長輩金器" },
-      { id: "t20", seq: "#20", stage: "場地", target: "Angela 姨媽（場地補充）", jewelry: "手鏈×2" }
+      { id": "t19", seq: "#19", stage: "場地", target: "男家長輩組 E", jewelry: "長輩金器" },
+      { id": "t20", seq: "#20", stage: "場地", target: "Angela 姨媽（場地補充）", jewelry: "手鏈×2" }
     ],
 
     photos: [
@@ -3227,56 +2542,48 @@
       { id: "p8", code: "#8", group: "Garden Room T.2 親友", members: "T.2 賓客群組" },
       { id: "p9", code: "#9", group: "Garden Room T.3 親友", members: "T.3 賓客群組" },
       { id: "p10", code: "#10", group: "Garden Room T.5 親友", members: "T.5 賓客群組" },
-      { id: "p11", code: "#11", group: "Garden Room T.6 親友", members: "T.6 賓客群組（含 黃月澄👶🏻）" },
+      { id": "p11", code: "#11", group: "Garden Room T.6 親友", members: "T.6 賓客群組（含 黃月澄👶🏻）" },
       { id: "p12", code: "#12", group: "The Deck T.7 好友", members: "T.7 賓客群組（Hilary, Eunice 等）" },
-      { id: "p13", code: "#13", group: "The Deck T.8 好友", members: "T.8 賓客群組" },
-      { id: "p14", code: "#14", group: "The Deck T.9 賓客", members: "Ms. Cecilia Lau, Maurice, Harry, Ling Ling, Julianne, Susanna, Carrie, Mabel, Helen, Fred👶🏻, John Wong, Chan Lai" },
-      { id: "p15", code: "#15", group: "The Deck T.10 賓客", members: "城哥, Terry 及 T.10 賓客" },
-      { id: "p16", code: "#16", group: "The Deck T.11 賓客", members: "T.11 賓客群組" },
+      { id": "p13", code: "#13", group: "The Deck T.8 好友", members: "T.8 賓客群組" },
+      { id": "p14", code: "#14", group: "The Deck T.9 賓客", members: "Ms. Cecilia Lau, Maurice, Harry, Ling Ling, Julianne, Susanna, Carrie, Mabel, Helen, Fred👶🏻, John Wong, Chan Lai" },
+      { id": "p15", code: "#15", group: "The Deck T.10 賓客", members: "城哥, Terry 及 T.10 賓客" },
+      { id": "p16", code: "#16", group: "The Deck T.11 賓客", members: "T.11 賓客群組" },
       { id: "p17", code: "#17", group: "證婚 Only 賓客", members: "Nardo, Vincy, Mr. Tom Ho, Ms. Cecilia Lau" },
-      { id: "p18", code: "#51", group: "其他來賓及好友", members: "自由加影／補充來賓與好友群組" }
+      { id": "p18", code: "#51", group: "其他來賓及好友", members: "自由加影／補充來賓與好友群組" }
     ],
 
-    // 7 大階段、28 項具體派發任務、合計 71 封利是
     angpao: [
-      // 第一階段：03:30 晨早化妝 (4 tasks, 8 packs)
       { id: "a1", stage: "第一階段：03:30 晨早化妝", time: "03:30", target: "化妝師團隊", distributor: "Angela", packs: 2, amount: "$100", note: "晨早到達開工利是" },
       { id: "a2", stage: "第一階段：03:30 晨早化妝", time: "04:00", target: "髮型師團隊", distributor: "Angela", packs: 2, amount: "$100", note: "晨早到達開工利是" },
       { id: "a3", stage: "第一階段：03:30 晨早化妝", time: "04:30", target: "晨早到場姊妹", distributor: "懿雅", packs: 2, amount: "$50", note: "幫手打點與搬運" },
       { id: "a4", stage: "第一階段：03:30 晨早化妝", time: "05:00", target: "Emily 利是", distributor: "Angela", packs: 2, amount: "Emily 利是", note: "專屬 Emily 利是" },
 
-      // 第二階段：接新娘／出門 (5 tasks, 12 packs)
       { id: "a5", stage: "第二階段：接新娘／出門", time: "06:30", target: "開門利是（姊妹團）", distributor: "Vincent", packs: 4, amount: "開門利是", note: "兄弟姊妹玩新郎環節" },
       { id: "a6", stage: "第二階段：接新娘／出門", time: "07:00", target: "Angela 爸爸媽媽", distributor: "Angela", packs: 2, amount: "$100", note: "由阿蜆協助整理後派發" },
       { id: "a7", stage: "第二階段：接新娘／出門", time: "07:30", target: "兄弟團", distributor: "Vincent", packs: 3, amount: "$100", note: "出門兄弟利是" },
       { id: "a8", stage: "第二階段：接新娘／出門", time: "08:00", target: "姊妹團", distributor: "Vincent", packs: 2, amount: "$100", note: "出門姊妹利是" },
       { id: "a9", stage: "第二階段：接新娘／出門", time: "08:15", target: "女家司機 Ray", distributor: "Darren", packs: 1, amount: "$100", note: "出門車程工作人員利是" },
 
-      // 第三階段：過場與會場準備 (4 tasks, 10 packs)
       { id: "a10", stage: "第三階段：過場與會場準備", time: "08:45", target: "利是保安（懿雅安排）", distributor: "懿雅", packs: 2, amount: "$50", note: "保管及交接利是" },
       { id: "a11", stage: "第三階段：過場與會場準備", time: "09:15", target: "(去程) 沙田＞會場 巴士司機", distributor: "Darren", packs: 2, amount: "$100", note: "接載賓客往會場" },
       { id: "a12", stage: "第三階段：過場與會場準備", time: "09:25", target: "巴士點名小助手 陳麗", distributor: "Darren", packs: 2, amount: "$50", note: "9:20–9:30 核對巴士賓客到場" },
       { id: "a13", stage: "第三階段：過場與會場準備", time: "09:45", target: "場地影音／佈置協助人員", distributor: "Darren", packs: 4, amount: "$50", note: "核對 Photoslide show 及 Seating Plan" },
 
-      // 第四階段：證婚與 Reception (4 tasks, 10 packs)
       { id: "a14", stage: "第四階段：證婚與 Reception", time: "10:15", target: "證婚司儀／見證協助", distributor: "懿雅", packs: 2, amount: "$100", note: "證婚環節前派發" },
       { id: "a15", stage: "第四階段：證婚與 Reception", time: "10:30", target: "Reception 招待兄弟姊妹", distributor: "Darren", packs: 4, amount: "$50", note: "迎賓及補派帖時段" },
       { id: "a16", stage: "第四階段：證婚與 Reception", time: "11:00", target: "Photo booth - Jac", distributor: "Darren", packs: 2, amount: "$100", note: "Photo booth 運作利是" },
       { id: "a17", stage: "第四階段：證婚與 Reception", time: "11:30", target: "證婚回禮派發小隊", distributor: "懿雅", packs: 2, amount: "$20", note: "派發回禮予 Tom Ho, Ceci Lau, Nardo, Vincy 期間" },
 
-      // 第五階段：午宴與奉茶 (4 tasks, 11 packs)
       { id: "a18", stage: "第五階段：午宴與奉茶", time: "12:00", target: "奉茶侍應／場地支援", distributor: "Vincent", packs: 3, amount: "$50", note: "16 組場地奉茶環節" },
       { id: "a19", stage: "第五階段：午宴與奉茶", time: "12:30", target: "攝影師團隊", distributor: "Vincent", packs: 3, amount: "$100", note: "午宴攝影利是" },
       { id: "a20", stage: "第五階段：午宴與奉茶", time: "12:30", target: "攝錄師團隊", distributor: "Vincent", packs: 3, amount: "$100", note: "午宴攝錄利是" },
       { id: "a21", stage: "第五階段：午宴與奉茶", time: "13:00", target: "午宴 MC / 音響支援", distributor: "Angela", packs: 2, amount: "$100", note: "午宴流程及大合照催場" },
 
-      // 第六階段：大合照與敬酒／遊戲 (4 tasks, 10 packs)
       { id: "a22", stage: "第六階段：大合照與敬酒／遊戲", time: "13:45", target: "大合照引導兄弟姊妹", distributor: "懿雅", packs: 3, amount: "$50", note: "18 組大合照排隊引導" },
       { id: "a23", stage: "第六階段：大合照與敬酒／遊戲", time: "14:15", target: "敬酒斟酒助手", distributor: "Vincent", packs: 2, amount: "$50", note: "敬酒環節支援" },
       { id: "a24", stage: "第六階段：大合照與敬酒／遊戲", time: "14:30", target: "遊戲／抽獎工作人員", distributor: "Angela", packs: 2, amount: "$50", note: "午宴互動環節" },
       { id: "a25", stage: "第六階段：大合照與敬酒／遊戲", time: "14:45", target: "晚裝／造型補妝助手", distributor: "Angela", packs: 3, amount: "$50", note: "後半場造型整理" },
 
-      // 第七階段：15:30 尾聲清場 (3 tasks, 10 packs)
       { id: "a26", stage: "第七階段：15:30 尾聲清場", time: "15:30", target: "物資房／尾數清點兄弟姊妹", distributor: "Darren", packs: 4, amount: "$50", note: "Lun 保管物資房卡，核對物資完整" },
       { id: "a27", stage: "第七階段：15:30 尾聲清場", time: "15:45", target: "酒店／場地交收人員", distributor: "Vincent", packs: 3, amount: "$100", note: "尾聲退房與場地交接" },
       { id: "a28", stage: "第七階段：15:30 尾聲清場", time: "16:00", target: "全日辛苦兄弟姊妹感謝利是", distributor: "Angela", packs: 3, amount: "$20", note: "尾聲總結感謝利是" }
@@ -3298,6 +2605,7 @@
     return {
       unlocked: true,
       activeTab: "tab-seating",
+      seatingSubTab: "guests",
       angpaoDistributor: "ALL",
       doneRundown: {},
       doneTea: {},
@@ -3311,6 +2619,7 @@
   let state = loadState();
   if (!state.guestSeatingOverride) state.guestSeatingOverride = {};
   if (!state.guestAngpaoOverride) state.guestAngpaoOverride = {};
+  if (!state.seatingSubTab) state.seatingSubTab = "guests";
 
   function saveState() {
     try {
@@ -3328,6 +2637,7 @@
     state.guestAngpaoOverride = {};
     saveState();
     renderAll();
+    showGiftToast("已重設勾選狀態");
   }
 
   function toggleLock() {
@@ -3356,6 +2666,43 @@
     document.getElementById(tabId).classList.add("active");
     document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
     if (btnEl) btnEl.classList.add("active");
+  }
+
+  function switchSeatingSubTab(subTab) {
+    state.seatingSubTab = subTab;
+    saveState();
+
+    document.getElementById("seating-subview-guests").style.display = subTab === "guests" ? "block" : "none";
+    document.getElementById("seating-subview-tables").style.display = subTab === "tables" ? "block" : "none";
+    document.getElementById("seating-subview-gift").style.display = subTab === "gift" ? "block" : "none";
+
+    document.getElementById("subtab-btn-guests").classList.toggle("active", subTab === "guests");
+    document.getElementById("subtab-btn-tables").classList.toggle("active", subTab === "tables");
+    document.getElementById("subtab-btn-gift").classList.toggle("active", subTab === "gift");
+
+    if (subTab === "tables") renderTablesOverview();
+    if (subTab === "gift") checkGiftLockState();
+  }
+
+  function renderTablesOverview() {
+    const container = document.getElementById("tablesOverviewList");
+    if (!container) return;
+    container.innerHTML = INITIAL_DATA.seating.map(t => `
+      <div class="card" style="margin-bottom:0;">
+        <div class="card-header">
+          <div>
+            <span class="badge accent">${t.table}</span>
+            <span class="badge">${t.zone}</span>
+            <span class="badge">${t.side}</span>
+          </div>
+          <span class="badge ok">${t.count} 人</span>
+        </div>
+        <div style="font-size:0.8rem;color:var(--muted);margin-bottom:6px;">${escapeHTML(t.note || "")}</div>
+        <div class="guest-chips">
+          ${(t.guests || []).map(g => `<span class="guest-chip">${escapeHTML(g)}</span>`).join("")}
+        </div>
+      </div>
+    `).join("");
   }
 
   function getEffectiveGuest(g) {
@@ -3412,28 +2759,324 @@
         <div class="card" style="margin-bottom:0;">
           <div class="card-header">
             <div>
-              <span class="badge accent">${g.table}</span>
-              <span class="badge">${g.side}</span>
-              <strong style="font-size:0.95rem;">${g.name}</strong>
+              <span class="badge accent">${escapeHTML(g.table)}</span>
+              <span class="badge">${escapeHTML(g.side)}</span>
+              <strong style="font-size:0.95rem;">${escapeHTML(g.name)}</strong>
             </div>
           </div>
           <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;">
-            <span class="badge ${isNoSeat ? "warn" : "ok"}">入座：${g.effSeat}</span>
-            <span class="badge ${isPaid ? "ok" : ""}">人情：${g.effAngpao}</span>
-            ${g.cardStatus ? `<span class="badge accent">派帖：${g.cardStatus}</span>` : ""}
+            <span class="badge ${isNoSeat ? "warn" : "ok"}">入座：${escapeHTML(g.effSeat)}</span>
+            <span class="badge ${isPaid ? "ok" : ""}">人情：${escapeHTML(g.effAngpao)}</span>
+            ${g.cardStatus ? `<span class="badge accent">派帖：${escapeHTML(g.cardStatus)}</span>` : ""}
             ${g.film ? `<span class="badge">菲林相機*</span>` : ""}
           </div>
           <div style="display:flex;gap:6px;flex-wrap:wrap;">
             <button class="${isNoSeat ? "active" : ""}" onclick="cycleGuestSeat('${g.id}')">
-              入座：${g.effSeat}
+              入座：${escapeHTML(g.effSeat)}
             </button>
             <button class="${isPaid ? "active" : ""}" onclick="cycleGuestAngpao('${g.id}')">
-              人情：${g.effAngpao}
+              人情：${escapeHTML(g.effAngpao)}
             </button>
           </div>
         </div>
       `;
     }).join("") || `<div class="card">找不到符合條件的賓客紀錄。</div>`;
+  }
+
+  /* 人情紀錄分頁（密碼：1122chkd） */
+  function checkGiftLockState() {
+    const isUnlocked = sessionStorage.getItem(SESSION_KEY_GIFT_UNLOCKED) === "true";
+    document.getElementById("gift-lock-view").style.display = isUnlocked ? "none" : "block";
+    document.getElementById("gift-main-view").style.display = isUnlocked ? "block" : "none";
+    if (isUnlocked) {
+      renderGiftList();
+    } else {
+      document.getElementById("gift-password-input").value = "";
+      document.getElementById("gift-lock-error").textContent = "";
+    }
+  }
+
+  function unlockGiftTab(e) {
+    e.preventDefault();
+    const input = document.getElementById("gift-password-input").value.trim();
+    if (input === GIFT_TAB_PASSWORD) {
+      sessionStorage.setItem(SESSION_KEY_GIFT_UNLOCKED, "true");
+      checkGiftLockState();
+      showGiftToast("已解鎖人情紀錄");
+    } else {
+      document.getElementById("gift-lock-error").textContent = "密碼不正確，請重試";
+      document.getElementById("gift-password-input").value = "";
+      document.getElementById("gift-password-input").focus();
+    }
+  }
+
+  function lockGiftTab() {
+    sessionStorage.removeItem(SESSION_KEY_GIFT_UNLOCKED);
+    checkGiftLockState();
+    showGiftToast("已鎖定人情紀錄");
+  }
+
+  function getGiftRecords() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY_GIFT_RECORDS)) || [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveGiftRecords(records) {
+    localStorage.setItem(STORAGE_KEY_GIFT_RECORDS, JSON.stringify(records));
+  }
+
+  function getMergedGiftList() {
+    const records = getGiftRecords();
+    const merged = [];
+    const usedRecordIds = new Set();
+
+    INITIAL_DATA.guestsMaster.forEach(g => {
+      const matched = records.find(r => r.guestId === g.id || r.name.trim() === g.name.trim());
+      if (matched) usedRecordIds.add(matched.id);
+      merged.push({
+        guestId: g.id,
+        name: g.name,
+        table: matched ? (matched.table || g.table) : g.table,
+        record: matched || null
+      });
+    });
+
+    records.forEach(r => {
+      if (!usedRecordIds.has(r.id)) {
+        merged.unshift({
+          guestId: r.guestId || null,
+          name: r.name,
+          table: r.table || "臨時／未分桌",
+          record: r
+        });
+      }
+    });
+
+    return merged;
+  }
+
+  function setGiftFilter(filter, btnEl) {
+    currentGiftFilter = filter;
+    document.querySelectorAll(".gift-pill").forEach(el => el.classList.remove("active"));
+    btnEl.classList.add("active");
+    renderGiftList();
+  }
+
+  function renderGiftList() {
+    const allItems = getMergedGiftList();
+    const records = getGiftRecords();
+    const keyword = (document.getElementById("gift-search-input")?.value || "").trim().toLowerCase();
+
+    const totalCash = records.reduce((sum, r) => sum + (Number(r.amount) || 0), 0);
+    const goldCount = records.filter(r => (r.note && r.note.trim() !== "") || r.method === "純金器／禮物").length;
+
+    document.getElementById("stat-gift-count").textContent = `${records.length} / ${allItems.length}`;
+    document.getElementById("stat-gift-cash").textContent = `HK$${totalCash.toLocaleString()}`;
+    document.getElementById("stat-gift-gold").textContent = `${goldCount} 份`;
+
+    const filtered = allItems.filter(item => {
+      const rec = item.record;
+      if (currentGiftFilter === "recorded" && !rec) return false;
+      if (currentGiftFilter === "unrecorded" && rec) return false;
+      if (currentGiftFilter === "gold" && (!rec || (!rec.note && rec.method !== "純金器／禮物"))) return false;
+      if (keyword) {
+        const hay = `${item.name} ${item.table || ""} ${rec ? (rec.note || "") : ""}`.toLowerCase();
+        if (!hay.includes(keyword)) return false;
+      }
+      return true;
+    });
+
+    const container = document.getElementById("gift-list-container");
+    if (filtered.length === 0) {
+      container.innerHTML = `<div class="card" style="text-align:center;color:var(--muted);">找不到符合條件的賓客紀錄</div>`;
+      return;
+    }
+
+    container.innerHTML = filtered.map(item => {
+      const rec = item.record;
+      if (rec) {
+        const amountText = Number(rec.amount) > 0 ? `HK$${Number(rec.amount).toLocaleString()}` : "無現金";
+        return `
+          <div class="gift-item-card recorded">
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:3px;">
+                <strong style="font-size:0.95rem;">${escapeHTML(item.name)}</strong>
+                ${item.table ? `<span class="badge accent">${escapeHTML(item.table)}</span>` : ""}
+                <span class="gift-amount-highlight">${amountText}</span>
+              </div>
+              <div style="font-size:0.8rem;color:var(--muted);">
+                <span class="badge">${escapeHTML(rec.method || "現金")}</span>
+                ${rec.note ? `<span>🎁 ${escapeHTML(rec.note)}</span>` : ""}
+              </div>
+            </div>
+            <button type="button" onclick="openGiftModal('${rec.id}')">編輯</button>
+          </div>
+        `;
+      }
+      return `
+        <div class="gift-item-card">
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:3px;">
+              <strong style="font-size:0.95rem;">${escapeHTML(item.name)}</strong>
+              ${item.table ? `<span class="badge accent">${escapeHTML(item.table)}</span>` : ""}
+            </div>
+            <div style="font-size:0.8rem;color:var(--muted);">尚未登記人情</div>
+          </div>
+          <button type="button" class="primary" onclick="openGiftModalForGuest('${escapeHTML(item.guestId || "")}', '${escapeHTML(item.name)}', '${escapeHTML(item.table || "")}')">＋ 登記</button>
+        </div>
+      `;
+    }).join("");
+  }
+
+  function openGiftModal(recordId = null) {
+    const records = getGiftRecords();
+    const rec = recordId ? records.find(r => r.id === recordId) : null;
+
+    document.getElementById("gift-modal-title").textContent = rec ? "編輯人情紀錄" : "登記人情";
+    document.getElementById("edit-record-id").value = rec ? rec.id : "";
+    document.getElementById("form-guest-name").value = rec ? rec.name : "";
+    document.getElementById("form-guest-table").value = rec ? (rec.table || "") : "";
+    document.getElementById("form-amount").value = rec ? rec.amount : "";
+    document.getElementById("form-gift-note").value = rec ? (rec.note || "") : "";
+    document.getElementById("btn-delete-record").style.display = rec ? "inline-flex" : "none";
+
+    const method = rec ? rec.method : "現金／利是";
+    selectedPaymentMethod = method;
+    document.querySelectorAll("#payment-method-chips .gift-chip").forEach(chip => {
+      chip.classList.toggle("selected", chip.dataset.method === method);
+    });
+
+    document.getElementById("gift-modal-backdrop").classList.add("open");
+  }
+
+  function openGiftModalForGuest(guestId, name, table) {
+    openGiftModal(null);
+    document.getElementById("form-guest-name").value = name;
+    document.getElementById("form-guest-table").value = table;
+    document.getElementById("gift-modal-backdrop").dataset.guestId = guestId;
+  }
+
+  function closeGiftModal() {
+    document.getElementById("gift-modal-backdrop").classList.remove("open");
+    delete document.getElementById("gift-modal-backdrop").dataset.guestId;
+  }
+
+  function closeGiftModalOnBackdrop(e) {
+    if (e.target.id === "gift-modal-backdrop") closeGiftModal();
+  }
+
+  function setQuickAmount(val) {
+    document.getElementById("form-amount").value = val;
+  }
+
+  function selectPaymentMethod(btnEl) {
+    selectedPaymentMethod = btnEl.dataset.method;
+    document.querySelectorAll("#payment-method-chips .gift-chip").forEach(c => c.classList.remove("selected"));
+    btnEl.classList.add("selected");
+  }
+
+  function saveGiftRecord(e) {
+    e.preventDefault();
+    const records = getGiftRecords();
+    const editId = document.getElementById("edit-record-id").value;
+    const name = document.getElementById("form-guest-name").value.trim();
+    const table = document.getElementById("form-guest-table").value.trim();
+    const amount = Number(document.getElementById("form-amount").value) || 0;
+    const note = document.getElementById("form-gift-note").value.trim();
+    const guestId = document.getElementById("gift-modal-backdrop").dataset.guestId || null;
+
+    if (editId) {
+      const idx = records.findIndex(r => r.id === editId);
+      if (idx !== -1) {
+        records[idx] = {
+          ...records[idx],
+          name,
+          table,
+          amount,
+          method: selectedPaymentMethod,
+          note,
+          updatedAt: new Date().toISOString()
+        };
+      }
+    } else {
+      records.unshift({
+        id: "rec_" + Date.now(),
+        guestId,
+        name,
+        table,
+        amount,
+        method: selectedPaymentMethod,
+        note,
+        updatedAt: new Date().toISOString()
+      });
+    }
+
+    if (guestId) {
+      state.guestAngpaoOverride[guestId] = "已收";
+      saveState();
+      renderSeating();
+    }
+
+    saveGiftRecords(records);
+    closeGiftModal();
+    renderGiftList();
+    showGiftToast(`已儲存：${name} (HK$${amount.toLocaleString()})`);
+  }
+
+  function deleteCurrentRecord() {
+    const editId = document.getElementById("edit-record-id").value;
+    if (!editId || !confirm("確定要刪除這筆人情紀錄嗎？")) return;
+    const records = getGiftRecords().filter(r => r.id !== editId);
+    saveGiftRecords(records);
+    closeGiftModal();
+    renderGiftList();
+    showGiftToast("已刪除該筆紀錄");
+  }
+
+  function exportGiftCSV() {
+    const records = getGiftRecords();
+    if (records.length === 0) {
+      showGiftToast("目前沒有已登記的紀錄可匯出");
+      return;
+    }
+    const headers = ["賓客姓名", "桌號/組別", "金額(HKD)", "收禮方式", "金器/備註", "登記時間"];
+    const rows = records.map(r => [
+      `"${(r.name || "").replace(/"/g, '""')}"`,
+      `"${(r.table || "").replace(/"/g, '""')}"`,
+      r.amount || 0,
+      `"${(r.method || "").replace(/"/g, '""')}"`,
+      `"${(r.note || "").replace(/"/g, '""')}"`,
+      `"${r.updatedAt ? new Date(r.updatedAt).toLocaleString("zh-HK") : ""}"`
+    ]);
+
+    const csvContent = "\uFEFF" + [headers.join(","), ...rows.map(row => row.join(","))].join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `婚禮人情紀錄_${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function showGiftToast(msg) {
+    const toast = document.getElementById("gift-toast");
+    toast.textContent = msg;
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 2200);
+  }
+
+  function escapeHTML(str) {
+    return String(str).replace(/[&<>"']/g, m => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    }[m]));
   }
 
   function populateOwnerFilter() {
@@ -3468,14 +3111,14 @@
       const isDone = !!state.doneRundown[r.id];
       return `
         <div class="rundown-item">
-          <div class="time-pill">${r.time}<div style="font-size:0.68rem;font-weight:500;">${r.section}</div></div>
+          <div class="time-pill">${escapeHTML(r.time)}<div style="font-size:0.68rem;font-weight:500;">${escapeHTML(r.section)}</div></div>
           <div class="${isDone ? "done-text" : ""}">
-            <span class="badge accent">${r.ownerFilter}</span>
-            ${r.proc ? `<div style="font-size:0.92rem;font-weight:700;margin-top:4px;white-space:pre-line;">${r.proc}</div>` : ""}
-            ${r.mat ? `<div style="font-size:0.8rem;color:var(--muted);margin-top:3px;white-space:pre-line;">物資／備註：${r.mat}</div>` : ""}
-            ${(r.sisterOwner || r.sisterTask) ? `<div style="font-size:0.82rem;margin-top:4px;white-space:pre-line;"><strong>姊妹（${r.sisterOwner || "—"}）：</strong>${r.sisterTask}</div>` : ""}
-            ${(r.brotherOwner || r.brotherTask) ? `<div style="font-size:0.82rem;margin-top:3px;white-space:pre-line;"><strong>兄弟（${r.brotherOwner || "—"}）：</strong>${r.brotherTask}</div>` : ""}
-            ${r.note ? `<div style="font-size:0.8rem;color:var(--accent-dark);margin-top:3px;font-weight:600;">💡 ${r.note}</div>` : ""}
+            <span class="badge accent">${escapeHTML(r.ownerFilter)}</span>
+            ${r.proc ? `<div style="font-size:0.92rem;font-weight:700;margin-top:4px;white-space:pre-line;">${escapeHTML(r.proc)}</div>` : ""}
+            ${r.mat ? `<div style="font-size:0.8rem;color:var(--muted);margin-top:3px;white-space:pre-line;">物資／備註：${escapeHTML(r.mat)}</div>` : ""}
+            ${(r.sisterOwner || r.sisterTask) ? `<div style="font-size:0.82rem;margin-top:4px;white-space:pre-line;"><strong>姊妹（${escapeHTML(r.sisterOwner || "—")}）：</strong>${escapeHTML(r.sisterTask)}</div>` : ""}
+            ${(r.brotherOwner || r.brotherTask) ? `<div style="font-size:0.82rem;margin-top:3px;white-space:pre-line;"><strong>兄弟（${escapeHTML(r.brotherOwner || "—")}）：</strong>${escapeHTML(r.brotherTask)}</div>` : ""}
+            ${r.note ? `<div style="font-size:0.8rem;color:var(--accent-dark);margin-top:3px;font-weight:600;">💡 ${escapeHTML(r.note)}</div>` : ""}
           </div>
           <div class="toggle-col">
             <button class="${isDone ? "active" : ""}" onclick="toggleRundown('${r.id}')">
@@ -3513,11 +3156,11 @@
         <div class="card">
           <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
             <div class="${done ? "done-text" : ""}">
-              <span class="badge accent">${item.seq}</span>
-              <span class="badge">${item.stage}</span>
-              <strong style="font-size:0.95rem;">${item.target}</strong>
+              <span class="badge accent">${escapeHTML(item.seq)}</span>
+              <span class="badge">${escapeHTML(item.stage)}</span>
+              <strong style="font-size:0.95rem;">${escapeHTML(item.target)}</strong>
               <div style="font-size:0.82rem;color:var(--accent-dark);margin-top:4px;">
-                💎 金器預填：${item.jewelry}
+                💎 金器預填：${escapeHTML(item.jewelry)}
               </div>
             </div>
             <button class="${done ? "active" : ""}" onclick="toggleTea('${item.id}')">
@@ -3553,9 +3196,9 @@
         <div class="card">
           <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
             <div class="${done ? "done-text" : ""}">
-              <span class="badge accent">${p.code}</span>
-              <strong style="font-size:0.95rem;">${p.group}</strong>
-              <div style="font-size:0.82rem;color:var(--muted);margin-top:3px;">${p.members}</div>
+              <span class="badge accent">${escapeHTML(p.code)}</span>
+              <strong style="font-size:0.95rem;">${escapeHTML(p.group)}</strong>
+              <div style="font-size:0.82rem;color:var(--muted);margin-top:3px;">${escapeHTML(p.members)}</div>
             </div>
             <button class="${done ? "active" : ""}" onclick="togglePhoto('${p.id}')">
               ${done ? "✓ 已拍" : "待拍"}
@@ -3607,7 +3250,7 @@
       return `
         <div class="stage-block">
           <div class="stage-heading">
-            <span>${st}</span>
+            <span>${escapeHTML(st)}</span>
             <span style="font-size:0.78rem;">${items.length} 項 · ${stagePacks} 封</span>
           </div>
           ${items.map(a => {
@@ -3616,13 +3259,13 @@
               <div class="angpao-row ${paid ? "paid" : ""}">
                 <div>
                   <div>
-                    <span class="badge accent">${a.time}</span>
-                    <strong>${a.target}</strong>
+                    <span class="badge accent">${escapeHTML(a.time)}</span>
+                    <strong>${escapeHTML(a.target)}</strong>
                     <span class="badge ok">${a.packs} 封</span>
-                    <span class="badge warn">${a.amount}</span>
+                    <span class="badge warn">${escapeHTML(a.amount)}</span>
                   </div>
                   <div class="angpao-meta">
-                    負責人：<strong>${a.distributor}</strong>${a.note ? ` · ${a.note}` : ""}
+                    負責人：<strong>${escapeHTML(a.distributor)}</strong>${a.note ? ` · ${escapeHTML(a.note)}` : ""}
                   </div>
                 </div>
                 <button class="${paid ? "active" : ""}" onclick="toggleAngpao('${a.id}')">
@@ -3644,19 +3287,20 @@
 
   function renderAll() {
     renderSeating();
+    renderTablesOverview();
     renderRundown();
     renderTea();
     renderPhotos();
     renderAngpao();
   }
 
-  // Init
   if (!state.unlocked) {
     document.getElementById("lockScreen").style.display = "flex";
   }
   renderAll();
   const initialNav = document.querySelector(`.nav-btn[data-tab="${state.activeTab}"]`);
   if (initialNav) switchTab(state.activeTab, initialNav);
+  switchSeatingSubTab(state.seatingSubTab);
 </script>
 </body>
 </html>
